@@ -209,6 +209,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     border: OutlineInputBorder(),
                     prefixIcon: Icon(Icons.person),
                   ),
+                  enabled: !_isLoading,
                 ),
 
                 const SizedBox(height: 16),
