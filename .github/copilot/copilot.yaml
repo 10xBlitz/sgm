@@ -1,0 +1,86 @@
+# GitHub Copilot Configuration
+
+# Project Information
+project_info:
+  name: "Seoul Guide Medical"
+  description: "Flutter mobile application for Seoul Guide Medical services"
+  framework: "Flutter"
+  language: "Dart"
+  dart_version: "^3.7.2"
+  flutter_version: "latest stable"
+
+# Architecture and Project Structure
+architecture:
+  description: |
+    This project follows a clean architecture approach with a clear separation of concerns:
+    - screens/: UI components and screens
+    - services/: Business logic and data handling
+    - config/: Configuration files and constants
+    - theme/: Theming and styling definitions
+    - assets/: Static assets including images and fonts
+
+# Coding Conventions
+coding_conventions:
+  # File naming
+  file_naming:
+    pattern: "snake_case.dart"
+    examples: "auth_service.dart, main_screen.dart"
+  
+  # Class naming
+  class_naming:
+    pattern: "PascalCase"
+    examples: "AuthService, MainScreen"
+  
+  # Variable naming
+  variable_naming:
+    pattern: "camelCase"
+    examples: "userEmail, isLoggedIn"
+  
+  # Constants
+  constants:
+    pattern: "camelCase"
+    examples: "apiUrl, maxRetries"
+  
+  # Private members
+  private_members:
+    pattern: "_camelCase"
+    examples: "_isLoading, _passwordController"
+
+# State Management
+state_management:
+  approach: "Provider/ChangeNotifier"
+  description: "We use a simple approach with ChangeNotifier for state management"
+
+# Authentication
+authentication:
+  provider: "Supabase"
+  implementation: "Email/password authentication via Supabase services"
+
+# Navigation
+navigation:
+  router: "go_router"
+  route_naming: "Static constants on screen classes (MainScreen.routeName)"
+
+# API & Data
+api:
+  backend: "Supabase"
+  pattern: "Repository pattern for data access"
+
+# Widgets and UI
+ui:
+  theming: "Use MaterialTheme from theme/theme.dart"
+  font_family: "NotoSansKR"
+  reusable_components: "Place shared widgets in components/ directory"
+
+# Testing
+testing:
+  pattern: "Widget tests in test/ directory matching *_test.dart pattern"
+
+# Special Instructions
+special_instructions:
+  - "Always use const for immutable widget constructors"
+  - "Always add trailing commas in parameter lists and collections"
+  - "Use null safety features like the '?' and '!' operators appropriately"
+  - "Prefer relative imports for project files"
+  - "Comment complex logic with clear explanations"
+  - "Follow Material 3 design guidelines where possible"
