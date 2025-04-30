@@ -1,0 +1,31 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "RMX3834 (mobile) - debug",
+            "request": "launch",
+            "type": "dart",
+            "deviceId": "0N14426I24109E26"
+        },
+        {
+            "name": "sgm",
+            "request": "launch",
+            "type": "dart"
+        },
+        {
+            "name": "sgm (profile mode)",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile"
+        },
+        {
+            "name": "sgm (release mode)",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release"
+        }
+    ]
+}
