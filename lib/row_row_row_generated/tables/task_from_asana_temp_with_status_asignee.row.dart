@@ -28,7 +28,7 @@ class TaskFromAsanaTempWithStatusAsigneeRow {
   final DateTime? createdAt;
   final String? assigneeGid;
   final String? assigneeName;
-  final dynamic? followersGid;
+  final dynamic followersGid;
   final String? sectionGid;
   final String? sectionName;
   final DateTime? dueAt;

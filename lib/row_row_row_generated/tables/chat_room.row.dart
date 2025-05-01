@@ -25,7 +25,7 @@ class ChatRoomRow {
   final String? photo;
   final String? projectClinicRel;
   final bool? isApproved;
-  final dynamic? singleChatFor;
+  final dynamic singleChatFor;
 
   const ChatRoomRow({
     required this.id,

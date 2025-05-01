@@ -18,12 +18,12 @@ class AnnouncementTargetAudienceViewRow {
   final String? announcementTitle;
   final String? announcementContent;
   final DateTime? announcementCreatedAt;
-  final dynamic? taggedGroupIds;
-  final dynamic? taggedGroupNames;
-  final dynamic? taggedRoleIds;
-  final dynamic? taggedRoleNames;
-  final dynamic? taggedUserIds;
-  final dynamic? taggedUserNames;
+  final dynamic taggedGroupIds;
+  final dynamic taggedGroupNames;
+  final dynamic taggedRoleIds;
+  final dynamic taggedRoleNames;
+  final dynamic taggedUserIds;
+  final dynamic taggedUserNames;
 
   const AnnouncementTargetAudienceViewRow({
     this.announcementId,

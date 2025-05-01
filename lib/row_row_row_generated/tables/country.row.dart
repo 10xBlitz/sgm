@@ -13,8 +13,8 @@ class CountryRow {
   final dynamic iso;
   final dynamic name;
   final dynamic nicename;
-  final dynamic? iso3;
-  final dynamic? numcode;
+  final dynamic iso3;
+  final dynamic numcode;
   final int phonecode;
 
   const CountryRow({

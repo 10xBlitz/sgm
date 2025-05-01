@@ -9,11 +9,11 @@ class AuthService extends ChangeNotifier {
   Future<void> initialize() async {
     if (_isInitialized) return;
 
-    // Initialize Supabase
-    await SupabaseService.initialize();
+    // Initialize Supabase using the singleton instance
+    await supabaseService.initialize();
 
     // Listen for auth changes
-    SupabaseService.authStateChanges.listen((event) {
+    supabaseService.authStateChanges.listen((event) {
       notifyListeners();
     });
 
@@ -21,15 +21,15 @@ class AuthService extends ChangeNotifier {
   }
 
   // Check if user is logged in
-  bool get isLoggedIn => SupabaseService.isLoggedIn;
+  bool get isLoggedIn => supabaseService.isLoggedIn;
 
   // Get current user
-  User? get currentUser => SupabaseService.currentUser;
+  User? get currentUser => supabaseService.currentUser;
 
   // Login with email and password
   Future<bool> login(String email, String password) async {
     try {
-      final response = await SupabaseService.signInWithEmail(email, password);
+      final response = await supabaseService.signInWithEmail(email, password);
       final session = response.session;
       final user = response.user;
 
@@ -50,7 +50,7 @@ class AuthService extends ChangeNotifier {
   // Register with email and password
   Future<bool> register(String email, String password) async {
     try {
-      final response = await SupabaseService.signUpWithEmail(email, password);
+      final response = await supabaseService.signUpWithEmail(email, password);
       final session = response.session;
       final user = response.user;
 
@@ -69,7 +69,7 @@ class AuthService extends ChangeNotifier {
 
   // Logout
   Future<void> logout() async {
-    await SupabaseService.signOut();
+    await supabaseService.signOut();
     notifyListeners();
   }
 }

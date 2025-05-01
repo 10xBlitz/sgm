@@ -31,13 +31,13 @@ class AnnouncementWithTargetNamesRow {
   final bool? personal;
   final Map<String, dynamic>? routeData;
   final String? creatorName;
-  final dynamic? roleIds;
-  final dynamic? roleNames;
-  final dynamic? userIds;
-  final dynamic? userNames;
-  final dynamic? groupIds;
-  final dynamic? groupNames;
-  final dynamic? allTargetIds;
+  final dynamic roleIds;
+  final dynamic roleNames;
+  final dynamic userIds;
+  final dynamic userNames;
+  final dynamic groupIds;
+  final dynamic groupNames;
+  final dynamic allTargetIds;
 
   const AnnouncementWithTargetNamesRow({
     this.id,

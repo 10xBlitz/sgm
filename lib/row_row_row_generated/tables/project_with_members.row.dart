@@ -32,7 +32,7 @@ class ProjectWithMembersRow {
   final DateTime? pinOrder;
   final String? area;
   final int? numberOfMembers;
-  final dynamic? memberIds;
+  final dynamic memberIds;
   final Map<String, dynamic>? members;
 
   const ProjectWithMembersRow({

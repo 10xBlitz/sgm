@@ -17,10 +17,10 @@ class TaskFormResponseRow {
   final String id;
   final String? answer;
   final DateTime createdAt;
-  final dynamic? images;
+  final dynamic images;
   final String? question;
   final String? task;
-  final dynamic? checkedBox;
+  final dynamic checkedBox;
   final String? sysNotes;
   final String? questionText;
   final bool photoConverted;

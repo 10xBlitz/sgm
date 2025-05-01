@@ -42,8 +42,8 @@ class UserWithProjectsRow {
   final DateTime? emailConfirmedAt;
   final String? emailConfirmationCode;
   final Map<String, dynamic>? projects;
-  final dynamic? projectIds;
-  final dynamic? projectNames;
+  final dynamic projectIds;
+  final dynamic projectNames;
 
   const UserWithProjectsRow({
     this.id,

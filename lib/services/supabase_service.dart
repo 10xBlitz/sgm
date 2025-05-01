@@ -2,11 +2,22 @@ import 'package:flutter/foundation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:sgm/config/supabase_config.dart';
 
+/// A singleton service that manages Supabase authentication and client access.
 class SupabaseService {
-  static SupabaseClient? _client;
+  // Singleton instance
+  static final SupabaseService _instance = SupabaseService._internal();
+
+  // Private constructor
+  SupabaseService._internal();
+
+  // Factory constructor to return the same instance
+  factory SupabaseService() => _instance;
+
+  // Supabase client instance
+  SupabaseClient? _client;
 
   // Get the initialized Supabase client
-  static SupabaseClient get client {
+  SupabaseClient get client {
     if (_client == null) {
       throw Exception(
         'Supabase client has not been initialized. Call initialize() first.',
@@ -16,7 +27,9 @@ class SupabaseService {
   }
 
   // Initialize Supabase
-  static Future<void> initialize() async {
+  Future<void> initialize() async {
+    if (_client != null) return;
+
     await Supabase.initialize(
       url: SupabaseConfig.supabaseUrl,
       anonKey: SupabaseConfig.supabaseAnonKey,
@@ -26,16 +39,13 @@ class SupabaseService {
   }
 
   // Get current user
-  static User? get currentUser => client.auth.currentUser;
+  User? get currentUser => client.auth.currentUser;
 
   // Check if user is logged in
-  static bool get isLoggedIn => currentUser != null;
+  bool get isLoggedIn => currentUser != null;
 
   // Sign in with email and password
-  static Future<AuthResponse> signInWithEmail(
-    String email,
-    String password,
-  ) async {
+  Future<AuthResponse> signInWithEmail(String email, String password) async {
     return await client.auth.signInWithPassword(
       email: email,
       password: password,
@@ -43,22 +53,21 @@ class SupabaseService {
   }
 
   // Sign up with email and password
-  static Future<AuthResponse> signUpWithEmail(
-    String email,
-    String password,
-  ) async {
+  Future<AuthResponse> signUpWithEmail(String email, String password) async {
     return await client.auth.signUp(email: email, password: password);
   }
 
   // Sign out
-  static Future<void> signOut() async {
+  Future<void> signOut() async {
     await client.auth.signOut();
   }
 
   // Get current session
-  static Session? get currentSession => client.auth.currentSession;
+  Session? get currentSession => client.auth.currentSession;
 
   // Listen to auth state changes
-  static Stream<AuthState> get authStateChanges =>
-      client.auth.onAuthStateChange;
+  Stream<AuthState> get authStateChanges => client.auth.onAuthStateChange;
 }
+
+// Global instance for easy access throughout the app
+final supabaseService = SupabaseService();

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sgm/screens/main.screen.dart';
 import 'package:sgm/services/auth_service.dart';
+import 'package:sgm/theme/theme.dart';
 import 'package:sgm/utils/show_snackbar.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -15,16 +16,17 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final _fullNameController = TextEditingController();
   final _emailController = TextEditingController();
+  final _phoneNumberController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
   bool _isLoading = false;
   bool _isRegistering = false;
-  String? _errorMessage;
 
   @override
   void dispose() {
     _fullNameController.dispose();
     _emailController.dispose();
+    _phoneNumberController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
     super.dispose();
@@ -34,28 +36,22 @@ class _LoginScreenState extends State<LoginScreen> {
     if (!_validateInputs()) return;
     setState(() {
       _isLoading = true;
-      _errorMessage = null;
     });
     try {
       final success = await authService.login(
         _emailController.text.trim(),
         _passwordController.text,
       );
-      debugPrint("Login attempt with email: ${_emailController.text.trim()}");
       if (!mounted) return;
       if (!success) {
-        setState(() {
-          _errorMessage = "Invalid email or password";
-        });
+        showSnackbarError(context, "Invalid email or password");
         return;
       }
       // Navigate to main screen after successful login
       context.go(MainScreen.routeName);
     } catch (e) {
       if (mounted) {
-        setState(() {
-          _errorMessage = "Error logging in: ${e.toString()}";
-        });
+        showSnackbarError(context, "Error logging in: ${e.toString()}");
       }
     } finally {
       if (mounted) {
@@ -70,12 +66,9 @@ class _LoginScreenState extends State<LoginScreen> {
     if (!_validateInputs()) return;
     if (!_passwordMatchCheck()) return;
     if (!_validFullName()) return;
-
     setState(() {
       _isLoading = true;
-      _errorMessage = null;
     });
-
     try {
       final success = await authService.register(
         _emailController.text.trim(),
@@ -83,19 +76,11 @@ class _LoginScreenState extends State<LoginScreen> {
       );
       if (!mounted) return;
       if (!success) {
-        setState(() {
-          _errorMessage = "Could not register with these credentials";
-        });
+        showSnackbarError(context, "Could not register with these credentials");
         return;
       }
-      // ScaffoldMessenger.of(context).showSnackBar(
-      //   const SnackBar(
-      //     content: Text(
-      //       'Registration successful! Please check your email to confirm your account.',
-      //     ),
-      //     duration: Duration(seconds: 5),
-      //   ),
-      // );
+
+      // Insert into public.users table
 
       showSnackbar(
         context,
@@ -107,9 +92,7 @@ class _LoginScreenState extends State<LoginScreen> {
       // TODO redirect to Email Confirmation Screen
     } catch (e) {
       if (mounted) {
-        setState(() {
-          _errorMessage = "Error registering: ${e.toString()}";
-        });
+        showSnackbarError(context, "Error registering: ${e.toString()}");
       }
     } finally {
       if (mounted) {
@@ -123,16 +106,12 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _validateInputs() {
     if (_emailController.text.trim().isEmpty ||
         !_emailController.text.contains('@')) {
-      setState(() {
-        _errorMessage = "Please enter a valid email address";
-      });
+      showSnackbarError(context, "Please enter a valid email address");
       return false;
     }
     if (_passwordController.text.isEmpty ||
         _passwordController.text.length < 6) {
-      setState(() {
-        _errorMessage = "Password must be at least 6 characters";
-      });
+      showSnackbarError(context, "Password must be at least 6 characters");
       return false;
     }
     return true;
@@ -140,7 +119,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   bool _passwordMatchCheck() {
     if (_passwordController.text != _confirmPasswordController.text) {
-      showSnackbar(context, 'Passwords do not match');
+      showSnackbarError(context, 'Passwords do not match');
       return false;
     }
     return true;
@@ -148,7 +127,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   bool _validFullName() {
     if (_fullNameController.text.trim().isEmpty) {
-      showSnackbar(context, 'Full name cannot be empty');
+      showSnackbarError(context, 'Full name cannot be empty');
       return false;
     }
     return true;
@@ -157,7 +136,14 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(_isRegistering ? "Registration" : "Login")),
+      appBar: AppBar(
+        title: Text(
+          _isRegistering ? "Registration" : "Login",
+          style: Theme.of(
+            context,
+          ).textTheme.headlineSmall?.copyWith(fontSize: 24),
+        ),
+      ),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -165,42 +151,30 @@ class _LoginScreenState extends State<LoginScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              // Logo or branding here if needed
               const SizedBox(height: 32),
-
+              const SizedBox(height: 8),
               Image.asset('assets/images/logo.png', height: 100, width: 100),
+              const SizedBox(height: 12),
+              Center(
+                child: Text(
+                  "SEOUL GUIDE MEDICAL",
+                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                    color: Theme.of(context).colorScheme.onSecondaryContainer,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
               const SizedBox(height: 32),
-
               // Title
               Text(
                 _isRegistering ? "Create an Account" : "Welcome Back",
-                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  fontFamily: 'NotoSansKR',
-                ),
+                style: Theme.of(
+                  context,
+                ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 24),
-
-              // Error message
-              if (_errorMessage != null)
-                Container(
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: Colors.red.shade50,
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(color: Colors.red.shade200),
-                  ),
-                  child: Text(
-                    _errorMessage!,
-                    style: TextStyle(color: Colors.red.shade800),
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-              if (_errorMessage != null) const SizedBox(height: 16),
-
               if (_isRegistering) ...[
-                // Show full name if registering
                 TextField(
                   controller: _fullNameController,
                   decoration: const InputDecoration(
@@ -211,11 +185,8 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   enabled: !_isLoading,
                 ),
-
                 const SizedBox(height: 16),
               ],
-
-              // Email field
               TextField(
                 controller: _emailController,
                 decoration: const InputDecoration(
@@ -230,8 +201,20 @@ class _LoginScreenState extends State<LoginScreen> {
                 enabled: !_isLoading,
               ),
               const SizedBox(height: 16),
-
-              // Password field
+              if (_isRegistering) ...[
+                TextField(
+                  controller: _phoneNumberController,
+                  decoration: const InputDecoration(
+                    labelText: 'Phone Number',
+                    hintText: 'Enter your phone number',
+                    border: OutlineInputBorder(),
+                    prefixIcon: Icon(Icons.phone),
+                  ),
+                  keyboardType: TextInputType.phone,
+                  enabled: !_isLoading,
+                ),
+                const SizedBox(height: 16),
+              ],
               TextField(
                 controller: _passwordController,
                 decoration: const InputDecoration(
@@ -246,8 +229,6 @@ class _LoginScreenState extends State<LoginScreen> {
                 enabled: !_isLoading,
               ),
               const SizedBox(height: 16),
-
-              // Show Confirm Password when registering
               if (_isRegistering) ...[
                 TextField(
                   controller: _confirmPasswordController,
@@ -265,11 +246,10 @@ class _LoginScreenState extends State<LoginScreen> {
                 const SizedBox(height: 16),
               ],
               const SizedBox(height: 16),
-              // Login/Register button
-              ElevatedButton(
+              FilledButton(
                 onPressed:
                     _isLoading ? null : (_isRegistering ? _register : _login),
-                style: ElevatedButton.styleFrom(
+                style: FilledButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 16),
                 ),
                 child:
@@ -281,9 +261,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         )
                         : Text(_isRegistering ? 'Register' : 'Login'),
               ),
-              const SizedBox(height: 16),
-
-              // Toggle between login and register
+              const SizedBox(height: 32),
               TextButton(
                 onPressed:
                     _isLoading
@@ -291,15 +269,68 @@ class _LoginScreenState extends State<LoginScreen> {
                         : () {
                           setState(() {
                             _isRegistering = !_isRegistering;
-                            _errorMessage = null;
                           });
                         },
-                child: Text(
-                  _isRegistering
-                      ? 'Already have an account? Login'
-                      : 'Need an account? Register',
-                ),
+                child:
+                    _isRegistering
+                        ? Text.rich(
+                          TextSpan(
+                            children: [
+                              TextSpan(
+                                text: 'Already have an account?   ',
+                                style: TextStyle(
+                                  color:
+                                      Theme.of(
+                                        context,
+                                      ).colorScheme.onSecondaryContainer,
+                                  fontStyle: FontStyle.italic,
+                                ),
+                              ),
+                              TextSpan(
+                                text: 'Login',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w800,
+                                  fontFamily:
+                                      MaterialTheme
+                                          .fontFamilyString
+                                          .playfairDisplay,
+                                  color:
+                                      Theme.of(context).colorScheme.onSurface,
+                                ),
+                              ),
+                            ],
+                          ),
+                        )
+                        : Text.rich(
+                          TextSpan(
+                            children: [
+                              TextSpan(
+                                text: 'Need an account?   ',
+                                style: TextStyle(
+                                  color:
+                                      Theme.of(
+                                        context,
+                                      ).colorScheme.onSecondaryContainer,
+                                  fontStyle: FontStyle.italic,
+                                ),
+                              ),
+                              TextSpan(
+                                text: 'Register',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w800,
+                                  fontFamily:
+                                      MaterialTheme
+                                          .fontFamilyString
+                                          .playfairDisplay,
+                                  color:
+                                      Theme.of(context).colorScheme.onSurface,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
               ),
+              SizedBox(height: 64),
             ],
           ),
         ),

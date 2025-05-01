@@ -179,7 +179,7 @@ class UserRoleRow {
   final bool announcementsEditAnnouncement;
   final bool announcementsDeleteAnnouncement;
   final bool announcementsCreateAnnouncementGroups;
-  final dynamic? orderPriority;
+  final dynamic orderPriority;
 
   const UserRoleRow({
     required this.id,

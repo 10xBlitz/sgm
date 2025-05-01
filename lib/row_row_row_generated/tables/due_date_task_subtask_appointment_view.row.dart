@@ -37,7 +37,7 @@ class DueDateTaskSubtaskAppointmentViewRow {
   final String? projectId;
   final String? projectName;
   final DateTime? createdAt;
-  final dynamic? taskCollaborators;
+  final dynamic taskCollaborators;
 
   const DueDateTaskSubtaskAppointmentViewRow({
     this.dueDate,

@@ -1,9 +1,89 @@
 import "package:flutter/material.dart";
+import "package:google_fonts/google_fonts.dart";
 
 class MaterialTheme {
   final TextTheme textTheme;
 
   const MaterialTheme(this.textTheme);
+
+  static const fontFamilyString = (
+    notoSansKr: 'NotoSansKR',
+    playfairDisplay: 'PlayfairDisplay',
+  );
+
+  // factory to build theme
+
+  static ThemeData createThemeData(BuildContext context) {
+    final brightness = View.of(context).platformDispatcher.platformBrightness;
+
+    // Use with Google Fonts package to use downloadable fonts
+    TextTheme textTheme = createTextTheme(context);
+    MaterialTheme theme = MaterialTheme(textTheme);
+    return brightness == Brightness.light ? theme.light() : theme.dark();
+  }
+
+  static TextTheme createTextTheme(BuildContext context) {
+    const bodyFontString = 'Noto Sans KR';
+    const displayFontString = 'Playfair Display';
+    TextTheme baseTextTheme = Theme.of(context).textTheme;
+    TextTheme bodyTextTheme = GoogleFonts.getTextTheme(
+      bodyFontString,
+      baseTextTheme,
+    );
+    TextTheme displayTextTheme = GoogleFonts.getTextTheme(
+      displayFontString,
+      baseTextTheme,
+    );
+    TextTheme textTheme = baseTextTheme;
+    final String fontFamily = fontFamilyString.notoSansKr;
+    final String fontfamilyDisplay = fontFamilyString.playfairDisplay;
+
+    // create new text theme
+    // all must have Noto Sans KR as font family
+    textTheme = textTheme.copyWith(
+      displayLarge: displayTextTheme.displayLarge?.copyWith(
+        fontFamily: fontfamilyDisplay,
+      ),
+      displayMedium: displayTextTheme.displayMedium?.copyWith(
+        fontFamily: fontfamilyDisplay,
+      ),
+      displaySmall: displayTextTheme.displaySmall?.copyWith(
+        fontFamily: fontfamilyDisplay,
+      ),
+      headlineLarge: textTheme.headlineLarge?.copyWith(
+        fontFamily: fontfamilyDisplay,
+        fontWeight: FontWeight.w700,
+      ),
+      headlineMedium: textTheme.headlineMedium?.copyWith(
+        fontFamily: fontfamilyDisplay,
+        fontWeight: FontWeight.w700,
+      ),
+      headlineSmall: textTheme.headlineSmall?.copyWith(
+        fontFamily: fontfamilyDisplay,
+        fontWeight: FontWeight.w700,
+      ),
+      titleLarge: textTheme.titleLarge?.copyWith(
+        fontFamily: fontFamily,
+        fontWeight: FontWeight.w600,
+      ),
+      titleMedium: textTheme.titleMedium?.copyWith(
+        fontFamily: fontFamily,
+        fontWeight: FontWeight.w600,
+      ),
+      titleSmall: textTheme.titleSmall?.copyWith(
+        fontFamily: fontFamily,
+        fontWeight: FontWeight.w600,
+      ),
+      bodyLarge: bodyTextTheme.bodyLarge?.copyWith(fontFamily: fontFamily),
+      bodyMedium: bodyTextTheme.bodyMedium?.copyWith(fontFamily: fontFamily),
+      bodySmall: bodyTextTheme.bodySmall?.copyWith(fontFamily: fontFamily),
+      labelLarge: textTheme.labelLarge?.copyWith(fontFamily: fontFamily),
+      labelMedium: textTheme.labelMedium?.copyWith(fontFamily: fontFamily),
+      labelSmall: textTheme.labelSmall?.copyWith(fontFamily: fontFamily),
+    );
+
+    return textTheme;
+  }
 
   static ColorScheme lightScheme() {
     return const ColorScheme(
@@ -348,6 +428,15 @@ class MaterialTheme {
     ),
     scaffoldBackgroundColor: colorScheme.surface,
     canvasColor: colorScheme.surface,
+    inputDecorationTheme: InputDecorationTheme(
+      labelStyle: textTheme.labelLarge,
+      floatingLabelStyle: textTheme.labelLarge?.copyWith(
+        color: colorScheme.primary,
+      ),
+      hintStyle: textTheme.bodyMedium?.copyWith(
+        color: colorScheme.outlineVariant,
+      ),
+    ),
   );
 
   List<ExtendedColor> get extendedColors => [];

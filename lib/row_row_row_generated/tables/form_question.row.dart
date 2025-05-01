@@ -20,15 +20,15 @@ class FormQuestionRow {
   final String id;
   final String? question;
   final String? description;
-  final dynamic? images;
+  final dynamic images;
   final String? type;
   final bool? isRequired;
   final DateTime createdAt;
   final DateTime? updatedAt;
   final String? form;
   final int? order;
-  final dynamic? checkboxOptions;
-  final dynamic? checkboxDefault;
+  final dynamic checkboxOptions;
+  final dynamic checkboxDefault;
   final DateTime? deletedAt;
 
   const FormQuestionRow({
