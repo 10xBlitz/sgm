@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sgm/router.dart';
-import 'package:sgm/services/auth_service.dart';
+import 'package:sgm/services/auth.service.dart';
 import 'package:sgm/theme/theme.dart';
 
 void main() async {
@@ -8,11 +8,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // Initialize auth service (which initializes Supabase)
-  await authService.initialize();
-  // await Supabase.initialize(
-  //   url: SupabaseConfig.supabaseUrl,
-  //   anonKey: SupabaseConfig.supabaseAnonKey,
-  // );
+  await AuthService().initialize();
 
   runApp(const MyApp());
 }

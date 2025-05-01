@@ -43,24 +43,30 @@ class MaterialTheme {
     textTheme = textTheme.copyWith(
       displayLarge: displayTextTheme.displayLarge?.copyWith(
         fontFamily: fontfamilyDisplay,
+        height: 1.0,
       ),
       displayMedium: displayTextTheme.displayMedium?.copyWith(
         fontFamily: fontfamilyDisplay,
+        height: 1.0,
       ),
       displaySmall: displayTextTheme.displaySmall?.copyWith(
         fontFamily: fontfamilyDisplay,
+        height: 1.0,
       ),
       headlineLarge: textTheme.headlineLarge?.copyWith(
         fontFamily: fontfamilyDisplay,
         fontWeight: FontWeight.w700,
+        height: 1.1,
       ),
       headlineMedium: textTheme.headlineMedium?.copyWith(
         fontFamily: fontfamilyDisplay,
         fontWeight: FontWeight.w700,
+        height: 1.1,
       ),
       headlineSmall: textTheme.headlineSmall?.copyWith(
         fontFamily: fontfamilyDisplay,
         fontWeight: FontWeight.w700,
+        height: 1.1,
       ),
       titleLarge: textTheme.titleLarge?.copyWith(
         fontFamily: fontFamily,
@@ -428,6 +434,15 @@ class MaterialTheme {
     ),
     scaffoldBackgroundColor: colorScheme.surface,
     canvasColor: colorScheme.surface,
+    filledButtonTheme: FilledButtonThemeData(
+      style: ButtonStyle(
+        backgroundColor: WidgetStateProperty.all(colorScheme.primary),
+        foregroundColor: WidgetStateProperty.all(colorScheme.onPrimary),
+        textStyle: WidgetStateProperty.all(
+          TextStyle(fontWeight: FontWeight.w900),
+        ),
+      ),
+    ),
     inputDecorationTheme: InputDecorationTheme(
       labelStyle: textTheme.labelLarge,
       floatingLabelStyle: textTheme.labelLarge?.copyWith(

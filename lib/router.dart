@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:sgm/screens/auth/awaiting_approval.screen.dart';
 import 'package:sgm/screens/auth/login.screen.dart';
+import 'package:sgm/screens/auth/user_profile.update.screen.dart';
 import 'package:sgm/screens/main.screen.dart';
-import 'package:sgm/services/auth_service.dart';
+import 'package:sgm/services/auth.service.dart';
+import 'package:sgm/services/global_manager.service.dart';
 
 // Define routes that don't require authentication
 final List<String> publicRoutes = [LoginScreen.routeName];
@@ -11,9 +14,39 @@ final router = GoRouter(
   initialLocation: MainScreen.routeName,
 
   // This redirect function runs on every navigation attempt
-  redirect: (BuildContext context, GoRouterState state) {
+  redirect: (BuildContext context, GoRouterState state) async {
+    debugPrint("Redirecting...");
+    final globalManager = GlobalManagerService();
+    final authService = AuthService();
+    globalManager.setGlobalContextIfNull(context);
+
     // Check if the user is logged in
     final bool isLoggedIn = authService.isLoggedIn;
+
+    if (isLoggedIn && authService.currentUserProfile == null) {
+      final isLoaded = await authService.loadProfile();
+      if (isLoaded == false) {
+        await authService.createProfile(
+          name: "",
+          email: authService.currentUser!.email!,
+          phone: "",
+        );
+        return AwaitingApprovalScreen.routeName;
+      }
+      if (isLoaded == true) {
+        if (!authService.isApproved || !authService.isConfirmedEmail) {
+          return AwaitingApprovalScreen.routeName;
+        }
+      }
+      if (isLoaded == null) {
+        if (!context.mounted) return LoginScreen.routeName; // Redirect to login
+        globalManager.showSnackbarError(
+          context,
+          "Profile loading failed. Something went wrong.",
+        );
+        return LoginScreen.routeName; // Redirect to login
+      }
+    }
 
     // If the user is NOT logged in and trying to access a protected route
     if (!isLoggedIn && !publicRoutes.contains(state.matchedLocation)) {
@@ -29,7 +62,6 @@ final router = GoRouter(
     return null;
   },
 
-  // Define all application routes
   routes: <RouteBase>[
     GoRoute(
       path: MainScreen.routeName,
@@ -37,12 +69,22 @@ final router = GoRouter(
         return const MainScreen();
       },
     ),
-
-    // Add login route
     GoRoute(
       path: LoginScreen.routeName,
       builder: (BuildContext context, GoRouterState state) {
         return const LoginScreen();
+      },
+    ),
+    GoRoute(
+      path: AwaitingApprovalScreen.routeName,
+      builder: (BuildContext context, GoRouterState state) {
+        return const AwaitingApprovalScreen();
+      },
+    ),
+    GoRoute(
+      path: UserProfileUpdateScreen.routeName,
+      builder: (BuildContext context, GoRouterState state) {
+        return const UserProfileUpdateScreen();
       },
     ),
   ],

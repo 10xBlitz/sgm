@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sgm/screens/auth/login.screen.dart';
-import 'package:sgm/services/auth_service.dart';
+import 'package:sgm/services/auth.service.dart';
 
 class MainScreen extends StatelessWidget {
   static const routeName = "/";
@@ -9,6 +9,8 @@ class MainScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Create a global instance for easy access
+    final authService = AuthService();
     return Scaffold(
       appBar: AppBar(
         toolbarHeight: 70,

@@ -68,6 +68,3 @@ class SupabaseService {
   // Listen to auth state changes
   Stream<AuthState> get authStateChanges => client.auth.onAuthStateChange;
 }
-
-// Global instance for easy access throughout the app
-final supabaseService = SupabaseService();

@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:sgm/screens/auth/awaiting_approval.screen.dart';
 import 'package:sgm/screens/main.screen.dart';
-import 'package:sgm/services/auth_service.dart';
+import 'package:sgm/services/auth.service.dart';
+import 'package:sgm/services/global_manager.service.dart';
 import 'package:sgm/theme/theme.dart';
-import 'package:sgm/utils/show_snackbar.dart';
 
 class LoginScreen extends StatefulWidget {
   static const routeName = "/login";
@@ -21,6 +22,8 @@ class _LoginScreenState extends State<LoginScreen> {
   final _confirmPasswordController = TextEditingController();
   bool _isLoading = false;
   bool _isRegistering = false;
+  final globalManager = GlobalManagerService();
+  final authService = AuthService();
 
   @override
   void dispose() {
@@ -44,14 +47,55 @@ class _LoginScreenState extends State<LoginScreen> {
       );
       if (!mounted) return;
       if (!success) {
-        showSnackbarError(context, "Invalid email or password");
+        globalManager.showSnackbarError(context, "Invalid email or password");
         return;
       }
+
+      // conditional
+      // if user is approved
+      final hasProfile = await authService.hasProfileLoaded;
+      if (hasProfile == false) {
+        final newProfileCreated = await authService.createProfile(
+          name: _fullNameController.text.trim(),
+          email: _emailController.text.trim(),
+          phone: _phoneNumberController.text.trim(),
+        );
+        if (!mounted) return;
+        if (newProfileCreated == null) {
+          globalManager.showSnackbarError(context, "Error creating profile.");
+          return;
+        }
+        context.go(AwaitingApprovalScreen.routeName);
+        return;
+      }
+
+      if (!mounted) return;
+      if (hasProfile == null) {
+        globalManager.showSnackbar(context, "Profile loading error.");
+        return;
+      }
+
+      if (!authService.isConfirmedEmail) {
+        globalManager.showSnackbarError(context, "Please confirm your email!");
+        if (!mounted) return;
+        context.go(AwaitingApprovalScreen.routeName);
+        return;
+      }
+      if (!authService.isApproved) {
+        globalManager.showSnackbarError(context, "Please wait for approval");
+        if (!mounted) return;
+        context.go(AwaitingApprovalScreen.routeName);
+        return;
+      }
+
       // Navigate to main screen after successful login
       context.go(MainScreen.routeName);
     } catch (e) {
       if (mounted) {
-        showSnackbarError(context, "Error logging in: ${e.toString()}");
+        globalManager.showSnackbarError(
+          context,
+          "Error logging in: ${e.toString()}",
+        );
       }
     } finally {
       if (mounted) {
@@ -76,23 +120,48 @@ class _LoginScreenState extends State<LoginScreen> {
       );
       if (!mounted) return;
       if (!success) {
-        showSnackbarError(context, "Could not register with these credentials");
+        globalManager.showSnackbarError(
+          context,
+          "Could not register with these credentials",
+        );
         return;
       }
 
       // Insert into public.users table
 
-      showSnackbar(
+      globalManager.showSnackbar(
         context,
         'Registration successful! Please check your email to confirm your account.',
       );
       setState(() {
         _isRegistering = false;
       });
-      // TODO redirect to Email Confirmation Screen
+
+      debugPrint("Auto login");
+
+      await authService.login(
+        _emailController.text.trim(),
+        _passwordController.text,
+      );
+      if ((await authService.hasProfileLoaded) == null) {
+        if (!mounted) return;
+        // means there is an error.
+        globalManager.showSnackbarError(context, "Something went wrong.");
+        return;
+      }
+      await authService.createProfile(
+        name: _fullNameController.text.trim(),
+        email: _emailController.text.trim(),
+        phone: _phoneNumberController.text.trim(),
+      );
+      if (!mounted) return;
+      context.go(AwaitingApprovalScreen.routeName);
     } catch (e) {
       if (mounted) {
-        showSnackbarError(context, "Error registering: ${e.toString()}");
+        globalManager.showSnackbarError(
+          context,
+          "Error registering: ${e.toString()}",
+        );
       }
     } finally {
       if (mounted) {
@@ -106,12 +175,18 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _validateInputs() {
     if (_emailController.text.trim().isEmpty ||
         !_emailController.text.contains('@')) {
-      showSnackbarError(context, "Please enter a valid email address");
+      globalManager.showSnackbarError(
+        context,
+        "Please enter a valid email address",
+      );
       return false;
     }
     if (_passwordController.text.isEmpty ||
         _passwordController.text.length < 6) {
-      showSnackbarError(context, "Password must be at least 6 characters");
+      globalManager.showSnackbarError(
+        context,
+        "Password must be at least 6 characters",
+      );
       return false;
     }
     return true;
@@ -119,7 +194,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   bool _passwordMatchCheck() {
     if (_passwordController.text != _confirmPasswordController.text) {
-      showSnackbarError(context, 'Passwords do not match');
+      globalManager.showSnackbarError(context, 'Passwords do not match');
       return false;
     }
     return true;
@@ -127,7 +202,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   bool _validFullName() {
     if (_fullNameController.text.trim().isEmpty) {
-      showSnackbarError(context, 'Full name cannot be empty');
+      globalManager.showSnackbarError(context, 'Full name cannot be empty');
       return false;
     }
     return true;
@@ -165,7 +240,6 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
               const SizedBox(height: 32),
-              // Title
               Text(
                 _isRegistering ? "Create an Account" : "Welcome Back",
                 style: Theme.of(
@@ -259,7 +333,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           height: 24,
                           child: CircularProgressIndicator(strokeWidth: 2),
                         )
-                        : Text(_isRegistering ? 'Register' : 'Login'),
+                        : Text(_isRegistering ? 'REGISTER' : 'LOGIN'),
               ),
               const SizedBox(height: 32),
               TextButton(
