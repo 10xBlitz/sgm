@@ -5,10 +5,15 @@ import 'package:sgm/screens/auth/user_profile.update.screen.dart';
 import 'package:sgm/services/auth.service.dart';
 import 'package:sgm/widgets/user_avatar.dart';
 
-class MainScreen extends StatelessWidget {
+class MainScreen extends StatefulWidget {
   static const routeName = "/";
   const MainScreen({super.key});
 
+  @override
+  State<MainScreen> createState() => _MainScreenState();
+}
+
+class _MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
     // Create a global instance for easy access
@@ -161,13 +166,15 @@ class MainScreen extends StatelessWidget {
                     SizedBox(height: 8),
                     // Update Profile Button
                     FilledButton.icon(
-                      onPressed: () {
-                        showGeneralDialog(
+                      onPressed: () async {
+                        await showGeneralDialog(
                           context: context,
                           pageBuilder: (context, a1, a2) {
                             return UserProfileUpdateScreen();
                           },
                         );
+                        if (!mounted) return;
+                        setState(() {});
                       },
                       icon: Icon(Icons.edit),
                       label: Text("UPDATE PROFILE"),
