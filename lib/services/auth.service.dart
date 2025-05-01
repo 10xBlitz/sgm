@@ -9,11 +9,18 @@ import 'package:sgm/services/supabase.service.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class AuthService extends ChangeNotifier {
+  // Singleton instance
+  static final AuthService _instance = AuthService._internal();
+
+  // Private constructor
+  AuthService._internal();
+
+  // Factory constructor to return the same instance
+  factory AuthService() => _instance;
+
   bool _isInitialized = false;
 
   final supabaseService = SupabaseService();
-
-  // FutureOr<bool> approvedUser = false;
 
   // Initialize the auth service
   Future<void> initialize() async {
@@ -239,5 +246,48 @@ class AuthService extends ChangeNotifier {
     _hasLoaded = false;
     currentUserRow = null;
     notifyListeners();
+  }
+
+  Future<void> updateProfile({
+    required String fullName,
+    required String phoneNumber,
+    required String email,
+  }) async {
+    final updatedUserProfile =
+        await supabaseService.client
+            .from('user')
+            .update({
+              UserRow.field.name: fullName,
+              UserRow.field.phoneNumber: phoneNumber,
+              UserRow.field.email: email,
+            })
+            .eq(UserRow.field.id, currentUser!.id)
+            .select();
+
+    currentUserRow = UserRow.fromJson(updatedUserProfile[0]);
+    notifyListeners();
+  }
+
+  /// Update the user's profile image URL in the database
+  Future<bool> updateProfileImage(String imageUrl) async {
+    if (currentUser == null || currentUserRow == null) return false;
+
+    try {
+      final updatedUserProfile =
+          await supabaseService.client
+              .from('user')
+              .update({UserRow.field.profileImage: imageUrl})
+              .eq(UserRow.field.id, currentUser!.id)
+              .select();
+
+      // Update the local user profile
+      currentUserRow = UserRow.fromJson(updatedUserProfile[0]);
+
+      notifyListeners();
+      return true;
+    } catch (e) {
+      debugPrint('Update profile image error: $e');
+      return false;
+    }
   }
 }

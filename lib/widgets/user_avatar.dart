@@ -16,27 +16,35 @@ class UserAvatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CircleAvatar(
-      radius: radius,
-
-      backgroundImage:
-          imageUrl != null && imageUrl!.isNotEmpty
-              ? CachedNetworkImageProvider(imageUrl!)
-              : initial == null
-              ? CachedNetworkImageProvider(
-                "https://ctmirror-images.s3.amazonaws.com/wp-content/uploads/2021/01/dummy-man-570x570-1.png",
-              )
-              : null,
-      child:
-          imageUrl == null && initial != null
-              ? Text(
-                initial![1],
-                style: TextStyle(
-                  fontSize: radius / 2,
-                  fontFamily: MaterialTheme.fontFamilyString.playfairDisplay,
-                ),
-              )
-              : null,
+    return Container(
+      decoration: BoxDecoration(
+        border: Border.all(
+          color: Theme.of(context).colorScheme.primary,
+          width: 2.5,
+        ),
+        borderRadius: BorderRadius.circular(radius * 4),
+      ),
+      child: CircleAvatar(
+        radius: radius,
+        backgroundImage:
+            imageUrl != null && imageUrl!.isNotEmpty
+                ? CachedNetworkImageProvider(imageUrl!)
+                : initial == null
+                ? CachedNetworkImageProvider(
+                  "https://ctmirror-images.s3.amazonaws.com/wp-content/uploads/2021/01/dummy-man-570x570-1.png",
+                )
+                : null,
+        child:
+            imageUrl == null && initial != null
+                ? Text(
+                  initial![1],
+                  style: TextStyle(
+                    fontSize: radius / 2,
+                    fontFamily: MaterialTheme.fontFamilyString.playfairDisplay,
+                  ),
+                )
+                : null,
+      ),
     );
   }
 }

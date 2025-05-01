@@ -254,7 +254,6 @@ class _LoginScreenState extends State<LoginScreen> {
                   decoration: const InputDecoration(
                     labelText: 'Full Name',
                     hintText: 'Enter your full name',
-                    border: OutlineInputBorder(),
                     prefixIcon: Icon(Icons.person),
                   ),
                   enabled: !_isLoading,
@@ -266,7 +265,6 @@ class _LoginScreenState extends State<LoginScreen> {
                 decoration: const InputDecoration(
                   labelText: 'Email',
                   hintText: 'Enter your email',
-                  border: OutlineInputBorder(),
                   prefixIcon: Icon(Icons.email),
                 ),
                 keyboardType: TextInputType.emailAddress,
@@ -281,7 +279,6 @@ class _LoginScreenState extends State<LoginScreen> {
                   decoration: const InputDecoration(
                     labelText: 'Phone Number',
                     hintText: 'Enter your phone number',
-                    border: OutlineInputBorder(),
                     prefixIcon: Icon(Icons.phone),
                   ),
                   keyboardType: TextInputType.phone,
@@ -294,7 +291,6 @@ class _LoginScreenState extends State<LoginScreen> {
                 decoration: const InputDecoration(
                   labelText: 'Password',
                   hintText: 'Enter your password',
-                  border: OutlineInputBorder(),
                   prefixIcon: Icon(Icons.lock),
                 ),
                 obscureText: true,
@@ -309,7 +305,6 @@ class _LoginScreenState extends State<LoginScreen> {
                   decoration: const InputDecoration(
                     labelText: 'Confirm Password',
                     hintText: 'Re-enter your password',
-                    border: OutlineInputBorder(),
                     prefixIcon: Icon(Icons.lock),
                   ),
                   obscureText: true,

@@ -451,6 +451,7 @@ class MaterialTheme {
       hintStyle: textTheme.bodyMedium?.copyWith(
         color: colorScheme.outlineVariant,
       ),
+      border: OutlineInputBorder(),
     ),
   );
 
