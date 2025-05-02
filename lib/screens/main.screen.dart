@@ -84,7 +84,7 @@ class _MainScreenState extends State<MainScreen> {
                           padding: const EdgeInsets.only(
                             right: 8,
                             bottom: 8,
-                            top: 4,
+                            top: 14,
                           ),
                           child: Container(
                             color: Colors.white,
@@ -104,7 +104,12 @@ class _MainScreenState extends State<MainScreen> {
                     child: Column(
                       children: [
                         Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                          padding: const EdgeInsets.fromLTRB(
+                            16.0,
+                            12.0,
+                            16.0,
+                            0.0,
+                          ),
                           child: Row(
                             crossAxisAlignment: CrossAxisAlignment.end,
                             children: [

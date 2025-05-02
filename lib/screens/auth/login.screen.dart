@@ -323,10 +323,14 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 child:
                     _isLoading
-                        ? const SizedBox(
+                        ? SizedBox(
                           width: 24,
                           height: 24,
-                          child: CircularProgressIndicator(strokeWidth: 2),
+                          child: CircularProgressIndicator.adaptive(
+                            strokeWidth: 2,
+                            backgroundColor:
+                                Theme.of(context).colorScheme.onPrimary,
+                          ),
                         )
                         : Text(_isRegistering ? 'REGISTER' : 'LOGIN'),
               ),

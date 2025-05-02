@@ -11,6 +11,12 @@
             "deviceId": "0N14426I24109E26"
         },
         {
+            "name": "Chrome (web) - debug",
+            "request": "launch",
+            "type": "dart",
+            "deviceId": "chrome"
+        },
+        {
             "name": "sgm",
             "request": "launch",
             "type": "dart"
