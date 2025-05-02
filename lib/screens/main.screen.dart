@@ -1,19 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:sgm/mainTabs/announcements.tab.dart';
+import 'package:sgm/mainTabs/chat.tab.dart';
+import 'package:sgm/mainTabs/clinics.tab.dart';
+import 'package:sgm/mainTabs/dashboard.tab.dart';
+import 'package:sgm/mainTabs/forms.tab.dart';
+import 'package:sgm/mainTabs/my_task.tab.dart';
+import 'package:sgm/mainTabs/procedures.tab.dart';
+import 'package:sgm/mainTabs/projects.tab.dart';
+import 'package:sgm/mainTabs/user_management.tab.dart';
 import 'package:sgm/screens/auth/login.screen.dart';
-import 'package:sgm/screens/auth/user_profile.update.screen.dart';
 import 'package:sgm/services/auth.service.dart';
-import 'package:sgm/widgets/user_avatar.dart';
+import 'package:sgm/widgets/side_nav.dart';
 
 class MainScreen extends StatefulWidget {
   static const routeName = "/";
-  const MainScreen({super.key});
+  const MainScreen({super.key, this.currentTab = DashboardTab.tabTitle});
+
+  final String currentTab;
 
   @override
   State<MainScreen> createState() => _MainScreenState();
 }
 
 class _MainScreenState extends State<MainScreen> {
+  String selectedTab = DashboardTab.tabTitle;
+
   @override
   Widget build(BuildContext context) {
     // Create a global instance for easy access
@@ -24,16 +36,17 @@ class _MainScreenState extends State<MainScreen> {
         title: Row(
           spacing: 16,
           children: [
-            Image.asset('assets/images/logo.png', height: 45, width: 45),
-            // Expanded(
-            //   child: Text(
-            //     "Seoul Guide Medical",
-            //     style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-            //       color: Theme.of(context).colorScheme.onSecondaryContainer,
-            //       fontWeight: FontWeight.w900,
-            //     ),
-            //   ),
-            // ),
+            Container(
+              color: Colors.white,
+              child: Padding(
+                padding: const EdgeInsets.all(1.0),
+                child: Image.asset(
+                  'assets/images/logo.png',
+                  height: 45,
+                  width: 45,
+                ),
+              ),
+            ),
           ],
         ),
         backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
@@ -65,134 +78,45 @@ class _MainScreenState extends State<MainScreen> {
         backgroundColor: Theme.of(context).colorScheme.surfaceContainerLow,
         shape: const RoundedRectangleBorder(),
         width: 260,
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              Stack(
-                children: [
-                  // Container overlap
-                  Container(
-                    width: double.infinity,
-                    color: Theme.of(context).colorScheme.primary,
-                    child: SafeArea(
-                      top: true,
-                      bottom: false,
-                      // child: SizedBox(height: 50),
-                      child: Align(
-                        alignment: Alignment.bottomRight,
-                        child: Padding(
-                          padding: const EdgeInsets.only(
-                            right: 8,
-                            bottom: 8,
-                            top: 14,
-                          ),
-                          child: Container(
-                            color: Colors.white,
-                            child: Padding(
-                              padding: const EdgeInsets.all(1.0),
-                              child: Image.asset(
-                                'assets/images/logo.png',
-                                height: 40,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  SafeArea(
-                    child: Column(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(
-                            16.0,
-                            12.0,
-                            16.0,
-                            0.0,
-                          ),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              UserAvatar(
-                                imageUrl:
-                                    authService
-                                        .currentUserProfile
-                                        ?.profileImage ??
-                                    '',
-                              ),
-                              SizedBox(width: 8),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(height: 8),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Text(
-                      authService.currentUserProfile?.name ?? 'No Name',
-                      style: Theme.of(
-                        context,
-                      ).textTheme.headlineSmall?.copyWith(
-                        color:
-                            Theme.of(context).colorScheme.onSecondaryContainer,
-                        fontWeight: FontWeight.w900,
-                      ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    SizedBox(height: 4),
-                    Text(
-                      authService.currentUserProfile?.email ?? 'No Email',
-                      style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                        fontWeight: FontWeight.w400,
-                      ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    SizedBox(height: 2),
-                    Text(
-                      authService.currentUserProfile?.phoneNumber ?? 'No Phone',
-                      style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                        fontStyle: FontStyle.italic,
-                        fontWeight: FontWeight.w900,
-                        color:
-                            Theme.of(context).colorScheme.onSecondaryContainer,
-                      ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    SizedBox(height: 8),
-                    // Update Profile Button
-                    FilledButton.icon(
-                      onPressed: () async {
-                        await showGeneralDialog(
-                          context: context,
-                          pageBuilder: (context, a1, a2) {
-                            return UserProfileUpdateScreen();
-                          },
-                        );
-                        if (!mounted) return;
-                        setState(() {});
-                      },
-                      icon: Icon(Icons.edit),
-                      label: Text("UPDATE PROFILE"),
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(height: 16),
-            ],
-          ),
+        child: SideNav(
+          selectedTab: selectedTab,
+          onTapTab: (targetTab) {
+            setState(() {
+              selectedTab = targetTab;
+            });
+            Navigator.of(context).pop();
+          },
         ),
       ),
-      body: Center(child: Text("Welcome to Seoul Guide Medical")),
+      // Update with better body
+      body: _buildBody(),
     );
+  }
+
+  Widget _buildBody() {
+    switch (selectedTab) {
+      case DashboardTab.tabTitle:
+        return DashboardTab();
+      case ChatTab.tabTitle:
+        return ChatTab();
+      case MyTaskTab.tabTitle:
+        return MyTaskTab();
+      case ClinicsTab.tabTitle:
+        return ClinicsTab();
+      case ProjectsTab.tabTitle:
+        return ProjectsTab();
+      case ProceduresTab.tabTitle:
+        return ProceduresTab();
+      case FormsTab.tabTitle:
+        return FormsTab();
+      case UserManagementTab.tabTitle:
+        return UserManagementTab();
+      case AnnouncementsTab.tabTitle:
+        return AnnouncementsTab();
+      default:
+        return const Center(
+          child: Text('Default Screen', style: TextStyle(color: Colors.grey)),
+        );
+    }
   }
 }

@@ -1,5 +1,4 @@
 import "package:flutter/material.dart";
-import "package:google_fonts/google_fonts.dart";
 
 class MaterialTheme {
   final TextTheme textTheme;
@@ -23,17 +22,9 @@ class MaterialTheme {
   }
 
   static TextTheme createTextTheme(BuildContext context) {
-    const bodyFontString = 'Noto Sans KR';
-    const displayFontString = 'Playfair Display';
     TextTheme baseTextTheme = Theme.of(context).textTheme;
-    TextTheme bodyTextTheme = GoogleFonts.getTextTheme(
-      bodyFontString,
-      baseTextTheme,
-    );
-    TextTheme displayTextTheme = GoogleFonts.getTextTheme(
-      displayFontString,
-      baseTextTheme,
-    );
+    TextTheme bodyTextTheme = TextTheme();
+    TextTheme displayTextTheme = TextTheme();
     TextTheme textTheme = baseTextTheme;
     final String fontFamily = fontFamilyString.notoSansKr;
     final String fontfamilyDisplay = fontFamilyString.playfairDisplay;
