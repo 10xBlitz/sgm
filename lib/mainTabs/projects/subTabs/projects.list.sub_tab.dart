@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:sgm/row_row_row_generated/tables/project.row.dart';
 import 'package:sgm/row_row_row_generated/tables/task.row.dart';
 import 'package:sgm/services/project.service.dart';
@@ -95,11 +96,21 @@ class _ProjectsListSubTabState extends State<ProjectsListSubTab> {
                             ),
                             Padding(
                               padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
-                              child: Text("Sample Task"),
+                              child: Text(item.status ?? ""),
                             ),
                             Padding(
                               padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
-                              child: Text("Sample Task"),
+                              child: Text(
+                                item.dateDue != null
+                                    ? _formatDateTime(item.dateDue!)
+                                    : "No Due Date",
+                                style:
+                                    item.dateDue != null
+                                        ? null
+                                        : theme.textTheme.bodyMedium?.copyWith(
+                                          fontStyle: FontStyle.italic,
+                                        ),
+                              ),
                             ),
                             Padding(
                               padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
@@ -140,5 +151,17 @@ class _ProjectsListSubTabState extends State<ProjectsListSubTab> {
         ),
       ],
     );
+  }
+
+  String _formatDateTime(DateTime dateTime) {
+    // Convert UTC time to local time
+    final localDateTime = dateTime.toLocal();
+
+    // Format in "Month 12, 2020 11:11" format with military time
+    final formattedDate = DateFormat(
+      'MMMM d, yyyy HH:mm',
+    ).format(localDateTime);
+
+    return formattedDate;
   }
 }

@@ -2,8 +2,6 @@
 // Auto-generated file. Do not modify.
 import 'dart:convert';
 
-import 'package:flutter/material.dart';
-
 class ProjectWithMembersRow {
   static const field = (
     id: 'id',
