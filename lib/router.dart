@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:sgm/mainTabs/dashboard.tab.dart';
+import 'package:sgm/mainTabs/projects/projects.tab.dart';
+import 'package:sgm/mainTabs/projects/subTabs/projects.list.sub_tab.dart';
 import 'package:sgm/screens/auth/awaiting_approval.screen.dart';
 import 'package:sgm/screens/auth/login.screen.dart';
 import 'package:sgm/screens/auth/user_profile.update.screen.dart';
@@ -9,6 +12,10 @@ import 'package:sgm/services/global_manager.service.dart';
 
 // Define routes that don't require authentication
 final List<String> publicRoutes = [LoginScreen.routeName];
+
+final Map<String, dynamic> defaultSubTab = {
+  ProjectsTab.tabTitle: ProjectsListSubTab.title,
+};
 
 final router = GoRouter(
   initialLocation: MainScreen.routeName,
@@ -65,12 +72,25 @@ final router = GoRouter(
   routes: <RouteBase>[
     GoRoute(
       path: MainScreen.routeName,
-      builder: (BuildContext context, GoRouterState state) {
+      pageBuilder: (BuildContext context, GoRouterState state) {
         final extraData =
             state.extra is Map<String, dynamic>
                 ? state.extra as Map<String, dynamic>
                 : null;
-        return MainScreen(currentTab: extraData?['tab'] ?? 0);
+        return CustomTransitionPage(
+          key: state.pageKey,
+          child: MainScreen(
+            currentTab: extraData?['currentTab'] ?? DashboardTab.tabTitle,
+            subTab:
+                extraData?['subTab'] ??
+                defaultSubTab[extraData?['currentTab'] ??
+                    DashboardTab.tabTitle],
+            projectId: extraData?['project'],
+          ),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            return FadeTransition(opacity: animation, child: child);
+          },
+        );
       },
     ),
     GoRoute(

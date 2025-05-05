@@ -7,60 +7,104 @@ import 'package:sgm/mainTabs/dashboard.tab.dart';
 import 'package:sgm/mainTabs/forms.tab.dart';
 import 'package:sgm/mainTabs/my_task.tab.dart';
 import 'package:sgm/mainTabs/procedures.tab.dart';
-import 'package:sgm/mainTabs/projects.tab.dart';
+import 'package:sgm/mainTabs/projects/projects.tab.dart';
 import 'package:sgm/mainTabs/user_management.tab.dart';
-import 'package:sgm/screens/auth/login.screen.dart';
-import 'package:sgm/services/auth.service.dart';
+import 'package:sgm/services/project.service.dart';
 import 'package:sgm/widgets/side_nav.dart';
 
 class MainScreen extends StatefulWidget {
   static const routeName = "/";
-  const MainScreen({super.key, this.currentTab = DashboardTab.tabTitle});
+  const MainScreen({
+    super.key,
+    this.currentTab = DashboardTab.tabTitle,
+    this.subTab,
+    this.projectId,
+  });
 
   final String currentTab;
+  final String? subTab;
+
+  /// in route, it is named as project
+  final String? projectId;
 
   @override
   State<MainScreen> createState() => _MainScreenState();
 }
 
 class _MainScreenState extends State<MainScreen> {
-  String selectedTab = DashboardTab.tabTitle;
+  String get selectedTab => widget.currentTab;
+  String? get selectedSubTab => widget.subTab;
 
   @override
   Widget build(BuildContext context) {
-    // Create a global instance for easy access
-    final authService = AuthService();
+    final theme = Theme.of(context);
     return Scaffold(
       appBar: AppBar(
         toolbarHeight: 70,
         title: Row(
           spacing: 16,
           children: [
-            Container(
-              color: Colors.white,
-              child: Padding(
-                padding: const EdgeInsets.all(1.0),
-                child: Image.asset(
-                  'assets/images/logo.png',
-                  height: 45,
-                  width: 45,
+            InkWell(
+              onTap: () async {
+                Navigator.of(context).pop();
+                await context.push(MainScreen.routeName);
+              },
+              child: Container(
+                color: Colors.white,
+                child: Padding(
+                  padding: const EdgeInsets.all(1.0),
+                  child: Image.asset(
+                    'assets/images/logo.png',
+                    height: 45,
+                    width: 45,
+                  ),
                 ),
+              ),
+            ),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Row(
+                    children: [
+                      if (widget.projectId != null &&
+                          widget.currentTab == ProjectsTab.tabTitle) ...[
+                        Text(
+                          ProjectService()
+                                  .getFromCache(widget.projectId!)
+                                  ?.title ??
+                              'No Title',
+                          style: theme.textTheme.titleMedium?.copyWith(
+                            fontWeight: FontWeight.w900,
+                          ),
+                        ),
+                        const SizedBox(width: 6),
+                        Text('•', style: theme.textTheme.titleMedium),
+                        const SizedBox(width: 6),
+                      ],
+                      Flexible(
+                        child: Text(
+                          widget.currentTab,
+                          style: theme.textTheme.titleMedium,
+                        ),
+                      ),
+                    ],
+                  ),
+                  if (widget.subTab != null)
+                    Text(
+                      widget.subTab ?? 'No Sub Tab',
+                      style: theme.textTheme.labelMedium?.copyWith(
+                        color: theme.colorScheme.outline,
+                      ),
+                    ),
+                ],
               ),
             ),
           ],
         ),
-        backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
+        automaticallyImplyLeading: false,
+        backgroundColor: theme.colorScheme.secondaryContainer,
         actions: [
-          IconButton(
-            icon: const Icon(Icons.logout),
-            onPressed: () async {
-              await authService.logout();
-              if (context.mounted) {
-                context.go(LoginScreen.routeName);
-              }
-            },
-            tooltip: 'Logout',
-          ),
           Builder(
             builder: (context) {
               return IconButton(
@@ -74,49 +118,43 @@ class _MainScreenState extends State<MainScreen> {
           ),
         ],
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {},
+        child: const Icon(Icons.add),
+      ),
       endDrawer: Drawer(
         backgroundColor: Theme.of(context).colorScheme.surfaceContainerLow,
         shape: const RoundedRectangleBorder(),
         width: 260,
         child: SideNav(
           selectedTab: selectedTab,
-          onTapTab: (targetTab) {
-            setState(() {
-              selectedTab = targetTab;
-            });
+          onTapTab: (targetTab) async {
             Navigator.of(context).pop();
+            await context.push(
+              MainScreen.routeName,
+              extra: {'currentTab': targetTab},
+            );
           },
         ),
       ),
-      // Update with better body
       body: _buildBody(),
     );
   }
 
   Widget _buildBody() {
-    switch (selectedTab) {
-      case DashboardTab.tabTitle:
-        return DashboardTab();
-      case ChatTab.tabTitle:
-        return ChatTab();
-      case MyTaskTab.tabTitle:
-        return MyTaskTab();
-      case ClinicsTab.tabTitle:
-        return ClinicsTab();
-      case ProjectsTab.tabTitle:
-        return ProjectsTab();
-      case ProceduresTab.tabTitle:
-        return ProceduresTab();
-      case FormsTab.tabTitle:
-        return FormsTab();
-      case UserManagementTab.tabTitle:
-        return UserManagementTab();
-      case AnnouncementsTab.tabTitle:
-        return AnnouncementsTab();
-      default:
-        return const Center(
-          child: Text('Default Screen', style: TextStyle(color: Colors.grey)),
-        );
-    }
+    return switch (selectedTab) {
+      DashboardTab.tabTitle => DashboardTab(),
+      ChatTab.tabTitle => ChatTab(),
+      MyTaskTab.tabTitle => MyTaskTab(),
+      ClinicsTab.tabTitle => ClinicsTab(),
+      ProjectsTab.tabTitle => ProjectsTab(projectId: widget.projectId),
+      ProceduresTab.tabTitle => ProceduresTab(),
+      FormsTab.tabTitle => FormsTab(),
+      UserManagementTab.tabTitle => UserManagementTab(),
+      AnnouncementsTab.tabTitle => AnnouncementsTab(),
+      _ => const Center(
+        child: Text('Default Screen', style: TextStyle(color: Colors.grey)),
+      ),
+    };
   }
 }

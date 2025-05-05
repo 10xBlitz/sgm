@@ -434,6 +434,10 @@ class MaterialTheme {
         ),
       ),
     ),
+    dropdownMenuTheme: DropdownMenuThemeData(
+      inputDecorationTheme: InputDecorationTheme(border: OutlineInputBorder()),
+    ),
+
     inputDecorationTheme: InputDecorationTheme(
       labelStyle: textTheme.labelLarge,
       floatingLabelStyle: textTheme.labelLarge?.copyWith(

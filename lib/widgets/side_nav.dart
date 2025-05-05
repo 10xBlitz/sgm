@@ -6,7 +6,7 @@ import 'package:sgm/mainTabs/clinics.tab.dart';
 import 'package:sgm/mainTabs/dashboard.tab.dart';
 import 'package:sgm/mainTabs/forms.tab.dart';
 import 'package:sgm/mainTabs/my_task.tab.dart';
-import 'package:sgm/mainTabs/projects.tab.dart';
+import 'package:sgm/mainTabs/projects/projects.tab.dart';
 import 'package:sgm/mainTabs/user_management.tab.dart';
 import 'package:sgm/screens/auth/login.screen.dart';
 import 'package:sgm/screens/auth/user_profile.update.screen.dart';
@@ -17,7 +17,7 @@ class SideNav extends StatefulWidget {
   const SideNav({super.key, required this.selectedTab, required this.onTapTab});
 
   final String selectedTab;
-  final Function(String targetTab) onTapTab;
+  final Future<void> Function(String targetTab) onTapTab;
 
   @override
   State<SideNav> createState() => _SideNavState();
@@ -215,7 +215,7 @@ class SideNavButton extends StatelessWidget {
   });
 
   final String title;
-  final Function(String targetTab) onTapNav;
+  final Future<void> Function(String targetTab) onTapNav;
   final String selectedNav;
 
   @override
@@ -223,8 +223,8 @@ class SideNavButton extends StatelessWidget {
     final isSelected = selectedNav == title;
     final theme = Theme.of(context);
     return InkWell(
-      onTap: () {
-        onTapNav(title);
+      onTap: () async {
+        await onTapNav(title);
       },
       child: Container(
         decoration: BoxDecoration(

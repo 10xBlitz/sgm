@@ -2,6 +2,8 @@
 // Auto-generated file. Do not modify.
 import 'dart:convert';
 
+import 'package:flutter/material.dart';
+
 class ProjectWithMembersRow {
   static const field = (
     id: 'id',
@@ -32,8 +34,12 @@ class ProjectWithMembersRow {
   final DateTime? pinOrder;
   final String? area;
   final int? numberOfMembers;
-  final dynamic memberIds;
-  final Map<String, dynamic>? members;
+  // Updated to List<dynamic> update the package
+  // instead of dynamic
+  final List<String>? memberIds;
+  // Updated to List<dynamic> update the package
+  // instead of Map<String, dynamic>
+  final List<dynamic>? members;
 
   const ProjectWithMembersRow({
     this.id,
@@ -57,17 +63,34 @@ class ProjectWithMembersRow {
       id: json[field.id],
       title: json[field.title],
       createdBy: json[field.createdBy],
-      createdAt: json[field.createdAt] == null ? null : DateTime.tryParse(json[field.createdAt] ?? ''),
+      createdAt:
+          json[field.createdAt] == null
+              ? null
+              : DateTime.tryParse(json[field.createdAt] ?? ''),
       status: json[field.status],
       isClinic: json[field.isClinic],
       description: json[field.description],
       canChooseOtherClinic: json[field.canChooseOtherClinic],
       asanaProjectGid: json[field.asanaProjectGid],
-      pinOrder: json[field.pinOrder] == null ? null : DateTime.tryParse(json[field.pinOrder] ?? ''),
+      pinOrder:
+          json[field.pinOrder] == null
+              ? null
+              : DateTime.tryParse(json[field.pinOrder] ?? ''),
       area: json[field.area],
-      numberOfMembers: json[field.numberOfMembers] == null ? null : (json[field.numberOfMembers] as num?)?.toInt(),
-      memberIds: json[field.memberIds],
-      members: json[field.members] == null ? null : (json[field.members] is String ? jsonDecode(json[field.members]) : Map<String, dynamic>.from(json[field.members])),
+      numberOfMembers:
+          json[field.numberOfMembers] == null
+              ? null
+              : (json[field.numberOfMembers] as num?)?.toInt(),
+      memberIds:
+          json[field.memberIds] == null
+              ? null
+              : List<String>.from(json[field.memberIds]),
+      members:
+          json[field.members] == null
+              ? null
+              : (json[field.members] is String
+                  ? jsonDecode(json[field.members])
+                  : List<dynamic>.from(json[field.members])),
     );
   }
 
