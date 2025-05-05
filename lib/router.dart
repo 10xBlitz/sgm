@@ -66,7 +66,11 @@ final router = GoRouter(
     GoRoute(
       path: MainScreen.routeName,
       builder: (BuildContext context, GoRouterState state) {
-        return const MainScreen();
+        final extraData =
+            state.extra is Map<String, dynamic>
+                ? state.extra as Map<String, dynamic>
+                : null;
+        return MainScreen(currentTab: extraData?['tab'] ?? 0);
       },
     ),
     GoRoute(
