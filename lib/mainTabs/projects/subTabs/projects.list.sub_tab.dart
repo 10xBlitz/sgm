@@ -138,7 +138,6 @@ class _ProjectsListSubTabState extends State<ProjectsListSubTab> {
             ),
           ),
         ),
-        if (project != null) Text(project?.title ?? ""),
       ],
     );
   }

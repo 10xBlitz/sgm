@@ -10,6 +10,7 @@ class PaginatedData extends StatefulWidget {
     required this.getCount,
     required this.initialPage,
     required this.builder,
+    this.bottomPadding = 64,
   });
 
   final FutureOr<List> Function(int page, int pageSize) getPage;
@@ -17,6 +18,7 @@ class PaginatedData extends StatefulWidget {
   final int initialPage;
   final Widget Function(BuildContext context, List data, bool isLoading)
   builder;
+  final double bottomPadding;
 
   @override
   State<PaginatedData> createState() => _PaginatedDataState();
@@ -103,6 +105,8 @@ class _PaginatedDataState extends State<PaginatedData> {
                     DropdownMenuItem(value: 20, child: Text('20')),
                     DropdownMenuItem(value: 50, child: Text('50')),
                     DropdownMenuItem(value: 100, child: Text('100')),
+                    DropdownMenuItem(value: 250, child: Text('250')),
+                    DropdownMenuItem(value: 500, child: Text('500')),
                   ],
                   onChanged: (value) {
                     if (value == null) return;
@@ -132,6 +136,7 @@ class _PaginatedDataState extends State<PaginatedData> {
             ),
           ],
         ),
+        SizedBox(height: widget.bottomPadding),
       ],
     );
   }
