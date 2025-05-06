@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sgm/row_row_row_generated/tables/task.row.dart';
 import 'package:sgm/services/project.service.dart';
+import 'package:sgm/widgets/task/tabs/appointment_details.task.view.tab.dart';
 
 /// A full screen dialog
 class TaskView extends StatelessWidget {
@@ -21,6 +22,7 @@ class TaskView extends StatelessWidget {
         child: Container(
           decoration: BoxDecoration(color: theme.colorScheme.surface),
           child: SafeArea(
+            bottom: false,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -51,6 +53,39 @@ class TaskView extends StatelessWidget {
                       },
                     ),
                   ],
+                ),
+
+                // Add tabs
+                Expanded(
+                  child: DefaultTabController(
+                    length: 4,
+                    child: Column(
+                      children: [
+                        TabBar(
+                          isScrollable: true,
+                          tabAlignment: TabAlignment.start,
+                          tabs: [
+                            Tab(text: 'Customer Details (Form)'),
+                            Tab(text: 'Procedure Info & Billing'),
+                            Tab(text: 'Appointment Details'),
+                            Tab(text: 'Additional Info'),
+                          ],
+                        ),
+                        Expanded(
+                          child: TabBarView(
+                            children: [
+                              Center(child: Text('Content for Tab 1')),
+                              Center(child: Text('Content for Tab 2')),
+                              AppointmentDetailsTaskViewTab(task: task),
+                              Center(
+                                child: Text('Content for Additional Info'),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
               ],
             ),

@@ -31,9 +31,9 @@ class TaskAppointmentSummaryRow {
   final String? notes;
   final String? addedBy;
   final double? generalRefund;
-  final Map<dynamic, dynamic>? generalExpenses;
+  final List<dynamic>? generalExpenses;
   final double? totalGeneralExpenseAmount;
-  final Map<dynamic, dynamic>? procedureSummaries;
+  final List<dynamic>? procedureSummaries;
 
   const TaskAppointmentSummaryRow({
     this.taskAppointmentId,
@@ -54,24 +54,56 @@ class TaskAppointmentSummaryRow {
   factory TaskAppointmentSummaryRow.fromJson(Map<String, dynamic> json) {
     return TaskAppointmentSummaryRow(
       taskAppointmentId: json[field.taskAppointmentId],
-      taskAppointmentCreatedAt: json[field.taskAppointmentCreatedAt] == null ? null : DateTime.tryParse(json[field.taskAppointmentCreatedAt] ?? ''),
+      taskAppointmentCreatedAt:
+          json[field.taskAppointmentCreatedAt] == null
+              ? null
+              : DateTime.tryParse(json[field.taskAppointmentCreatedAt] ?? ''),
       taskId: json[field.taskId],
-      generalDeposit: json[field.generalDeposit] == null ? null : (json[field.generalDeposit] as num?)?.toDouble(),
-      generalDiscountRate: json[field.generalDiscountRate] == null ? null : (json[field.generalDiscountRate] as num?)?.toDouble(),
-      generalDiscountAmount: json[field.generalDiscountAmount] == null ? null : (json[field.generalDiscountAmount] as num?)?.toDouble(),
-      dueDate: json[field.dueDate] == null ? null : DateTime.tryParse(json[field.dueDate] ?? ''),
+      generalDeposit:
+          json[field.generalDeposit] == null
+              ? null
+              : (json[field.generalDeposit] as num?)?.toDouble(),
+      generalDiscountRate:
+          json[field.generalDiscountRate] == null
+              ? null
+              : (json[field.generalDiscountRate] as num?)?.toDouble(),
+      generalDiscountAmount:
+          json[field.generalDiscountAmount] == null
+              ? null
+              : (json[field.generalDiscountAmount] as num?)?.toDouble(),
+      dueDate:
+          json[field.dueDate] == null
+              ? null
+              : DateTime.tryParse(json[field.dueDate] ?? ''),
       notes: json[field.notes],
       addedBy: json[field.addedBy],
-      generalRefund: json[field.generalRefund] == null ? null : (json[field.generalRefund] as num?)?.toDouble(),
-      generalExpenses: json[field.generalExpenses] == null ? null : (json[field.generalExpenses] is String ? jsonDecode(json[field.generalExpenses]) : Map.from(json[field.generalExpenses])),
-      totalGeneralExpenseAmount: json[field.totalGeneralExpenseAmount] == null ? null : (json[field.totalGeneralExpenseAmount] as num?)?.toDouble(),
-      procedureSummaries: json[field.procedureSummaries] == null ? null : (json[field.procedureSummaries] is String ? jsonDecode(json[field.procedureSummaries]) : Map.from(json[field.procedureSummaries])),
+      generalRefund:
+          json[field.generalRefund] == null
+              ? null
+              : (json[field.generalRefund] as num?)?.toDouble(),
+      generalExpenses:
+          json[field.generalExpenses] == null
+              ? null
+              : (json[field.generalExpenses] is String
+                  ? jsonDecode(json[field.generalExpenses])
+                  : List.from(json[field.generalExpenses])),
+      totalGeneralExpenseAmount:
+          json[field.totalGeneralExpenseAmount] == null
+              ? null
+              : (json[field.totalGeneralExpenseAmount] as num?)?.toDouble(),
+      procedureSummaries:
+          json[field.procedureSummaries] == null
+              ? null
+              : (json[field.procedureSummaries] is String
+                  ? jsonDecode(json[field.procedureSummaries])
+                  : List.from(json[field.procedureSummaries])),
     );
   }
   Map<String, dynamic> toJson() {
     return {
       field.taskAppointmentId: taskAppointmentId,
-      field.taskAppointmentCreatedAt: taskAppointmentCreatedAt?.toIso8601String(),
+      field.taskAppointmentCreatedAt:
+          taskAppointmentCreatedAt?.toIso8601String(),
       field.taskId: taskId,
       field.generalDeposit: generalDeposit,
       field.generalDiscountRate: generalDiscountRate,
@@ -97,23 +129,26 @@ class TaskAppointmentSummaryRow {
     String? notes,
     String? addedBy,
     double? generalRefund,
-    Map<dynamic, dynamic>? generalExpenses,
+    List<dynamic>? generalExpenses,
     double? totalGeneralExpenseAmount,
-    Map<dynamic, dynamic>? procedureSummaries,
+    List<dynamic>? procedureSummaries,
   }) {
     return TaskAppointmentSummaryRow(
       taskAppointmentId: taskAppointmentId ?? this.taskAppointmentId,
-      taskAppointmentCreatedAt: taskAppointmentCreatedAt ?? this.taskAppointmentCreatedAt,
+      taskAppointmentCreatedAt:
+          taskAppointmentCreatedAt ?? this.taskAppointmentCreatedAt,
       taskId: taskId ?? this.taskId,
       generalDeposit: generalDeposit ?? this.generalDeposit,
       generalDiscountRate: generalDiscountRate ?? this.generalDiscountRate,
-      generalDiscountAmount: generalDiscountAmount ?? this.generalDiscountAmount,
+      generalDiscountAmount:
+          generalDiscountAmount ?? this.generalDiscountAmount,
       dueDate: dueDate ?? this.dueDate,
       notes: notes ?? this.notes,
       addedBy: addedBy ?? this.addedBy,
       generalRefund: generalRefund ?? this.generalRefund,
       generalExpenses: generalExpenses ?? this.generalExpenses,
-      totalGeneralExpenseAmount: totalGeneralExpenseAmount ?? this.totalGeneralExpenseAmount,
+      totalGeneralExpenseAmount:
+          totalGeneralExpenseAmount ?? this.totalGeneralExpenseAmount,
       procedureSummaries: procedureSummaries ?? this.procedureSummaries,
     );
   }

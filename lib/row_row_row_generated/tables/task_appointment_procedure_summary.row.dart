@@ -40,7 +40,7 @@ class TaskAppointmentProcedureSummaryRow {
   final DateTime? appointmentProcedureCreatedAt;
   final String? appointedClinicId;
   final double? commissionEnteredByUser;
-  final Map<dynamic, dynamic>? specificExpenses;
+  final List<dynamic>? specificExpenses;
   final double? totalExpenseAmount;
 
   const TaskAppointmentProcedureSummaryRow({
@@ -63,25 +63,64 @@ class TaskAppointmentProcedureSummaryRow {
     this.totalExpenseAmount,
   });
 
-  factory TaskAppointmentProcedureSummaryRow.fromJson(Map<String, dynamic> json) {
+  factory TaskAppointmentProcedureSummaryRow.fromJson(
+    Map<String, dynamic> json,
+  ) {
     return TaskAppointmentProcedureSummaryRow(
       taskAppointmentProcedureId: json[field.taskAppointmentProcedureId],
       appointmentId: json[field.appointmentId],
       procedureId: json[field.procedureId],
-      procedurePrice: json[field.procedurePrice] == null ? null : (json[field.procedurePrice] as num?)?.toDouble(),
+      procedurePrice:
+          json[field.procedurePrice] == null
+              ? null
+              : (json[field.procedurePrice] as num?)?.toDouble(),
       procedureName: json[field.procedureName],
-      procedureCommission: json[field.procedureCommission] == null ? null : (json[field.procedureCommission] as num?)?.toDouble(),
-      discountRate: json[field.discountRate] == null ? null : (json[field.discountRate] as num?)?.toDouble(),
-      discountAmount: json[field.discountAmount] == null ? null : (json[field.discountAmount] as num?)?.toDouble(),
-      refundAmount: json[field.refundAmount] == null ? null : (json[field.refundAmount] as num?)?.toDouble(),
-      paidOn: json[field.paidOn] == null ? null : DateTime.tryParse(json[field.paidOn] ?? ''),
-      originalProcedurePrice: json[field.originalProcedurePrice] == null ? null : (json[field.originalProcedurePrice] as num?)?.toDouble(),
+      procedureCommission:
+          json[field.procedureCommission] == null
+              ? null
+              : (json[field.procedureCommission] as num?)?.toDouble(),
+      discountRate:
+          json[field.discountRate] == null
+              ? null
+              : (json[field.discountRate] as num?)?.toDouble(),
+      discountAmount:
+          json[field.discountAmount] == null
+              ? null
+              : (json[field.discountAmount] as num?)?.toDouble(),
+      refundAmount:
+          json[field.refundAmount] == null
+              ? null
+              : (json[field.refundAmount] as num?)?.toDouble(),
+      paidOn:
+          json[field.paidOn] == null
+              ? null
+              : DateTime.tryParse(json[field.paidOn] ?? ''),
+      originalProcedurePrice:
+          json[field.originalProcedurePrice] == null
+              ? null
+              : (json[field.originalProcedurePrice] as num?)?.toDouble(),
       notes: json[field.notes],
-      appointmentProcedureCreatedAt: json[field.appointmentProcedureCreatedAt] == null ? null : DateTime.tryParse(json[field.appointmentProcedureCreatedAt] ?? ''),
+      appointmentProcedureCreatedAt:
+          json[field.appointmentProcedureCreatedAt] == null
+              ? null
+              : DateTime.tryParse(
+                json[field.appointmentProcedureCreatedAt] ?? '',
+              ),
       appointedClinicId: json[field.appointedClinicId],
-      commissionEnteredByUser: json[field.commissionEnteredByUser] == null ? null : (json[field.commissionEnteredByUser] as num?)?.toDouble(),
-      specificExpenses: json[field.specificExpenses] == null ? null : (json[field.specificExpenses] is String ? jsonDecode(json[field.specificExpenses]) : Map.from(json[field.specificExpenses])),
-      totalExpenseAmount: json[field.totalExpenseAmount] == null ? null : (json[field.totalExpenseAmount] as num?)?.toDouble(),
+      commissionEnteredByUser:
+          json[field.commissionEnteredByUser] == null
+              ? null
+              : (json[field.commissionEnteredByUser] as num?)?.toDouble(),
+      specificExpenses:
+          json[field.specificExpenses] == null
+              ? null
+              : (json[field.specificExpenses] is String
+                  ? jsonDecode(json[field.specificExpenses])
+                  : List.from(json[field.specificExpenses])),
+      totalExpenseAmount:
+          json[field.totalExpenseAmount] == null
+              ? null
+              : (json[field.totalExpenseAmount] as num?)?.toDouble(),
     );
   }
   Map<String, dynamic> toJson() {
@@ -98,7 +137,8 @@ class TaskAppointmentProcedureSummaryRow {
       field.paidOn: paidOn?.toIso8601String(),
       field.originalProcedurePrice: originalProcedurePrice,
       field.notes: notes,
-      field.appointmentProcedureCreatedAt: appointmentProcedureCreatedAt?.toIso8601String(),
+      field.appointmentProcedureCreatedAt:
+          appointmentProcedureCreatedAt?.toIso8601String(),
       field.appointedClinicId: appointedClinicId,
       field.commissionEnteredByUser: commissionEnteredByUser,
       field.specificExpenses: specificExpenses,
@@ -122,11 +162,12 @@ class TaskAppointmentProcedureSummaryRow {
     DateTime? appointmentProcedureCreatedAt,
     String? appointedClinicId,
     double? commissionEnteredByUser,
-    Map<dynamic, dynamic>? specificExpenses,
+    List<dynamic>? specificExpenses,
     double? totalExpenseAmount,
   }) {
     return TaskAppointmentProcedureSummaryRow(
-      taskAppointmentProcedureId: taskAppointmentProcedureId ?? this.taskAppointmentProcedureId,
+      taskAppointmentProcedureId:
+          taskAppointmentProcedureId ?? this.taskAppointmentProcedureId,
       appointmentId: appointmentId ?? this.appointmentId,
       procedureId: procedureId ?? this.procedureId,
       procedurePrice: procedurePrice ?? this.procedurePrice,
@@ -136,11 +177,14 @@ class TaskAppointmentProcedureSummaryRow {
       discountAmount: discountAmount ?? this.discountAmount,
       refundAmount: refundAmount ?? this.refundAmount,
       paidOn: paidOn ?? this.paidOn,
-      originalProcedurePrice: originalProcedurePrice ?? this.originalProcedurePrice,
+      originalProcedurePrice:
+          originalProcedurePrice ?? this.originalProcedurePrice,
       notes: notes ?? this.notes,
-      appointmentProcedureCreatedAt: appointmentProcedureCreatedAt ?? this.appointmentProcedureCreatedAt,
+      appointmentProcedureCreatedAt:
+          appointmentProcedureCreatedAt ?? this.appointmentProcedureCreatedAt,
       appointedClinicId: appointedClinicId ?? this.appointedClinicId,
-      commissionEnteredByUser: commissionEnteredByUser ?? this.commissionEnteredByUser,
+      commissionEnteredByUser:
+          commissionEnteredByUser ?? this.commissionEnteredByUser,
       specificExpenses: specificExpenses ?? this.specificExpenses,
       totalExpenseAmount: totalExpenseAmount ?? this.totalExpenseAmount,
     );
