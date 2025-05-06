@@ -5,6 +5,7 @@ import 'package:sgm/row_row_row_generated/tables/task.row.dart';
 import 'package:sgm/services/project.service.dart';
 import 'package:sgm/services/task.service.dart';
 import 'package:sgm/widgets/paginated_data.dart';
+import 'package:sgm/widgets/task/task.view.dart';
 
 class ProjectsListSubTab extends StatefulWidget {
   static const String title = 'List';
@@ -42,93 +43,87 @@ class _ProjectsListSubTabState extends State<ProjectsListSubTab> {
               builder: (context, data, isLoading) {
                 return SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
-                  child: Table(
-                    border: TableBorder.symmetric(
-                      inside: BorderSide(
-                        color: theme.colorScheme.outlineVariant,
-                      ),
-                    ),
-                    defaultVerticalAlignment: TableCellVerticalAlignment.top,
-                    defaultColumnWidth: IntrinsicColumnWidth(),
-                    children: <TableRow>[
-                      TableRow(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Header row
+                      Container(
                         decoration: BoxDecoration(
                           color: theme.colorScheme.surfaceContainerHighest,
+                          border: Border(
+                            bottom: BorderSide(
+                              color: theme.colorScheme.outlineVariant,
+                            ),
+                          ),
                         ),
-                        children: <Widget>[
-                          Container(
-                            padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
-                            child: TableCell(child: Text("Title")),
-                          ),
-                          Container(
-                            padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
-                            child: TableCell(child: Text("Status")),
-                          ),
-                          Container(
-                            padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
-                            child: TableCell(child: Text("Due Date")),
-                          ),
-                          Container(
-                            padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
-                            child: TableCell(child: Text("Assignee")),
-                          ),
-                          Container(
-                            padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
-                            child: TableCell(child: Text("Birthday")),
-                          ),
-                          Container(
-                            padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
-                            child: TableCell(child: Text("Nationality")),
-                          ),
-                          Container(
-                            padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
-                            child: TableCell(child: Text("Phone")),
-                          ),
-                        ],
+                        child: Row(
+                          children: [
+                            _buildHeaderCell("Title", width: 220),
+                            _buildHeaderCell("Status", width: 160),
+                            _buildHeaderCell("Due Date", width: 180),
+                            _buildHeaderCell("Assignee", width: 180),
+                            _buildHeaderCell("Birthday", width: 180),
+                            _buildHeaderCell("Nationality", width: 180),
+                            _buildHeaderCell("Phone", width: 180),
+                          ],
+                        ),
                       ),
+
+                      // Data rows
                       ...List.generate(data.length, (index) {
                         final item = data[index] as TaskRow;
-                        return TableRow(
-                          children: <Widget>[
-                            Padding(
-                              padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
-                              child: Text(item.title ?? ""),
-                            ),
-                            Padding(
-                              padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
-                              child: Text(item.status ?? ""),
-                            ),
-                            Padding(
-                              padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
-                              child: Text(
-                                item.dateDue != null
-                                    ? _formatDateTime(item.dateDue!)
-                                    : "No Due Date",
-                                style:
-                                    item.dateDue != null
-                                        ? null
-                                        : theme.textTheme.bodyMedium?.copyWith(
-                                          fontStyle: FontStyle.italic,
-                                        ),
+                        return InkWell(
+                          onTap: () {
+                            showGeneralDialog(
+                              context: context,
+                              pageBuilder: (context, a1, a2) {
+                                return TaskView(task: item);
+                              },
+                            );
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                              border: Border(
+                                bottom: BorderSide(
+                                  color: theme.colorScheme.outlineVariant,
+                                ),
                               ),
                             ),
-                            Padding(
-                              padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
-                              child: Text("Sample Task"),
+                            child: Row(
+                              children: [
+                                _buildDataCell(item.title ?? "", width: 220),
+                                _buildDataCell(item.status ?? "", width: 160),
+                                _buildDataCell(
+                                  item.dateDue != null
+                                      ? _formatDateTime(item.dateDue!)
+                                      : "No Due Date",
+                                  width: 180,
+                                  style:
+                                      item.dateDue != null
+                                          ? null
+                                          : theme.textTheme.bodyMedium
+                                              ?.copyWith(
+                                                fontStyle: FontStyle.italic,
+                                              ),
+                                ),
+                                _buildDataCell(item.assignee ?? "", width: 180),
+                                _buildDataCell(
+                                  item.customerBirthday != null
+                                      ? _formatDateOnly(item.customerBirthday!)
+                                      : "",
+                                  width: 180,
+                                ),
+                                _buildDataCell(
+                                  item.customerNationality ?? "",
+                                  width: 180,
+                                ),
+                                _buildDataCell(
+                                  item.customerPhone ?? "",
+                                  width: 180,
+                                ),
+                              ],
                             ),
-                            Padding(
-                              padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
-                              child: Text("Sample Task"),
-                            ),
-                            Padding(
-                              padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
-                              child: Text("Sample Task"),
-                            ),
-                            Padding(
-                              padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
-                              child: Text("Sample Task"),
-                            ),
-                          ],
+                          ),
                         );
                       }),
                     ],
@@ -151,6 +146,41 @@ class _ProjectsListSubTabState extends State<ProjectsListSubTab> {
         ),
       ],
     );
+  }
+
+  Widget _buildHeaderCell(String text, {required double width}) {
+    return Container(
+      width: width,
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+      child: Text(text, style: const TextStyle(fontWeight: FontWeight.bold)),
+    );
+  }
+
+  Widget _buildDataCell(
+    String text, {
+    required double width,
+    TextStyle? style,
+  }) {
+    return Container(
+      width: width,
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+      child: Text(
+        text,
+        style: style,
+        overflow: TextOverflow.ellipsis,
+        maxLines: 2,
+      ),
+    );
+  }
+
+  String _formatDateOnly(DateTime dateTime) {
+    // Convert UTC time to local time
+    final localDateTime = dateTime.toLocal();
+
+    // Format in "Month 12, 2020" format
+    final formattedDate = DateFormat('MMMM d, yyyy').format(localDateTime);
+
+    return formattedDate;
   }
 
   String _formatDateTime(DateTime dateTime) {

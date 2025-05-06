@@ -3,6 +3,8 @@
 import 'dart:convert';
 
 class ProjectWithMembersRow {
+  static const table = 'project_with_members';
+
   static const field = (
     id: 'id',
     title: 'title',
@@ -32,12 +34,8 @@ class ProjectWithMembersRow {
   final DateTime? pinOrder;
   final String? area;
   final int? numberOfMembers;
-  // Updated to List<dynamic> update the package
-  // instead of dynamic
   final List<String>? memberIds;
-  // Updated to List<dynamic> update the package
-  // instead of Map<String, dynamic>
-  final List<dynamic>? members;
+  final Map<dynamic, dynamic>? members;
 
   const ProjectWithMembersRow({
     this.id,
@@ -61,37 +59,19 @@ class ProjectWithMembersRow {
       id: json[field.id],
       title: json[field.title],
       createdBy: json[field.createdBy],
-      createdAt:
-          json[field.createdAt] == null
-              ? null
-              : DateTime.tryParse(json[field.createdAt] ?? ''),
+      createdAt: json[field.createdAt] == null ? null : DateTime.tryParse(json[field.createdAt] ?? ''),
       status: json[field.status],
       isClinic: json[field.isClinic],
       description: json[field.description],
       canChooseOtherClinic: json[field.canChooseOtherClinic],
       asanaProjectGid: json[field.asanaProjectGid],
-      pinOrder:
-          json[field.pinOrder] == null
-              ? null
-              : DateTime.tryParse(json[field.pinOrder] ?? ''),
+      pinOrder: json[field.pinOrder] == null ? null : DateTime.tryParse(json[field.pinOrder] ?? ''),
       area: json[field.area],
-      numberOfMembers:
-          json[field.numberOfMembers] == null
-              ? null
-              : (json[field.numberOfMembers] as num?)?.toInt(),
-      memberIds:
-          json[field.memberIds] == null
-              ? null
-              : List<String>.from(json[field.memberIds]),
-      members:
-          json[field.members] == null
-              ? null
-              : (json[field.members] is String
-                  ? jsonDecode(json[field.members])
-                  : List<dynamic>.from(json[field.members])),
+      numberOfMembers: json[field.numberOfMembers] == null ? null : (json[field.numberOfMembers] as num?)?.toInt(),
+      memberIds: json[field.memberIds] == null ? null : List<String>.from(json[field.memberIds]),
+      members: json[field.members] == null ? null : (json[field.members] is String ? jsonDecode(json[field.members]) : Map.from(json[field.members])),
     );
   }
-
   Map<String, dynamic> toJson() {
     return {
       field.id: id,
@@ -109,5 +89,39 @@ class ProjectWithMembersRow {
       field.memberIds: memberIds,
       field.members: members,
     };
+  }
+
+  ProjectWithMembersRow copyWith({
+    String? id,
+    String? title,
+    String? createdBy,
+    DateTime? createdAt,
+    String? status,
+    bool? isClinic,
+    String? description,
+    bool? canChooseOtherClinic,
+    String? asanaProjectGid,
+    DateTime? pinOrder,
+    String? area,
+    int? numberOfMembers,
+    List<String>? memberIds,
+    Map<dynamic, dynamic>? members,
+  }) {
+    return ProjectWithMembersRow(
+      id: id ?? this.id,
+      title: title ?? this.title,
+      createdBy: createdBy ?? this.createdBy,
+      createdAt: createdAt ?? this.createdAt,
+      status: status ?? this.status,
+      isClinic: isClinic ?? this.isClinic,
+      description: description ?? this.description,
+      canChooseOtherClinic: canChooseOtherClinic ?? this.canChooseOtherClinic,
+      asanaProjectGid: asanaProjectGid ?? this.asanaProjectGid,
+      pinOrder: pinOrder ?? this.pinOrder,
+      area: area ?? this.area,
+      numberOfMembers: numberOfMembers ?? this.numberOfMembers,
+      memberIds: memberIds ?? this.memberIds,
+      members: members ?? this.members,
+    );
   }
 }

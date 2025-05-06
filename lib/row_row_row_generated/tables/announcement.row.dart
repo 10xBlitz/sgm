@@ -3,6 +3,8 @@
 import 'dart:convert';
 
 class AnnouncementRow {
+  static const table = 'announcement';
+
   static const field = (
     id: 'id',
     title: 'title',
@@ -21,7 +23,7 @@ class AnnouncementRow {
   final DateTime createdAt;
   final DateTime? deletedAt;
   final bool personal;
-  final Map<String, dynamic>? routeData;
+  final Map<dynamic, dynamic>? routeData;
 
   const AnnouncementRow({
     required this.id,
@@ -43,10 +45,9 @@ class AnnouncementRow {
       createdAt: DateTime.parse(json[field.createdAt]),
       deletedAt: json[field.deletedAt] == null ? null : DateTime.tryParse(json[field.deletedAt] ?? ''),
       personal: json[field.personal] as bool,
-      routeData: json[field.routeData] == null ? null : (json[field.routeData] is String ? jsonDecode(json[field.routeData]) : Map<String, dynamic>.from(json[field.routeData])),
+      routeData: json[field.routeData] == null ? null : (json[field.routeData] is String ? jsonDecode(json[field.routeData]) : Map.from(json[field.routeData])),
     );
   }
-
   Map<String, dynamic> toJson() {
     return {
       field.id: id,
@@ -58,5 +59,27 @@ class AnnouncementRow {
       field.personal: personal,
       field.routeData: routeData,
     };
+  }
+
+  AnnouncementRow copyWith({
+    String? id,
+    String? title,
+    String? content,
+    String? createdBy,
+    DateTime? createdAt,
+    DateTime? deletedAt,
+    bool? personal,
+    Map<dynamic, dynamic>? routeData,
+  }) {
+    return AnnouncementRow(
+      id: id ?? this.id,
+      title: title ?? this.title,
+      content: content ?? this.content,
+      createdBy: createdBy ?? this.createdBy,
+      createdAt: createdAt ?? this.createdAt,
+      deletedAt: deletedAt ?? this.deletedAt,
+      personal: personal ?? this.personal,
+      routeData: routeData ?? this.routeData,
+    );
   }
 }

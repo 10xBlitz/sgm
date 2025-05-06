@@ -3,6 +3,8 @@
 import 'dart:convert';
 
 class TaskAppointmentSummaryRow {
+  static const table = 'task_appointment_summary';
+
   static const field = (
     taskAppointmentId: 'task_appointment_id',
     taskAppointmentCreatedAt: 'task_appointment_created_at',
@@ -29,9 +31,9 @@ class TaskAppointmentSummaryRow {
   final String? notes;
   final String? addedBy;
   final double? generalRefund;
-  final Map<String, dynamic>? generalExpenses;
+  final Map<dynamic, dynamic>? generalExpenses;
   final double? totalGeneralExpenseAmount;
-  final Map<String, dynamic>? procedureSummaries;
+  final Map<dynamic, dynamic>? procedureSummaries;
 
   const TaskAppointmentSummaryRow({
     this.taskAppointmentId,
@@ -61,12 +63,11 @@ class TaskAppointmentSummaryRow {
       notes: json[field.notes],
       addedBy: json[field.addedBy],
       generalRefund: json[field.generalRefund] == null ? null : (json[field.generalRefund] as num?)?.toDouble(),
-      generalExpenses: json[field.generalExpenses] == null ? null : (json[field.generalExpenses] is String ? jsonDecode(json[field.generalExpenses]) : Map<String, dynamic>.from(json[field.generalExpenses])),
+      generalExpenses: json[field.generalExpenses] == null ? null : (json[field.generalExpenses] is String ? jsonDecode(json[field.generalExpenses]) : Map.from(json[field.generalExpenses])),
       totalGeneralExpenseAmount: json[field.totalGeneralExpenseAmount] == null ? null : (json[field.totalGeneralExpenseAmount] as num?)?.toDouble(),
-      procedureSummaries: json[field.procedureSummaries] == null ? null : (json[field.procedureSummaries] is String ? jsonDecode(json[field.procedureSummaries]) : Map<String, dynamic>.from(json[field.procedureSummaries])),
+      procedureSummaries: json[field.procedureSummaries] == null ? null : (json[field.procedureSummaries] is String ? jsonDecode(json[field.procedureSummaries]) : Map.from(json[field.procedureSummaries])),
     );
   }
-
   Map<String, dynamic> toJson() {
     return {
       field.taskAppointmentId: taskAppointmentId,
@@ -83,5 +84,37 @@ class TaskAppointmentSummaryRow {
       field.totalGeneralExpenseAmount: totalGeneralExpenseAmount,
       field.procedureSummaries: procedureSummaries,
     };
+  }
+
+  TaskAppointmentSummaryRow copyWith({
+    String? taskAppointmentId,
+    DateTime? taskAppointmentCreatedAt,
+    String? taskId,
+    double? generalDeposit,
+    double? generalDiscountRate,
+    double? generalDiscountAmount,
+    DateTime? dueDate,
+    String? notes,
+    String? addedBy,
+    double? generalRefund,
+    Map<dynamic, dynamic>? generalExpenses,
+    double? totalGeneralExpenseAmount,
+    Map<dynamic, dynamic>? procedureSummaries,
+  }) {
+    return TaskAppointmentSummaryRow(
+      taskAppointmentId: taskAppointmentId ?? this.taskAppointmentId,
+      taskAppointmentCreatedAt: taskAppointmentCreatedAt ?? this.taskAppointmentCreatedAt,
+      taskId: taskId ?? this.taskId,
+      generalDeposit: generalDeposit ?? this.generalDeposit,
+      generalDiscountRate: generalDiscountRate ?? this.generalDiscountRate,
+      generalDiscountAmount: generalDiscountAmount ?? this.generalDiscountAmount,
+      dueDate: dueDate ?? this.dueDate,
+      notes: notes ?? this.notes,
+      addedBy: addedBy ?? this.addedBy,
+      generalRefund: generalRefund ?? this.generalRefund,
+      generalExpenses: generalExpenses ?? this.generalExpenses,
+      totalGeneralExpenseAmount: totalGeneralExpenseAmount ?? this.totalGeneralExpenseAmount,
+      procedureSummaries: procedureSummaries ?? this.procedureSummaries,
+    );
   }
 }

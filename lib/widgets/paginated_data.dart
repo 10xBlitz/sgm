@@ -76,10 +76,8 @@ class _PaginatedDataState extends State<PaginatedData> {
     return Column(
       children: [
         widget.builder(context, pageData, false),
-        Divider(height: 1, color: theme.colorScheme.outlineVariant),
         Row(
           mainAxisAlignment: MainAxisAlignment.start,
-
           children: [
             SizedBox(width: 16.0),
             // Dropdown for number of items per page

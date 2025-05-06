@@ -3,6 +3,8 @@
 import 'dart:convert';
 
 class TaskAppointmentProcedureSummaryRow {
+  static const table = 'task_appointment_procedure_summary';
+
   static const field = (
     taskAppointmentProcedureId: 'task_appointment_procedure_id',
     appointmentId: 'appointment_id',
@@ -38,7 +40,7 @@ class TaskAppointmentProcedureSummaryRow {
   final DateTime? appointmentProcedureCreatedAt;
   final String? appointedClinicId;
   final double? commissionEnteredByUser;
-  final Map<String, dynamic>? specificExpenses;
+  final Map<dynamic, dynamic>? specificExpenses;
   final double? totalExpenseAmount;
 
   const TaskAppointmentProcedureSummaryRow({
@@ -78,11 +80,10 @@ class TaskAppointmentProcedureSummaryRow {
       appointmentProcedureCreatedAt: json[field.appointmentProcedureCreatedAt] == null ? null : DateTime.tryParse(json[field.appointmentProcedureCreatedAt] ?? ''),
       appointedClinicId: json[field.appointedClinicId],
       commissionEnteredByUser: json[field.commissionEnteredByUser] == null ? null : (json[field.commissionEnteredByUser] as num?)?.toDouble(),
-      specificExpenses: json[field.specificExpenses] == null ? null : (json[field.specificExpenses] is String ? jsonDecode(json[field.specificExpenses]) : Map<String, dynamic>.from(json[field.specificExpenses])),
+      specificExpenses: json[field.specificExpenses] == null ? null : (json[field.specificExpenses] is String ? jsonDecode(json[field.specificExpenses]) : Map.from(json[field.specificExpenses])),
       totalExpenseAmount: json[field.totalExpenseAmount] == null ? null : (json[field.totalExpenseAmount] as num?)?.toDouble(),
     );
   }
-
   Map<String, dynamic> toJson() {
     return {
       field.taskAppointmentProcedureId: taskAppointmentProcedureId,
@@ -103,5 +104,45 @@ class TaskAppointmentProcedureSummaryRow {
       field.specificExpenses: specificExpenses,
       field.totalExpenseAmount: totalExpenseAmount,
     };
+  }
+
+  TaskAppointmentProcedureSummaryRow copyWith({
+    String? taskAppointmentProcedureId,
+    String? appointmentId,
+    String? procedureId,
+    double? procedurePrice,
+    String? procedureName,
+    double? procedureCommission,
+    double? discountRate,
+    double? discountAmount,
+    double? refundAmount,
+    DateTime? paidOn,
+    double? originalProcedurePrice,
+    String? notes,
+    DateTime? appointmentProcedureCreatedAt,
+    String? appointedClinicId,
+    double? commissionEnteredByUser,
+    Map<dynamic, dynamic>? specificExpenses,
+    double? totalExpenseAmount,
+  }) {
+    return TaskAppointmentProcedureSummaryRow(
+      taskAppointmentProcedureId: taskAppointmentProcedureId ?? this.taskAppointmentProcedureId,
+      appointmentId: appointmentId ?? this.appointmentId,
+      procedureId: procedureId ?? this.procedureId,
+      procedurePrice: procedurePrice ?? this.procedurePrice,
+      procedureName: procedureName ?? this.procedureName,
+      procedureCommission: procedureCommission ?? this.procedureCommission,
+      discountRate: discountRate ?? this.discountRate,
+      discountAmount: discountAmount ?? this.discountAmount,
+      refundAmount: refundAmount ?? this.refundAmount,
+      paidOn: paidOn ?? this.paidOn,
+      originalProcedurePrice: originalProcedurePrice ?? this.originalProcedurePrice,
+      notes: notes ?? this.notes,
+      appointmentProcedureCreatedAt: appointmentProcedureCreatedAt ?? this.appointmentProcedureCreatedAt,
+      appointedClinicId: appointedClinicId ?? this.appointedClinicId,
+      commissionEnteredByUser: commissionEnteredByUser ?? this.commissionEnteredByUser,
+      specificExpenses: specificExpenses ?? this.specificExpenses,
+      totalExpenseAmount: totalExpenseAmount ?? this.totalExpenseAmount,
+    );
   }
 }

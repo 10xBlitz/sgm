@@ -3,6 +3,8 @@
 import 'dart:convert';
 
 class AnnouncementWithTargetNamesRow {
+  static const table = 'announcement_with_target_names';
+
   static const field = (
     id: 'id',
     title: 'title',
@@ -29,15 +31,15 @@ class AnnouncementWithTargetNamesRow {
   final DateTime? createdAt;
   final DateTime? deletedAt;
   final bool? personal;
-  final Map<String, dynamic>? routeData;
+  final Map<dynamic, dynamic>? routeData;
   final String? creatorName;
-  final dynamic roleIds;
-  final dynamic roleNames;
-  final dynamic userIds;
-  final dynamic userNames;
-  final dynamic groupIds;
-  final dynamic groupNames;
-  final dynamic allTargetIds;
+  final List<String>? roleIds;
+  final List<String>? roleNames;
+  final List<String>? userIds;
+  final List<String>? userNames;
+  final List<String>? groupIds;
+  final List<String>? groupNames;
+  final List<String>? allTargetIds;
 
   const AnnouncementWithTargetNamesRow({
     this.id,
@@ -67,18 +69,17 @@ class AnnouncementWithTargetNamesRow {
       createdAt: json[field.createdAt] == null ? null : DateTime.tryParse(json[field.createdAt] ?? ''),
       deletedAt: json[field.deletedAt] == null ? null : DateTime.tryParse(json[field.deletedAt] ?? ''),
       personal: json[field.personal],
-      routeData: json[field.routeData] == null ? null : (json[field.routeData] is String ? jsonDecode(json[field.routeData]) : Map<String, dynamic>.from(json[field.routeData])),
+      routeData: json[field.routeData] == null ? null : (json[field.routeData] is String ? jsonDecode(json[field.routeData]) : Map.from(json[field.routeData])),
       creatorName: json[field.creatorName],
-      roleIds: json[field.roleIds],
-      roleNames: json[field.roleNames],
-      userIds: json[field.userIds],
-      userNames: json[field.userNames],
-      groupIds: json[field.groupIds],
-      groupNames: json[field.groupNames],
-      allTargetIds: json[field.allTargetIds],
+      roleIds: json[field.roleIds] == null ? null : List<String>.from(json[field.roleIds]),
+      roleNames: json[field.roleNames] == null ? null : List<String>.from(json[field.roleNames]),
+      userIds: json[field.userIds] == null ? null : List<String>.from(json[field.userIds]),
+      userNames: json[field.userNames] == null ? null : List<String>.from(json[field.userNames]),
+      groupIds: json[field.groupIds] == null ? null : List<String>.from(json[field.groupIds]),
+      groupNames: json[field.groupNames] == null ? null : List<String>.from(json[field.groupNames]),
+      allTargetIds: json[field.allTargetIds] == null ? null : List<String>.from(json[field.allTargetIds]),
     );
   }
-
   Map<String, dynamic> toJson() {
     return {
       field.id: id,
@@ -98,5 +99,43 @@ class AnnouncementWithTargetNamesRow {
       field.groupNames: groupNames,
       field.allTargetIds: allTargetIds,
     };
+  }
+
+  AnnouncementWithTargetNamesRow copyWith({
+    String? id,
+    String? title,
+    String? content,
+    String? createdBy,
+    DateTime? createdAt,
+    DateTime? deletedAt,
+    bool? personal,
+    Map<dynamic, dynamic>? routeData,
+    String? creatorName,
+    List<String>? roleIds,
+    List<String>? roleNames,
+    List<String>? userIds,
+    List<String>? userNames,
+    List<String>? groupIds,
+    List<String>? groupNames,
+    List<String>? allTargetIds,
+  }) {
+    return AnnouncementWithTargetNamesRow(
+      id: id ?? this.id,
+      title: title ?? this.title,
+      content: content ?? this.content,
+      createdBy: createdBy ?? this.createdBy,
+      createdAt: createdAt ?? this.createdAt,
+      deletedAt: deletedAt ?? this.deletedAt,
+      personal: personal ?? this.personal,
+      routeData: routeData ?? this.routeData,
+      creatorName: creatorName ?? this.creatorName,
+      roleIds: roleIds ?? this.roleIds,
+      roleNames: roleNames ?? this.roleNames,
+      userIds: userIds ?? this.userIds,
+      userNames: userNames ?? this.userNames,
+      groupIds: groupIds ?? this.groupIds,
+      groupNames: groupNames ?? this.groupNames,
+      allTargetIds: allTargetIds ?? this.allTargetIds,
+    );
   }
 }

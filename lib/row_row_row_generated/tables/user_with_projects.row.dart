@@ -3,6 +3,8 @@
 import 'dart:convert';
 
 class UserWithProjectsRow {
+  static const table = 'user_with_projects';
+
   static const field = (
     id: 'id',
     name: 'name',
@@ -41,9 +43,9 @@ class UserWithProjectsRow {
   final DateTime? acceptedTermsAt;
   final DateTime? emailConfirmedAt;
   final String? emailConfirmationCode;
-  final Map<String, dynamic>? projects;
-  final dynamic projectIds;
-  final dynamic projectNames;
+  final Map<dynamic, dynamic>? projects;
+  final List<String>? projectIds;
+  final List<String>? projectNames;
 
   const UserWithProjectsRow({
     this.id,
@@ -85,12 +87,11 @@ class UserWithProjectsRow {
       acceptedTermsAt: json[field.acceptedTermsAt] == null ? null : DateTime.tryParse(json[field.acceptedTermsAt] ?? ''),
       emailConfirmedAt: json[field.emailConfirmedAt] == null ? null : DateTime.tryParse(json[field.emailConfirmedAt] ?? ''),
       emailConfirmationCode: json[field.emailConfirmationCode],
-      projects: json[field.projects] == null ? null : (json[field.projects] is String ? jsonDecode(json[field.projects]) : Map<String, dynamic>.from(json[field.projects])),
-      projectIds: json[field.projectIds],
-      projectNames: json[field.projectNames],
+      projects: json[field.projects] == null ? null : (json[field.projects] is String ? jsonDecode(json[field.projects]) : Map.from(json[field.projects])),
+      projectIds: json[field.projectIds] == null ? null : List<String>.from(json[field.projectIds]),
+      projectNames: json[field.projectNames] == null ? null : List<String>.from(json[field.projectNames]),
     );
   }
-
   Map<String, dynamic> toJson() {
     return {
       field.id: id,
@@ -113,5 +114,49 @@ class UserWithProjectsRow {
       field.projectIds: projectIds,
       field.projectNames: projectNames,
     };
+  }
+
+  UserWithProjectsRow copyWith({
+    String? id,
+    String? name,
+    DateTime? createdAt,
+    String? role,
+    String? email,
+    bool? activated,
+    String? phoneNumber,
+    DateTime? acceptedAt,
+    DateTime? rejectedAt,
+    String? profileImage,
+    String? details,
+    bool? isBanned,
+    String? asanaGid,
+    DateTime? acceptedTermsAt,
+    DateTime? emailConfirmedAt,
+    String? emailConfirmationCode,
+    Map<dynamic, dynamic>? projects,
+    List<String>? projectIds,
+    List<String>? projectNames,
+  }) {
+    return UserWithProjectsRow(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      createdAt: createdAt ?? this.createdAt,
+      role: role ?? this.role,
+      email: email ?? this.email,
+      activated: activated ?? this.activated,
+      phoneNumber: phoneNumber ?? this.phoneNumber,
+      acceptedAt: acceptedAt ?? this.acceptedAt,
+      rejectedAt: rejectedAt ?? this.rejectedAt,
+      profileImage: profileImage ?? this.profileImage,
+      details: details ?? this.details,
+      isBanned: isBanned ?? this.isBanned,
+      asanaGid: asanaGid ?? this.asanaGid,
+      acceptedTermsAt: acceptedTermsAt ?? this.acceptedTermsAt,
+      emailConfirmedAt: emailConfirmedAt ?? this.emailConfirmedAt,
+      emailConfirmationCode: emailConfirmationCode ?? this.emailConfirmationCode,
+      projects: projects ?? this.projects,
+      projectIds: projectIds ?? this.projectIds,
+      projectNames: projectNames ?? this.projectNames,
+    );
   }
 }
