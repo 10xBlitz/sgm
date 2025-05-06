@@ -11,9 +11,17 @@ We are free to use them but when we use them, make sure to review all the genera
 ## Structure
 
 1. Services
-    - Must separate the logic into Services so that it can be reused across multiple projects.
+    - Must separate the logic into Services so that it can be reused.
 2. Screens
+    - Pages
 3. Widgets
+    - Reusable widgets
+4. Extensions
+    - if the reusable logfic/function is directly related to the Type itself
+5. Theme
+    - Files generated mainly from Material Theme Builder. Modified for the actual theme.
+6. Config
+    - Constants that are reused in the whole app
 
 ## Changelog
 

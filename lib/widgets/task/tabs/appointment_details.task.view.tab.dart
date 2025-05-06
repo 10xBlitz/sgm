@@ -5,15 +5,42 @@ import 'package:sgm/row_row_row_generated/tables/task_appointment_summary.row.da
 import 'package:sgm/services/project.service.dart';
 import 'package:sgm/services/task_appointment_summary.service.dart';
 import 'package:intl/intl.dart';
+import 'package:sgm/widgets/task/tabs/appointment_details.task.view.selected.dart';
 
-class AppointmentDetailsTaskViewTab extends StatelessWidget {
+class AppointmentDetailsTaskViewTab extends StatefulWidget {
   const AppointmentDetailsTaskViewTab({super.key, required this.task});
 
   final TaskRow task;
 
   @override
+  State<AppointmentDetailsTaskViewTab> createState() =>
+      _AppointmentDetailsTaskViewTabState();
+}
+
+class _AppointmentDetailsTaskViewTabState
+    extends State<AppointmentDetailsTaskViewTab> {
+  TaskAppointmentSummaryRow? selectedAppointmentSummary;
+
+  @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    if (selectedAppointmentSummary != null) {
+      return AppointmentDetailsTaskViewSelected(
+        taskAppointmentSummary: selectedAppointmentSummary!,
+        onUpdate: () async {
+          if (selectedAppointmentSummary == null) return;
+          selectedAppointmentSummary = await TaskAppointmentSummaryService()
+              .getFromId(selectedAppointmentSummary!.taskAppointmentId!);
+          if (!mounted) return;
+          setState(() {});
+        },
+        onClose: () {
+          setState(() {
+            selectedAppointmentSummary = null;
+          });
+        },
+      );
+    }
     return Container(
       decoration: BoxDecoration(color: theme.colorScheme.surfaceContainerLow),
       child: Column(
@@ -49,9 +76,9 @@ class AppointmentDetailsTaskViewTab extends StatelessWidget {
                   Divider(height: 1),
                   FutureBuilder<List<TaskAppointmentSummaryRow>>(
                     initialData: TaskAppointmentSummaryService()
-                        .getByTaskIdCache(task.id),
+                        .getByTaskIdCache(widget.task.id),
                     future: TaskAppointmentSummaryService().getByTaskId(
-                      task.id,
+                      widget.task.id,
                       cached: false,
                     ),
                     builder: (context, snapshot) {
@@ -61,7 +88,7 @@ class AppointmentDetailsTaskViewTab extends StatelessWidget {
                       } else if (snapshot.connectionState ==
                               ConnectionState.waiting &&
                           (!snapshot.hasData || snapshot.data!.isEmpty)) {
-                        return CircularProgressIndicator();
+                        return Center(child: CircularProgressIndicator());
                       } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
                         return Padding(
                           padding: const EdgeInsets.all(16.0),
@@ -111,7 +138,12 @@ class AppointmentDetailsTaskViewTab extends StatelessWidget {
                                   .toSet()
                                   .toList();
                           return InkWell(
-                            onTap: () {},
+                            onTap: () {
+                              setState(() {
+                                selectedAppointmentSummary =
+                                    appointments[index];
+                              });
+                            },
                             child: Container(
                               decoration: BoxDecoration(
                                 color: theme.colorScheme.surface,

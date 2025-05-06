@@ -22,6 +22,8 @@ class ProjectService {
   /// Need to make issue in Flutter
   final Map _cache = {};
 
+  List<ProjectRow>? _clinicsCache;
+
   /// Creates a new project in the database.
   Future<ProjectRow?> createProject({
     required String title,
@@ -88,10 +90,9 @@ class ProjectService {
         query = query.eq(ProjectRow.field.isClinic, isClinic);
       }
 
-      final response = await query.order(
-        ProjectRow.field.createdAt,
-        ascending: false,
-      );
+      final response = await query
+          .order(ProjectRow.field.canChooseOtherClinic, ascending: false)
+          .order(ProjectRow.field.createdAt, ascending: false);
 
       final projects =
           response.map<ProjectRow>((Map<String, dynamic> data) {
@@ -111,6 +112,20 @@ class ProjectService {
       debugPrint('Error fetching projects (getAllProjects): $error');
       return [];
     }
+  }
+
+  /// Gets all clinic projects
+  Future<List<ProjectRow>> getAllClinic({bool cached = true}) async {
+    if (cached == true) {
+      _clinicsCache = _clinicsCache ?? await getAllProjects(isClinic: true);
+      return _clinicsCache!;
+    }
+    _clinicsCache = await getAllProjects(isClinic: true);
+    return _clinicsCache!;
+  }
+
+  List<ProjectRow>? getAllClinicCache() {
+    return _clinicsCache;
   }
 
   /// Updates an existing project in the database.

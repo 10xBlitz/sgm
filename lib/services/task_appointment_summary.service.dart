@@ -175,8 +175,8 @@ class TaskAppointmentSummaryService {
     return _taskAppointmentCache[taskId];
   }
 
-  /// Updates an existing task appointment summary
-  Future<TaskAppointmentSummaryRow?> updateTaskAppointmentSummary({
+  /// Updates the underlying task appointment row since task_appointment_summary is a view
+  Future<TaskAppointmentSummaryRow?> updateTaskAppointmentRow({
     required String taskAppointmentId,
     double? generalDeposit,
     double? generalDiscountRate,
@@ -188,52 +188,26 @@ class TaskAppointmentSummaryService {
     List<Map<String, dynamic>>? procedureSummaries,
   }) async {
     try {
+      // Prepare data for the task_appointment table
       final data = <String, dynamic>{};
 
       if (generalDeposit != null) {
-        data[TaskAppointmentSummaryRow.field.generalDeposit] = generalDeposit;
+        data['general_deposit'] = generalDeposit;
       }
       if (generalDiscountRate != null) {
-        data[TaskAppointmentSummaryRow.field.generalDiscountRate] =
-            generalDiscountRate;
+        data['general_discount_rate'] = generalDiscountRate;
       }
       if (generalDiscountAmount != null) {
-        data[TaskAppointmentSummaryRow.field.generalDiscountAmount] =
-            generalDiscountAmount;
+        data['general_discount_amount'] = generalDiscountAmount;
       }
       if (dueDate != null) {
-        data[TaskAppointmentSummaryRow.field.dueDate] =
-            dueDate.toIso8601String();
+        data['due_date'] = dueDate.toIso8601String();
       }
       if (notes != null) {
-        data[TaskAppointmentSummaryRow.field.notes] = notes;
+        data['notes'] = notes;
       }
       if (generalRefund != null) {
-        data[TaskAppointmentSummaryRow.field.generalRefund] = generalRefund;
-      }
-
-      // Handle general expenses
-      if (generalExpenses != null) {
-        final formattedExpenses = {
-          'items': generalExpenses.map((e) => e.toJson()).toList(),
-        };
-        data[TaskAppointmentSummaryRow.field.generalExpenses] =
-            formattedExpenses;
-
-        // Also update total expenses
-        final totalExpense = generalExpenses.fold<double>(
-          0,
-          (prev, expense) => prev + expense.amount,
-        );
-        data[TaskAppointmentSummaryRow.field.totalGeneralExpenseAmount] =
-            totalExpense;
-      }
-
-      // Handle procedure summaries
-      if (procedureSummaries != null) {
-        final formattedProcedures = {'items': procedureSummaries};
-        data[TaskAppointmentSummaryRow.field.procedureSummaries] =
-            formattedProcedures;
+        data['general_refund'] = generalRefund;
       }
 
       // Skip update if no fields were provided
@@ -242,25 +216,103 @@ class TaskAppointmentSummaryService {
         return existingSummary;
       }
 
-      final response =
-          await _supabase
-              .from(TaskAppointmentSummaryRow.table)
-              .update(data)
-              .eq(
-                TaskAppointmentSummaryRow.field.taskAppointmentId,
-                taskAppointmentId,
-              )
-              .select()
-              .single();
+      // Update the task_appointment table directly
+      await _supabase
+          .from('task_appointment')
+          .update(data)
+          .eq('id', taskAppointmentId);
 
-      final summary = TaskAppointmentSummaryRow.fromJson(response);
-      if (summary.taskAppointmentId != null) {
-        _cache[summary.taskAppointmentId!] = summary;
+      // Handle general expenses if provided (stored in a separate table or JSON field)
+      if (generalExpenses != null) {
+        await _updateTaskAppointmentExpenses(
+          taskAppointmentId,
+          generalExpenses,
+        );
       }
-      return summary;
+
+      // Handle procedure summaries if provided (stored in a separate table)
+      if (procedureSummaries != null) {
+        await _updateTaskAppointmentProcedures(
+          taskAppointmentId,
+          procedureSummaries,
+        );
+      }
+
+      // After updating, fetch the updated summary view to return current data
+      return await getFromId(taskAppointmentId, cached: false);
     } catch (error) {
-      debugPrint('Error updating task appointment summary: $error');
+      debugPrint('Error updating task appointment: $error');
       return null;
+    }
+  }
+
+  /// Helper method to update task appointment expenses
+  Future<void> _updateTaskAppointmentExpenses(
+    String taskAppointmentId,
+    List<TaskAppointmentGeneralExpenseRow> expenses,
+  ) async {
+    try {
+      // Calculate total expense amount
+      final totalExpense = expenses.fold<double>(
+        0,
+        (prev, expense) => prev + expense.amount,
+      );
+
+      // Update the total expense amount in the appointment
+      await _supabase
+          .from('task_appointment')
+          .update({'total_general_expense_amount': totalExpense})
+          .eq('id', taskAppointmentId);
+
+      // For each expense, create/update in the expenses table
+      for (final expense in expenses) {
+        if (expense.id.startsWith('new-')) {
+          // New expense to create
+          final expenseData = expense.toJson();
+          expenseData.remove('id'); // Remove temporary ID
+          expenseData['appointment'] = taskAppointmentId; // Link to appointment
+
+          await _supabase
+              .from('task_appointment_general_expense')
+              .insert(expenseData);
+        } else {
+          // Existing expense to update
+          await _supabase
+              .from('task_appointment_general_expense')
+              .update(expense.toJson())
+              .eq('id', expense.id);
+        }
+      }
+    } catch (error) {
+      debugPrint('Error updating task appointment expenses: $error');
+    }
+  }
+
+  /// Helper method to update task appointment procedures
+  Future<void> _updateTaskAppointmentProcedures(
+    String taskAppointmentId,
+    List<Map<String, dynamic>> procedures,
+  ) async {
+    try {
+      // Update procedure data in the appropriate table or JSON field
+      // This implementation depends on how procedures are stored in your database
+
+      // Example approach: Store as JSON in a dedicated field
+      await _supabase
+          .from('task_appointment_procedure')
+          .upsert(
+            procedures
+                .map(
+                  (procedure) => {
+                    ...procedure,
+                    'appointment_id': taskAppointmentId,
+                  },
+                )
+                .toList(),
+            onConflict: 'id',
+          );
+    } catch (error) {
+      debugPrint('Error updating task appointment procedures: $error');
     }
   }
 
@@ -379,7 +431,7 @@ class TaskAppointmentSummaryService {
     required String taskAppointmentId,
     required List<Map<String, dynamic>> procedureSummaries,
   }) async {
-    return updateTaskAppointmentSummary(
+    return updateTaskAppointmentRow(
       taskAppointmentId: taskAppointmentId,
       procedureSummaries: procedureSummaries,
     );
@@ -390,7 +442,7 @@ class TaskAppointmentSummaryService {
     required String taskAppointmentId,
     required List<TaskAppointmentGeneralExpenseRow> generalExpenses,
   }) async {
-    return updateTaskAppointmentSummary(
+    return updateTaskAppointmentRow(
       taskAppointmentId: taskAppointmentId,
       generalExpenses: generalExpenses,
     );

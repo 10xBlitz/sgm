@@ -2,6 +2,8 @@
   "github.copilot.chat.scopeSelection": true,
   "github.copilot.nextEditSuggestions.enabled": true,
   "github.copilot.chat.completionContext.typescript.mode": "on",
-  "github.copilot.advanced": {},
+  "github.copilot.advanced": {
+    
+  },
   "editor.defaultFormatter": "Dart-Code.flutter"
 }

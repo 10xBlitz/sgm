@@ -448,6 +448,34 @@ class MaterialTheme {
       ),
       border: OutlineInputBorder(),
     ),
+    outlinedButtonTheme: OutlinedButtonThemeData(
+      style: ButtonStyle(
+        backgroundColor: WidgetStateProperty.all(
+          colorScheme.secondaryContainer,
+        ),
+        foregroundColor: WidgetStateProperty.all(colorScheme.onSurface),
+
+        textStyle: WidgetStateProperty.all(
+          textTheme.labelMedium?.copyWith(fontWeight: FontWeight.w800),
+        ),
+        shape: WidgetStateProperty.all(
+          RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12.0),
+
+            side: BorderSide(color: colorScheme.outline, width: 1.5),
+          ),
+        ),
+      ),
+    ),
+
+    textButtonTheme: TextButtonThemeData(
+      style: TextButton.styleFrom(
+        textStyle: textTheme.labelLarge?.copyWith(
+          fontWeight: FontWeight.w800,
+          color: colorScheme.onSecondaryContainer,
+        ),
+      ),
+    ),
   );
 
   List<ExtendedColor> get extendedColors => [];
