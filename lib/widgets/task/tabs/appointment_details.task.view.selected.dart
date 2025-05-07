@@ -283,13 +283,42 @@ class _AppointmentDetailsTaskViewSelectedState
                                                   .taskId!,
                                             );
                                         if (task == null) return;
-                                        final createdProcedure =
+
+                                        if (!context.mounted) return;
+                                        final selectedProcedure =
                                             await ProcedureAddDialog.show(
                                               context: context,
                                               appointmentSummary:
                                                   widget.taskAppointmentSummary,
                                               initalClinic: task.project,
                                             );
+
+                                        // insert and update procedure
+                                        if (selectedProcedure == null) return;
+                                        final tas =
+                                            widget.taskAppointmentSummary;
+                                        await TaskAppointmentProcedureService()
+                                            .createProcedure(
+                                              appointment:
+                                                  tas.taskAppointmentId!,
+                                              procedure: selectedProcedure.id,
+                                              procedureName:
+                                                  selectedProcedure.titleEng ??
+                                                  selectedProcedure.titleKor,
+                                              procedurePrice:
+                                                  selectedProcedure
+                                                      .totalPrice ??
+                                                  0,
+                                              procedureCommission:
+                                                  selectedProcedure
+                                                      .commission ??
+                                                  0,
+                                              discountAmount: 0,
+                                            );
+                                        if (!mounted) return;
+                                        setState(() {
+                                          validity = DateTime.now();
+                                        });
                                       },
                                     ),
                                   ],

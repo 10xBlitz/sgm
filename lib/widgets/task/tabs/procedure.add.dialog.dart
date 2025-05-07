@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:sgm/row_row_row_generated/tables/procedure.row.dart';
+import 'package:sgm/row_row_row_generated/tables/procedure_with_category_clinic_area_names.row.dart';
 import 'package:sgm/row_row_row_generated/tables/project.row.dart';
 import 'package:sgm/row_row_row_generated/tables/task_appointment.row.dart';
 import 'package:sgm/row_row_row_generated/tables/task_appointment_procedure.row.dart';
 import 'package:sgm/row_row_row_generated/tables/task_appointment_summary.row.dart';
+import 'package:sgm/services/procedure.service.dart';
 import 'package:sgm/services/project.service.dart';
 import 'package:sgm/services/task_appointment.service.dart';
 
@@ -19,13 +22,13 @@ class ProcedureAddDialog extends StatefulWidget {
   final String? initalClinic;
 
   /// Shows the fullscreen dialog and returns the created procedure or null if canceled
-  static Future<TaskAppointmentSummaryRow?> show({
+  static Future<ProcedureRow?> show({
     required BuildContext context,
     required TaskAppointmentSummaryRow appointmentSummary,
     String? initalClinic,
   }) async {
-    return Navigator.of(context).push<TaskAppointmentSummaryRow>(
-      MaterialPageRoute<TaskAppointmentSummaryRow>(
+    return Navigator.of(context).push<ProcedureRow?>(
+      MaterialPageRoute<ProcedureRow?>(
         fullscreenDialog: true,
         builder:
             (context) => ProcedureAddDialog(
@@ -46,6 +49,8 @@ class _ProcedureAddDialogState extends State<ProcedureAddDialog> {
   String? _selectedCategory;
   String _searchQuery = '';
   ProjectRow? projectOfTask;
+  List<ProcedureWithCategoryClinicAreaNamesRow> _procedureResult = [];
+  List<ProcedureWithCategoryClinicAreaNamesRow> _allProcedureInCategory = [];
 
   // Controllers
   final TextEditingController _searchController = TextEditingController();
@@ -187,32 +192,95 @@ class _ProcedureAddDialogState extends State<ProcedureAddDialog> {
                       const SizedBox(height: 16),
 
                       // Category dropdown
-                      DropdownButtonFormField<String>(
-                        decoration: const InputDecoration(
-                          labelText: 'Category',
-                          border: OutlineInputBorder(),
-                        ),
-                        value: _selectedCategory,
-                        onChanged: (value) {
-                          setState(() {
-                            _selectedCategory = value;
-                            // TODO: When category changes, update available procedures
-                          });
-                        },
-                        items: const [
-                          // TODO: Fetch categories based on selected clinic
-                          DropdownMenuItem(
-                            value: 'placeholder',
-                            child: Text('Select Category'),
+                      if (_selectedClinic != null)
+                        FutureBuilder<
+                          List<ProcedureWithCategoryClinicAreaNamesRow>
+                        >(
+                          future: ProcedureService().getProceduresByClinic(
+                            _selectedClinic!,
                           ),
-                        ],
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please select a category';
-                          }
-                          return null;
-                        },
-                      ),
+                          builder: (context, snapshot) {
+                            if (snapshot.hasError) {
+                              return Text('Error: ${snapshot.error}');
+                            }
+                            if (snapshot.connectionState ==
+                                    ConnectionState.waiting &&
+                                !snapshot.hasData) {
+                              return Center(child: CircularProgressIndicator());
+                            }
+                            final procedures = snapshot.data ?? [];
+                            // Map the categories into{'id': id, 'name': category}, but unique in id
+                            final categoriesMap =
+                                <String, Map<String, String>>{};
+                            for (var procedure in procedures) {
+                              if (procedure.category != null &&
+                                  procedure.categoryName != null) {
+                                // Use category ID as key to ensure uniqueness
+                                categoriesMap[procedure.category!] = {
+                                  'id': procedure.category!,
+                                  'name': procedure.categoryName!,
+                                };
+                              }
+                            }
+                            // Convert back to list after ensuring uniqueness
+                            final categories = categoriesMap.values.toList();
+                            return DropdownButtonFormField<String?>(
+                              decoration: const InputDecoration(
+                                labelText: 'Category',
+                                border: OutlineInputBorder(),
+                              ),
+                              value: _selectedCategory,
+                              onChanged: (value) {
+                                setState(() {
+                                  _selectedCategory = value;
+                                  // filter by selected category
+                                  // order by titleEng or titleKor
+
+                                  _allProcedureInCategory =
+                                      _procedureResult =
+                                          procedures
+                                              .where(
+                                                (procedure) =>
+                                                    procedure.category ==
+                                                    value, // filter by selected category
+                                              )
+                                              .toList();
+                                  _allProcedureInCategory.sort((a, b) {
+                                    final titleA =
+                                        a.titleEng ?? a.titleKor ?? '';
+                                    final titleB =
+                                        b.titleEng ?? b.titleKor ?? '';
+                                    return titleA.compareTo(titleB);
+                                  });
+                                });
+                              },
+                              items: [
+                                DropdownMenuItem(
+                                  value: null,
+                                  child: Text(
+                                    'Select Category',
+                                    style: theme.textTheme.labelLarge,
+                                  ),
+                                ),
+
+                                ...categories.map(
+                                  (category) => DropdownMenuItem(
+                                    value: category['id'],
+                                    child: Text(
+                                      category['name'] ?? 'Unnamed Category',
+                                    ),
+                                  ),
+                                ),
+                              ],
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Please select a category';
+                                }
+                                return null;
+                              },
+                            );
+                          },
+                        ),
 
                       const SizedBox(height: 16),
 
@@ -231,17 +299,36 @@ class _ProcedureAddDialogState extends State<ProcedureAddDialog> {
                                       _searchController.clear();
                                       setState(() {
                                         _searchQuery = '';
+                                        _procedureResult =
+                                            _allProcedureInCategory;
                                       });
-                                      // TODO: Clear search results
                                     },
                                   )
                                   : null,
                         ),
                         onChanged: (value) {
+                          // filter based on the search query
+
                           setState(() {
                             _searchQuery = value;
+                            _procedureResult =
+                                _allProcedureInCategory
+                                    .where(
+                                      (procedure) =>
+                                          procedure.titleEng
+                                              ?.toLowerCase()
+                                              .contains(
+                                                _searchQuery.toLowerCase(),
+                                              ) ??
+                                          procedure.titleKor
+                                              ?.toLowerCase()
+                                              .contains(
+                                                _searchQuery.toLowerCase(),
+                                              ) ??
+                                          false,
+                                    )
+                                    .toList();
                           });
-                          // TODO: Filter procedures based on search query
                         },
                       ),
 
@@ -255,18 +342,26 @@ class _ProcedureAddDialogState extends State<ProcedureAddDialog> {
                             borderRadius: BorderRadius.circular(4),
                           ),
                           child: ListView.separated(
-                            itemCount:
-                                10, // TODO: Replace with actual procedure count
+                            itemCount: _procedureResult.length,
                             separatorBuilder:
                                 (context, index) => const Divider(height: 1),
                             itemBuilder:
                                 (context, index) => ListTile(
-                                  title: Text('Procedure ${index + 1}'),
-                                  subtitle: Text(
-                                    'Price: \$${(index + 1) * 100}',
+                                  title: Text(
+                                    _procedureResult[index].titleEng ??
+                                        _procedureResult[index].titleKor ??
+                                        'Unnamed Procedure',
                                   ),
-                                  onTap: () {
-                                    // TODO: Select this procedure and return it
+                                  subtitle: Text(
+                                    (_procedureResult[index].totalPrice ?? 0)
+                                        .toString(),
+                                  ),
+                                  onTap: () async {
+                                    final procedure = await ProcedureService()
+                                        .getFromId(_procedureResult[index].id!);
+                                    // pop
+                                    if (!context.mounted) return;
+                                    Navigator.pop(context, procedure);
                                   },
                                 ),
                           ),
