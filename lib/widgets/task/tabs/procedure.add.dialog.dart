@@ -3,7 +3,6 @@ import 'package:sgm/row_row_row_generated/tables/procedure.row.dart';
 import 'package:sgm/row_row_row_generated/tables/procedure_with_category_clinic_area_names.row.dart';
 import 'package:sgm/row_row_row_generated/tables/project.row.dart';
 import 'package:sgm/row_row_row_generated/tables/task_appointment.row.dart';
-import 'package:sgm/row_row_row_generated/tables/task_appointment_procedure.row.dart';
 import 'package:sgm/row_row_row_generated/tables/task_appointment_summary.row.dart';
 import 'package:sgm/services/procedure.service.dart';
 import 'package:sgm/services/project.service.dart';
@@ -361,7 +360,10 @@ class _ProcedureAddDialogState extends State<ProcedureAddDialog> {
                                         .getFromId(_procedureResult[index].id!);
                                     // pop
                                     if (!context.mounted) return;
-                                    Navigator.pop(context, procedure);
+                                    Navigator.pop(context, {
+                                      'procedure': procedure,
+                                      'clinicId': _selectedClinic,
+                                    });
                                   },
                                 ),
                           ),

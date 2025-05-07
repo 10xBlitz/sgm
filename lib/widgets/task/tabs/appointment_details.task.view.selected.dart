@@ -143,6 +143,8 @@ class _AppointmentDetailsTaskViewSelectedState
                                     .toSet()
                                     .toList();
 
+                          
+
                             return ListView.builder(
                               shrinkWrap: true,
                               primary: false,
@@ -301,6 +303,9 @@ class _AppointmentDetailsTaskViewSelectedState
                                             .createProcedure(
                                               appointment:
                                                   tas.taskAppointmentId!,
+                                              discountAmount: 0,
+                                              // TODO CLINIC CONTINURE HERE
+                                              clinic: ,
                                               procedure: selectedProcedure.id,
                                               procedureName:
                                                   selectedProcedure.titleEng ??
@@ -313,7 +318,6 @@ class _AppointmentDetailsTaskViewSelectedState
                                                   selectedProcedure
                                                       .commission ??
                                                   0,
-                                              discountAmount: 0,
                                             );
                                         if (!mounted) return;
                                         setState(() {
