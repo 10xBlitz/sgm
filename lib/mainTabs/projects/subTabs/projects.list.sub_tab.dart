@@ -10,6 +10,7 @@ import 'package:sgm/services/user.service.dart';
 import 'package:sgm/services/project_task_status.service.dart';
 import 'package:sgm/widgets/paginated_data.dart';
 import 'package:sgm/widgets/task/task.view.dart';
+import 'package:sgm/widgets/task/dialog/update_task_status_dialog.dart';
 
 class ProjectsListSubTab extends StatefulWidget {
   static const String title = 'List';
@@ -32,6 +33,15 @@ class _ProjectsListSubTabState extends ProjectsListSubTabState {
   Map<String, UserRow> _assigneeCache = {};
   Map<String, ProjectTaskStatusRow> _statusCache = {};
   bool _isLoading = true;
+
+  // Define consistent column widths as constants
+  static const double _titleWidth = 220.0;
+  static const double _statusWidth = 160.0;
+  static const double _dueDateWidth = 180.0;
+  static const double _assigneeWidth = 180.0;
+  static const double _birthdayWidth = 180.0;
+  static const double _nationalityWidth = 180.0;
+  static const double _phoneWidth = 180.0;
 
   @override
   void initState() {
@@ -91,9 +101,14 @@ class _ProjectsListSubTabState extends ProjectsListSubTabState {
     return _assigneeCache[assigneeId]?.name ?? 'Unknown';
   }
 
-  String _getStatusName(String? statusId) {
-    if (statusId == null) return '';
-    return _statusCache[statusId]?.status ?? statusId;
+  String _getStatusName(TaskRow? row) {
+    if (row == null) return '';
+    return _statusCache[row.status]?.status ?? row.status ?? 'Unknown';
+  }
+
+  // Get status color based on status ID
+  Color _getStatusColor(String? statusId) {
+   return Colors.green;
   }
 
   @override
@@ -119,92 +134,100 @@ class _ProjectsListSubTabState extends ProjectsListSubTabState {
             child: PaginatedData(
               key: _paginatedDataKey,
               builder: (context, data, isLoading) {
+                // Calculate total table width from column widths
+                final tableWidth = _titleWidth + _statusWidth + _dueDateWidth +
+                    _assigneeWidth + _birthdayWidth + _nationalityWidth + _phoneWidth;
+
                 return SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Header row
-                      Container(
-                        decoration: BoxDecoration(
-                          color: theme.colorScheme.surfaceContainerHighest,
-                          border: Border(
-                            bottom: BorderSide(
-                              color: theme.colorScheme.outlineVariant,
-                            ),
-                          ),
-                        ),
-                        child: Row(
-                          children: [
-                            _buildHeaderCell("Title", width: 220),
-                            _buildHeaderCell("Status", width: 160),
-                            _buildHeaderCell("Due Date", width: 180),
-                            _buildHeaderCell("Assignee", width: 180),
-                            _buildHeaderCell("Birthday", width: 180),
-                            _buildHeaderCell("Nationality", width: 180),
-                            _buildHeaderCell("Phone", width: 180),
-                          ],
-                        ),
-                      ),
-
-                      // Data rows
-                      ...List.generate(data.length, (index) {
-                        final item = data[index] as TaskRow;
-                        return InkWell(
-                          onTap: () {
-                            showGeneralDialog(
-                              context: context,
-                              pageBuilder: (context, a1, a2) {
-                                return TaskView(task: item);
-                              },
-                            );
-                          },
-                          child: Container(
-                            decoration: BoxDecoration(
-                              border: Border(
-                                bottom: BorderSide(
-                                  color: theme.colorScheme.outlineVariant,
-                                ),
+                  child: SizedBox(
+                    // Set fixed width for the entire table to ensure alignment
+                    width: tableWidth,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Header row
+                        Container(
+                          decoration: BoxDecoration(
+                            color: theme.colorScheme.surfaceContainerHighest,
+                            border: Border(
+                              bottom: BorderSide(
+                                color: theme.colorScheme.outlineVariant,
                               ),
                             ),
-                            child: Row(
-                              children: [
-                                _buildDataCell(item.title ?? "", width: 220),
-                                _buildDataCell(_getStatusName(item.status ?? ""), width: 160),
-                                _buildDataCell(
-                                  item.dateDue != null
-                                      ? _formatDateTime(item.dateDue!)
-                                      : "No Due Date",
-                                  width: 180,
-                                  style:
-                                      item.dateDue != null
-                                          ? null
-                                          : theme.textTheme.bodyMedium
-                                              ?.copyWith(
-                                                fontStyle: FontStyle.italic,
-                                              ),
-                                ),
-                                _buildDataCell(_getAssigneeName(item.assignee), width: 180),
-                                _buildDataCell(
-                                  item.customerBirthday != null
-                                      ? _formatDateOnly(item.customerBirthday!)
-                                      : "",
-                                  width: 180,
-                                ),
-                                _buildDataCell(
-                                  item.customerNationality ?? "",
-                                  width: 180,
-                                ),
-                                _buildDataCell(
-                                  item.customerPhone ?? "",
-                                  width: 180,
-                                ),
-                              ],
-                            ),
                           ),
-                        );
-                      }),
-                    ],
+                          child: Row(
+                            children: [
+                              _buildHeaderCell("Title", width: _titleWidth),
+                              _buildHeaderCell("Status", width: _statusWidth),
+                              _buildHeaderCell("Due Date", width: _dueDateWidth),
+                              _buildHeaderCell("Assignee", width: _assigneeWidth),
+                              _buildHeaderCell("Birthday", width: _birthdayWidth),
+                              _buildHeaderCell("Nationality", width: _nationalityWidth),
+                              _buildHeaderCell("Phone", width: _phoneWidth),
+                            ],
+                          ),
+                        ),
+
+                        // Data rows
+                        ...List.generate(data.length, (index) {
+                          final item = data[index] as TaskRow;
+                          return InkWell(
+                            onTap: () {
+                              showGeneralDialog(
+                                context: context,
+                                pageBuilder: (context, a1, a2) {
+                                  return TaskView(task: item);
+                                },
+                              );
+                            },
+                            child: Container(
+                              decoration: BoxDecoration(
+                                border: Border(
+                                  bottom: BorderSide(
+                                    color: theme.colorScheme.outlineVariant,
+                                  ),
+                                ),
+                              ),
+                              child: Row(
+                                children: [
+                                  _buildDataCell(item.title ?? "", width: _titleWidth),
+                                  _buildStatusCell(item, width: _statusWidth),
+                                  _buildDataCell(
+                                    item.dateDue != null
+                                        ? _formatDateTime(item.dateDue!)
+                                        : "No Due Date",
+                                    width: _dueDateWidth,
+                                    style:
+                                    item.dateDue != null
+                                        ? null
+                                        : theme.textTheme.bodyMedium
+                                        ?.copyWith(
+                                      fontStyle: FontStyle.italic,
+                                    ),
+                                  ),
+                                  _buildDataCell(_getAssigneeName(item.assignee), width: _assigneeWidth),
+                                  _buildDataCell(
+                                    item.customerBirthday != null
+                                        ? _formatDateOnly(item.customerBirthday!)
+                                        : "",
+                                    width: _birthdayWidth,
+                                  ),
+                                  _buildDataCell(
+                                    item.customerNationality ?? "",
+                                    width: _nationalityWidth,
+                                  ),
+                                  _buildDataCell(
+                                    item.customerPhone ?? "",
+                                    width: _phoneWidth,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        }),
+                      ],
+                    ),
                   ),
                 );
               },
@@ -229,24 +252,68 @@ class _ProjectsListSubTabState extends ProjectsListSubTabState {
   Widget _buildHeaderCell(String text, {required double width}) {
     return Container(
       width: width,
-      padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+      padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
       child: Text(text, style: const TextStyle(fontWeight: FontWeight.bold)),
     );
   }
 
   Widget _buildDataCell(
-    String text, {
-    required double width,
-    TextStyle? style,
-  }) {
+      String text, {
+        required double width,
+        TextStyle? style,
+      }) {
     return Container(
       width: width,
-      padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+      padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
       child: Text(
         text,
         style: style,
         overflow: TextOverflow.ellipsis,
         maxLines: 2,
+      ),
+    );
+  }
+
+  Widget _buildStatusCell(TaskRow row, {
+    required double width,
+  }) {
+    return Container(
+      width: width,
+      padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
+      child: GestureDetector(
+        onTap: () {
+          showDialog(
+            context: context,
+            builder: (context) => UpdateTaskStatusDialog(
+              projectId: widget.projectId,
+              taskId: row.id,
+              currentStatus: row.status ?? '',
+              onStatusUpdated: reloadAPI,
+            ),
+          );
+        },
+        child: Align(
+          alignment: Alignment.centerLeft,
+          child: IntrinsicWidth(
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              decoration: BoxDecoration(
+                color: _getStatusColor(row.status),
+                borderRadius: BorderRadius.circular(4),
+              ),
+              child: Text(
+                _getStatusName(row),
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500,
+                ),
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
+              ),
+            ),
+          ),
+        ),
       ),
     );
   }
