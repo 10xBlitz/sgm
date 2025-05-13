@@ -6,9 +6,10 @@ import 'package:sgm/screens/main.screen.dart';
 
 class ProjectsTab extends StatefulWidget {
   static const String tabTitle = 'Projects';
-  const ProjectsTab({super.key, this.projectId, this.subTab});
+  const ProjectsTab({super.key, this.projectId, this.subTab, this.subTabKey});
   final String? projectId;
   final String? subTab;
+  final Key? subTabKey;
 
   @override
   State<ProjectsTab> createState() => _ProjectsTabState();
@@ -36,6 +37,7 @@ class _ProjectsTabState extends State<ProjectsTab> {
 
     return switch (subTab) {
       ProjectsListSubTab.title => ProjectsListSubTab(
+        key: widget.subTabKey,
         projectId: widget.projectId!,
       ),
       _ => const Center(

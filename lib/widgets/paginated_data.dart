@@ -2,11 +2,14 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
+abstract class PaginatedDataState extends State<PaginatedData> {
+  Future<void> refresh();
+}
+
 class PaginatedData extends StatefulWidget {
   const PaginatedData({
     super.key,
     required this.getPage,
-
     required this.getCount,
     required this.initialPage,
     required this.builder,
@@ -16,15 +19,14 @@ class PaginatedData extends StatefulWidget {
   final FutureOr<List> Function(int page, int pageSize) getPage;
   final FutureOr<int> Function() getCount;
   final int initialPage;
-  final Widget Function(BuildContext context, List data, bool isLoading)
-  builder;
+  final Widget Function(BuildContext context, List data, bool isLoading) builder;
   final double bottomPadding;
 
   @override
   State<PaginatedData> createState() => _PaginatedDataState();
 }
 
-class _PaginatedDataState extends State<PaginatedData> {
+class _PaginatedDataState extends PaginatedDataState {
   int currentPage = 1;
   int pageSize = 10;
 
@@ -42,15 +44,29 @@ class _PaginatedDataState extends State<PaginatedData> {
     initCount();
   }
 
-  initPageData() async {
-    pageData = await widget.getPage(currentPage, pageSize);
-    isLoading = false;
-    setState(() {});
+  @override
+  Future<void> refresh() async {
+    setState(() {
+      isLoading = true;
+    });
+    await initPageData();
+    await initCount();
   }
 
-  initCount() async {
+  Future<void> initPageData() async {
+    pageData = await widget.getPage(currentPage, pageSize);
+    if (mounted) {
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
+
+  Future<void> initCount() async {
     itemCount = await widget.getCount();
-    setState(() {});
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   void _nextPage() async {

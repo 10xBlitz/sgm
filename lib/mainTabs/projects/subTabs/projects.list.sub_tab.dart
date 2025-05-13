@@ -16,14 +16,42 @@ class ProjectsListSubTab extends StatefulWidget {
   State<ProjectsListSubTab> createState() => _ProjectsListSubTabState();
 }
 
-class _ProjectsListSubTabState extends State<ProjectsListSubTab> {
-  ProjectRow? get project => ProjectService().getFromCache(widget.projectId);
+abstract class ProjectsListSubTabState extends State<ProjectsListSubTab> {
+  Future<void> reloadAPI();
+}
+
+class _ProjectsListSubTabState extends ProjectsListSubTabState {
+  ProjectRow? project;
+  final _paginatedDataKey = GlobalKey<PaginatedDataState>();
+
+  @override
+  Future<void> reloadAPI() async {
+    debugPrint("Reloading API");
+    if (!mounted) return;
+
+    try {
+      final value = await ProjectService().getFromId(widget.projectId);
+      if (!mounted) return;
+
+      setState(() {
+        project = value;
+      });
+
+      // Refresh the task list
+      final paginatedState = _paginatedDataKey.currentState;
+      if (paginatedState != null) {
+        await paginatedState.refresh();
+      }
+    } catch (e) {
+      debugPrint("Error reloading API: $e");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       if (project != null) return;
-      await ProjectService().getFromId(widget.projectId);
+      project = await ProjectService().getFromId(widget.projectId);
       setState(() {});
     });
     final theme = Theme.of(context);
@@ -40,6 +68,7 @@ class _ProjectsListSubTabState extends State<ProjectsListSubTab> {
         Expanded(
           child: SingleChildScrollView(
             child: PaginatedData(
+              key: _paginatedDataKey,
               builder: (context, data, isLoading) {
                 return SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
