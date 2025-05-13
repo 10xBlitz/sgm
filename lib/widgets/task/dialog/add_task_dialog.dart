@@ -183,7 +183,6 @@ class _AddTaskDialogState extends State<AddTaskDialog> {
               const SizedBox(height: 24),
               Text('Status', style: Theme.of(context).textTheme.titleMedium),
               const SizedBox(height: 8),
-              Text('statussesaaa ${_statuses.map((status) => status.status).toList()}'),
               if (_isLoading)
                 const Center(child: CircularProgressIndicator())
               else

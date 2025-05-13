@@ -1,5 +1,6 @@
 import 'package:sgm/row_row_row_generated/tables/project_task_status.row.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:flutter/foundation.dart';
 
 class ProjectTaskStatusService {
   // Singleton instance
@@ -30,9 +31,10 @@ class ProjectTaskStatusService {
           .eq(ProjectTaskStatusRow.field.project, projectId)
           .order(ProjectTaskStatusRow.field.order);
 
-      return (response as List)
+      final statuses = (response as List)
           .map((json) => ProjectTaskStatusRow.fromJson(json))
           .toList();
+      return statuses;
     } catch (e) {
       throw Exception('Failed to fetch project task statuses: $e');
     }
@@ -43,4 +45,4 @@ class ProjectTaskStatusService {
   void clearCache() {
     _cache.clear();
   }
-} 
+}

@@ -2,8 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:sgm/row_row_row_generated/tables/project.row.dart';
 import 'package:sgm/row_row_row_generated/tables/task.row.dart';
+import 'package:sgm/row_row_row_generated/tables/user.row.dart';
+import 'package:sgm/row_row_row_generated/tables/project_task_status.row.dart';
 import 'package:sgm/services/project.service.dart';
 import 'package:sgm/services/task.service.dart';
+import 'package:sgm/services/user.service.dart';
+import 'package:sgm/services/project_task_status.service.dart';
 import 'package:sgm/widgets/paginated_data.dart';
 import 'package:sgm/widgets/task/task.view.dart';
 
@@ -23,6 +27,41 @@ abstract class ProjectsListSubTabState extends State<ProjectsListSubTab> {
 class _ProjectsListSubTabState extends ProjectsListSubTabState {
   ProjectRow? project;
   final _paginatedDataKey = GlobalKey<PaginatedDataState>();
+  final _userService = UserService();
+  final _statusService = ProjectTaskStatusService();
+  Map<String, UserRow> _assigneeCache = {};
+  Map<String, ProjectTaskStatusRow> _statusCache = {};
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadCaches();
+  }
+
+  Future<void> _loadCaches() async {
+    if (!mounted) return;
+    setState(() => _isLoading = true);
+    
+    try {
+      // Load all users for assignee mapping
+      final users = await _userService.getAllUsers(activated: false, isBanned: false);
+      _assigneeCache = {for (var user in users) user.id: user};
+
+      // Load all statuses for the project
+      final statuses = await _statusService.getStatusByProjectID(widget.projectId);
+      _statusCache = {for (var status in statuses) status.id: status};
+      
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
+    } catch (e) {
+      debugPrint('Error loading caches: $e');
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
+    }
+  }
 
   @override
   Future<void> reloadAPI() async {
@@ -45,6 +84,16 @@ class _ProjectsListSubTabState extends ProjectsListSubTabState {
     } catch (e) {
       debugPrint("Error reloading API: $e");
     }
+  }
+
+  String _getAssigneeName(String? assigneeId) {
+    if (assigneeId == null) return '';
+    return _assigneeCache[assigneeId]?.name ?? 'Unknown';
+  }
+
+  String _getStatusName(String? statusId) {
+    if (statusId == null) return '';
+    return _statusCache[statusId]?.status ?? statusId;
   }
 
   @override
@@ -121,7 +170,7 @@ class _ProjectsListSubTabState extends ProjectsListSubTabState {
                             child: Row(
                               children: [
                                 _buildDataCell(item.title ?? "", width: 220),
-                                _buildDataCell(item.status ?? "", width: 160),
+                                _buildDataCell(_getStatusName(item.status ?? ""), width: 160),
                                 _buildDataCell(
                                   item.dateDue != null
                                       ? _formatDateTime(item.dateDue!)
@@ -135,7 +184,7 @@ class _ProjectsListSubTabState extends ProjectsListSubTabState {
                                                 fontStyle: FontStyle.italic,
                                               ),
                                 ),
-                                _buildDataCell(item.assignee ?? "", width: 180),
+                                _buildDataCell(_getAssigneeName(item.assignee), width: 180),
                                 _buildDataCell(
                                   item.customerBirthday != null
                                       ? _formatDateOnly(item.customerBirthday!)
