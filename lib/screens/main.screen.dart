@@ -10,7 +10,10 @@ import 'package:sgm/mainTabs/procedures.tab.dart';
 import 'package:sgm/mainTabs/projects/projects.tab.dart';
 import 'package:sgm/mainTabs/user_management.tab.dart';
 import 'package:sgm/services/project.service.dart';
+import 'package:sgm/services/task.service.dart';
 import 'package:sgm/widgets/side_nav.dart';
+
+import '../widgets/task/dialog/add_task_dialog.dart';
 
 class MainScreen extends StatefulWidget {
   static const routeName = "/";
@@ -119,7 +122,11 @@ class _MainScreenState extends State<MainScreen> {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () async {
+          if (isProjectDetailTabs()) {
+            await _handleAddTask(context);
+          }
+        },
         child: const Icon(Icons.add),
       ),
       endDrawer: Drawer(
@@ -141,6 +148,40 @@ class _MainScreenState extends State<MainScreen> {
     );
   }
 
+  Future<void> _handleAddTask(BuildContext context) async {
+    await showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (context) =>
+          AddTaskDialog(
+            projectId: '${widget.projectId}',
+            projectTitle: '${ ProjectService()
+                .getFromCache(widget.projectId!)
+                ?.title }',
+            onAddTask: (args) {
+              debugPrint('Task added: ${args.title}, Assignee: ${args.assigneeId} ${
+                  args.assigneeId} -STTID ${args.statusId}');
+              final assigneeId = args.assigneeId;
+              final statusId = args.statusId;
+              final time = args.dueDate;
+              final title = args.title;
+              TaskService().createTask(
+                title: "$title: Huu test",
+                project: widget.projectId,
+                dateDue: time,
+                assignee: assigneeId,
+                status: statusId,
+              ).then(
+                (value) {
+                  debugPrint("done");
+                  ProjectService().getFromId(widget.projectId!);
+                },
+              );
+            },
+          ),
+    );
+  }
+
   Widget _buildBody() {
     return switch (selectedTab) {
       DashboardTab.tabTitle => DashboardTab(),
@@ -156,5 +197,9 @@ class _MainScreenState extends State<MainScreen> {
         child: Text('Default Screen', style: TextStyle(color: Colors.grey)),
       ),
     };
+  }
+
+  bool isProjectDetailTabs(){
+    return widget.projectId != null && widget.currentTab == ProjectsTab.tabTitle;
   }
 }
