@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:sgm/router.dart';
 import 'package:sgm/services/auth.service.dart';
 import 'package:sgm/theme/theme.dart';
+import 'package:flutter_quill/flutter_quill.dart';
 
 void main() async {
   // Ensure Flutter is initialized
@@ -21,6 +22,9 @@ class MyApp extends StatelessWidget {
     return MaterialApp.router(
       routerConfig: router,
       theme: MaterialTheme.createThemeData(context),
+      localizationsDelegates: const [
+        FlutterQuillLocalizations.delegate,
+      ],
     );
   }
 }

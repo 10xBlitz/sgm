@@ -153,7 +153,7 @@ class _MainScreenState extends State<MainScreen> {
   Future<void> _handleAddTask(BuildContext context) async {
     await showDialog(
       context: context,
-      barrierDismissible: true,
+      barrierDismissible: false,
       builder: (context) =>
           AddTaskDialog(
             projectId: '${widget.projectId}',
@@ -167,12 +167,14 @@ class _MainScreenState extends State<MainScreen> {
               final statusId = args.statusId;
               final time = args.dueDate;
               final title = args.title;
+              final description = args.description;
              await TaskService().createTask(
                 title: title,
                 project: widget.projectId,
                 dateDue: time,
                 assignee: assigneeId,
                 status: statusId,
+               description: description,
               ).then(
                 (value) async {
                   // hide loading
