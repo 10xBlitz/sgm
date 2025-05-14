@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sgm/mainTabs/announcements.tab.dart';
 import 'package:sgm/mainTabs/chat.tab.dart';
@@ -12,6 +13,7 @@ import 'package:sgm/mainTabs/projects/subTabs/projects.list.sub_tab.dart';
 import 'package:sgm/mainTabs/user_management.tab.dart';
 import 'package:sgm/services/project.service.dart';
 import 'package:sgm/services/task.service.dart';
+import 'package:sgm/widgets/form/dialog/add_form_dialog.dart';
 import 'package:sgm/widgets/side_nav.dart';
 
 import '../widgets/task/dialog/add_task_dialog.dart';
@@ -123,14 +125,8 @@ class _MainScreenState extends State<MainScreen> {
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          if (isProjectDetailTabs()) {
-            await _handleAddTask(context);
-          }
-        },
-        child: const Icon(Icons.add),
-      ),
+      floatingActionButtonLocation: ExpandableFab.location,
+      floatingActionButton: _buildFab(context),
       endDrawer: Drawer(
         backgroundColor: Theme.of(context).colorScheme.surfaceContainerLow,
         shape: const RoundedRectangleBorder(),
@@ -147,6 +143,44 @@ class _MainScreenState extends State<MainScreen> {
         ),
       ),
       body: _buildBody(),
+    );
+  }
+
+  Widget _buildFab(BuildContext context) {
+    if (!isProjectDetailTabs()) return const SizedBox.shrink();
+    return ExpandableFab(
+      distance: 70,
+      type: ExpandableFabType.up,
+      children: [
+        Row(
+          children: [
+            Text('Add Task'),
+            SizedBox(width: 8),
+            FloatingActionButton.small(
+              tooltip: 'Add Task',
+              heroTag: null,
+              child: const Icon(Icons.add_task_outlined),
+              onPressed: () {
+                _handleAddTask(context);
+              },
+            ),
+          ],
+        ),
+        Row(
+          children: [
+            Text('Add Form'),
+            SizedBox(width: 8),
+            FloatingActionButton.small(
+              tooltip: 'Add Form',
+              heroTag: null,
+              child: const Icon(Icons.menu_book_outlined),
+              onPressed: () {
+
+              },
+            ),
+          ],
+        ),
+      ],
     );
   }
 
@@ -199,6 +233,15 @@ class _MainScreenState extends State<MainScreen> {
               });
             },
           ),
+    );
+  }
+
+  // handle add form
+  Future<void> _handleAddForm(BuildContext context) async {
+    await showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => const AddFormDialog(),
     );
   }
 
