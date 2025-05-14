@@ -22,7 +22,7 @@ final router = GoRouter(
 
   // This redirect function runs on every navigation attempt
   redirect: (BuildContext context, GoRouterState state) async {
-    debugPrint("Redirecting...");
+    debugPrint("Redirecting... ${state.fullPath}");
     final globalManager = GlobalManagerService();
     final authService = AuthService();
     globalManager.setGlobalContextIfNull(context);

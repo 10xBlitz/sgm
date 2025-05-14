@@ -8,9 +8,13 @@ import 'package:sgm/mainTabs/forms.tab.dart';
 import 'package:sgm/mainTabs/my_task.tab.dart';
 import 'package:sgm/mainTabs/procedures.tab.dart';
 import 'package:sgm/mainTabs/projects/projects.tab.dart';
+import 'package:sgm/mainTabs/projects/subTabs/projects.list.sub_tab.dart';
 import 'package:sgm/mainTabs/user_management.tab.dart';
 import 'package:sgm/services/project.service.dart';
+import 'package:sgm/services/task.service.dart';
 import 'package:sgm/widgets/side_nav.dart';
+
+import '../widgets/task/dialog/add_task_dialog.dart';
 
 class MainScreen extends StatefulWidget {
   static const routeName = "/";
@@ -34,6 +38,7 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   String get selectedTab => widget.currentTab;
   String? get selectedSubTab => widget.subTab;
+  final _projectsListSubTabKey = GlobalKey();
 
   @override
   Widget build(BuildContext context) {
@@ -119,7 +124,11 @@ class _MainScreenState extends State<MainScreen> {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () async {
+          if (isProjectDetailTabs()) {
+            await _handleAddTask(context);
+          }
+        },
         child: const Icon(Icons.add),
       ),
       endDrawer: Drawer(
@@ -141,13 +150,66 @@ class _MainScreenState extends State<MainScreen> {
     );
   }
 
+  Future<void> _handleAddTask(BuildContext context) async {
+    await showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (context) =>
+          AddTaskDialog(
+            projectId: '${widget.projectId}',
+            projectTitle: '${ ProjectService()
+                .getFromCache(widget.projectId!)
+                ?.title }',
+            onAddTask: (args) async {
+              debugPrint('Task added: ${args.title}, Assignee: ${args.assigneeId} ${
+                  args.assigneeId} -STTID ${args.statusId}');
+              final assigneeId = args.assigneeId;
+              final statusId = args.statusId;
+              final time = args.dueDate;
+              final title = args.title;
+             await TaskService().createTask(
+                title: title,
+                project: widget.projectId,
+                dateDue: time,
+                assignee: assigneeId,
+                status: statusId,
+              ).then(
+                (value) async {
+                  // hide loading
+                  debugPrint("done");
+                  await ProjectService().getFromId(widget.projectId!,cached: true);
+                  if (mounted) {
+                    setState(() {
+                      // Force rebuild of ProjectsListSubTab by recreating its key
+                      (_projectsListSubTabKey.currentState as ProjectsListSubTabState?)?.reloadAPI();
+                    });
+                  }
+                },
+              ).catchError((error) {
+                // hide loading
+                if (mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('Error: $error'),
+                    ),
+                  );
+                }
+              });
+            },
+          ),
+    );
+  }
+
   Widget _buildBody() {
     return switch (selectedTab) {
       DashboardTab.tabTitle => DashboardTab(),
       ChatTab.tabTitle => ChatTab(),
       MyTaskTab.tabTitle => MyTaskTab(),
       ClinicsTab.tabTitle => ClinicsTab(),
-      ProjectsTab.tabTitle => ProjectsTab(projectId: widget.projectId),
+      ProjectsTab.tabTitle => ProjectsTab(
+          projectId: widget.projectId,
+          subTabKey: _projectsListSubTabKey,
+        ),
       ProceduresTab.tabTitle => ProceduresTab(),
       FormsTab.tabTitle => FormsTab(),
       UserManagementTab.tabTitle => UserManagementTab(),
@@ -156,5 +218,9 @@ class _MainScreenState extends State<MainScreen> {
         child: Text('Default Screen', style: TextStyle(color: Colors.grey)),
       ),
     };
+  }
+
+  bool isProjectDetailTabs(){
+    return widget.projectId != null && widget.currentTab == ProjectsTab.tabTitle;
   }
 }

@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sgm/screens/auth/awaiting_approval.screen.dart';
@@ -16,9 +17,9 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final _fullNameController = TextEditingController();
-  final _emailController = TextEditingController();
+  final _emailController = TextEditingController(text: kDebugMode? "business+admin@10xblitz.com" : null);
   final _phoneNumberController = TextEditingController();
-  final _passwordController = TextEditingController();
+  final _passwordController = TextEditingController(text: kDebugMode? "qwerqwer" : null );
   final _confirmPasswordController = TextEditingController();
   bool _isLoading = false;
   bool _isRegistering = false;

@@ -2,10 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:sgm/row_row_row_generated/tables/project.row.dart';
 import 'package:sgm/row_row_row_generated/tables/task.row.dart';
+import 'package:sgm/row_row_row_generated/tables/user.row.dart';
+import 'package:sgm/row_row_row_generated/tables/project_task_status.row.dart';
 import 'package:sgm/services/project.service.dart';
 import 'package:sgm/services/task.service.dart';
+import 'package:sgm/services/user.service.dart';
+import 'package:sgm/services/project_task_status.service.dart';
 import 'package:sgm/widgets/paginated_data.dart';
 import 'package:sgm/widgets/task/task.view.dart';
+import 'package:sgm/widgets/task/dialog/update_task_status_dialog.dart';
 
 class ProjectsListSubTab extends StatefulWidget {
   static const String title = 'List';
@@ -16,14 +21,101 @@ class ProjectsListSubTab extends StatefulWidget {
   State<ProjectsListSubTab> createState() => _ProjectsListSubTabState();
 }
 
-class _ProjectsListSubTabState extends State<ProjectsListSubTab> {
-  ProjectRow? get project => ProjectService().getFromCache(widget.projectId);
+abstract class ProjectsListSubTabState extends State<ProjectsListSubTab> {
+  Future<void> reloadAPI();
+}
+
+class _ProjectsListSubTabState extends ProjectsListSubTabState {
+  ProjectRow? project;
+  final _paginatedDataKey = GlobalKey<PaginatedDataState>();
+  final _userService = UserService();
+  final _statusService = ProjectTaskStatusService();
+  Map<String, UserRow> _assigneeCache = {};
+  Map<String, ProjectTaskStatusRow> _statusCache = {};
+  bool _isLoading = true;
+
+  // Define consistent column widths as constants
+  static const double _titleWidth = 220.0;
+  static const double _statusWidth = 160.0;
+  static const double _dueDateWidth = 180.0;
+  static const double _assigneeWidth = 180.0;
+  static const double _birthdayWidth = 180.0;
+  static const double _nationalityWidth = 180.0;
+  static const double _phoneWidth = 180.0;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadCaches();
+  }
+
+  Future<void> _loadCaches() async {
+    if (!mounted) return;
+    setState(() => _isLoading = true);
+    
+    try {
+      // Load all users for assignee mapping
+      final users = await _userService.getAllUsers(activated: false, isBanned: false);
+      _assigneeCache = {for (var user in users) user.id: user};
+
+      // Load all statuses for the project
+      final statuses = await _statusService.getStatusByProjectID(widget.projectId);
+      _statusCache = {for (var status in statuses) status.id: status};
+      
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
+    } catch (e) {
+      debugPrint('Error loading caches: $e');
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
+    }
+  }
+
+  @override
+  Future<void> reloadAPI() async {
+    debugPrint("Reloading API");
+    if (!mounted) return;
+
+    try {
+      final value = await ProjectService().getFromId(widget.projectId);
+      if (!mounted) return;
+
+      setState(() {
+        project = value;
+      });
+
+      // Refresh the task list
+      final paginatedState = _paginatedDataKey.currentState;
+      if (paginatedState != null) {
+        await paginatedState.refresh();
+      }
+    } catch (e) {
+      debugPrint("Error reloading API: $e");
+    }
+  }
+
+  String _getAssigneeName(String? assigneeId) {
+    if (assigneeId == null) return '';
+    return _assigneeCache[assigneeId]?.name ?? 'Unknown';
+  }
+
+  String _getStatusName(TaskRow? row) {
+    if (row == null) return '';
+    return _statusCache[row.status]?.status ?? row.status ?? 'Unknown';
+  }
+
+  // Get status color based on status ID
+  Color _getStatusColor(String? statusId) {
+   return Colors.green;
+  }
 
   @override
   Widget build(BuildContext context) {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       if (project != null) return;
-      await ProjectService().getFromId(widget.projectId);
+      project = await ProjectService().getFromId(widget.projectId);
       setState(() {});
     });
     final theme = Theme.of(context);
@@ -40,93 +132,102 @@ class _ProjectsListSubTabState extends State<ProjectsListSubTab> {
         Expanded(
           child: SingleChildScrollView(
             child: PaginatedData(
+              key: _paginatedDataKey,
               builder: (context, data, isLoading) {
+                // Calculate total table width from column widths
+                final tableWidth = _titleWidth + _statusWidth + _dueDateWidth +
+                    _assigneeWidth + _birthdayWidth + _nationalityWidth + _phoneWidth;
+
                 return SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Header row
-                      Container(
-                        decoration: BoxDecoration(
-                          color: theme.colorScheme.surfaceContainerHighest,
-                          border: Border(
-                            bottom: BorderSide(
-                              color: theme.colorScheme.outlineVariant,
-                            ),
-                          ),
-                        ),
-                        child: Row(
-                          children: [
-                            _buildHeaderCell("Title", width: 220),
-                            _buildHeaderCell("Status", width: 160),
-                            _buildHeaderCell("Due Date", width: 180),
-                            _buildHeaderCell("Assignee", width: 180),
-                            _buildHeaderCell("Birthday", width: 180),
-                            _buildHeaderCell("Nationality", width: 180),
-                            _buildHeaderCell("Phone", width: 180),
-                          ],
-                        ),
-                      ),
-
-                      // Data rows
-                      ...List.generate(data.length, (index) {
-                        final item = data[index] as TaskRow;
-                        return InkWell(
-                          onTap: () {
-                            showGeneralDialog(
-                              context: context,
-                              pageBuilder: (context, a1, a2) {
-                                return TaskView(task: item);
-                              },
-                            );
-                          },
-                          child: Container(
-                            decoration: BoxDecoration(
-                              border: Border(
-                                bottom: BorderSide(
-                                  color: theme.colorScheme.outlineVariant,
-                                ),
+                  child: SizedBox(
+                    // Set fixed width for the entire table to ensure alignment
+                    width: tableWidth,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Header row
+                        Container(
+                          decoration: BoxDecoration(
+                            color: theme.colorScheme.surfaceContainerHighest,
+                            border: Border(
+                              bottom: BorderSide(
+                                color: theme.colorScheme.outlineVariant,
                               ),
                             ),
-                            child: Row(
-                              children: [
-                                _buildDataCell(item.title ?? "", width: 220),
-                                _buildDataCell(item.status ?? "", width: 160),
-                                _buildDataCell(
-                                  item.dateDue != null
-                                      ? _formatDateTime(item.dateDue!)
-                                      : "No Due Date",
-                                  width: 180,
-                                  style:
-                                      item.dateDue != null
-                                          ? null
-                                          : theme.textTheme.bodyMedium
-                                              ?.copyWith(
-                                                fontStyle: FontStyle.italic,
-                                              ),
-                                ),
-                                _buildDataCell(item.assignee ?? "", width: 180),
-                                _buildDataCell(
-                                  item.customerBirthday != null
-                                      ? _formatDateOnly(item.customerBirthday!)
-                                      : "",
-                                  width: 180,
-                                ),
-                                _buildDataCell(
-                                  item.customerNationality ?? "",
-                                  width: 180,
-                                ),
-                                _buildDataCell(
-                                  item.customerPhone ?? "",
-                                  width: 180,
-                                ),
-                              ],
-                            ),
                           ),
-                        );
-                      }),
-                    ],
+                          child: Row(
+                            children: [
+                              _buildHeaderCell("Title", width: _titleWidth),
+                              _buildHeaderCell("Status", width: _statusWidth),
+                              _buildHeaderCell("Due Date", width: _dueDateWidth),
+                              _buildHeaderCell("Assignee", width: _assigneeWidth),
+                              _buildHeaderCell("Birthday", width: _birthdayWidth),
+                              _buildHeaderCell("Nationality", width: _nationalityWidth),
+                              _buildHeaderCell("Phone", width: _phoneWidth),
+                            ],
+                          ),
+                        ),
+
+                        // Data rows
+                        ...List.generate(data.length, (index) {
+                          final item = data[index] as TaskRow;
+                          return InkWell(
+                            onTap: () {
+                              showGeneralDialog(
+                                context: context,
+                                pageBuilder: (context, a1, a2) {
+                                  return TaskView(task: item);
+                                },
+                              );
+                            },
+                            child: Container(
+                              decoration: BoxDecoration(
+                                border: Border(
+                                  bottom: BorderSide(
+                                    color: theme.colorScheme.outlineVariant,
+                                  ),
+                                ),
+                              ),
+                              child: Row(
+                                children: [
+                                  _buildDataCell(item.title ?? "", width: _titleWidth),
+                                  _buildStatusCell(item, width: _statusWidth),
+                                  _buildDataCell(
+                                    item.dateDue != null
+                                        ? _formatDateTime(item.dateDue!)
+                                        : "No Due Date",
+                                    width: _dueDateWidth,
+                                    style:
+                                    item.dateDue != null
+                                        ? null
+                                        : theme.textTheme.bodyMedium
+                                        ?.copyWith(
+                                      fontStyle: FontStyle.italic,
+                                    ),
+                                  ),
+                                  _buildDataCell(_getAssigneeName(item.assignee), width: _assigneeWidth),
+                                  _buildDataCell(
+                                    item.customerBirthday != null
+                                        ? _formatDateOnly(item.customerBirthday!)
+                                        : "",
+                                    width: _birthdayWidth,
+                                  ),
+                                  _buildDataCell(
+                                    item.customerNationality ?? "",
+                                    width: _nationalityWidth,
+                                  ),
+                                  _buildDataCell(
+                                    item.customerPhone ?? "",
+                                    width: _phoneWidth,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        }),
+                      ],
+                    ),
                   ),
                 );
               },
@@ -151,24 +252,68 @@ class _ProjectsListSubTabState extends State<ProjectsListSubTab> {
   Widget _buildHeaderCell(String text, {required double width}) {
     return Container(
       width: width,
-      padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+      padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
       child: Text(text, style: const TextStyle(fontWeight: FontWeight.bold)),
     );
   }
 
   Widget _buildDataCell(
-    String text, {
-    required double width,
-    TextStyle? style,
-  }) {
+      String text, {
+        required double width,
+        TextStyle? style,
+      }) {
     return Container(
       width: width,
-      padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+      padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
       child: Text(
         text,
         style: style,
         overflow: TextOverflow.ellipsis,
         maxLines: 2,
+      ),
+    );
+  }
+
+  Widget _buildStatusCell(TaskRow row, {
+    required double width,
+  }) {
+    return Container(
+      width: width,
+      padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
+      child: GestureDetector(
+        onTap: () {
+          showDialog(
+            context: context,
+            builder: (context) => UpdateTaskStatusDialog(
+              projectId: widget.projectId,
+              taskId: row.id,
+              currentStatus: row.status ?? '',
+              onStatusUpdated: reloadAPI,
+            ),
+          );
+        },
+        child: Align(
+          alignment: Alignment.centerLeft,
+          child: IntrinsicWidth(
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              decoration: BoxDecoration(
+                color: _getStatusColor(row.status),
+                borderRadius: BorderRadius.circular(4),
+              ),
+              child: Text(
+                _getStatusName(row),
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500,
+                ),
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
+              ),
+            ),
+          ),
+        ),
       ),
     );
   }
