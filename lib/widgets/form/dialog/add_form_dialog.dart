@@ -355,7 +355,6 @@ class _AddFormDialogState extends State<AddFormDialog> {
   }
 
   Future<void> _handleSubmitCreateForm(BuildContext context) async {
-    LoadingUtils.showLoading();
     var existTitle = _questions.where((q) => q.title == "How did you hear from us?").toList();
     if (_referralEnabled && existTitle.isEmpty) {
       _questions.add(
@@ -370,50 +369,9 @@ class _AddFormDialogState extends State<AddFormDialog> {
       _questions.removeWhere((q) => q.title == 'How did you hear from us?');
     }
 
-    try {
-      if (_formKey.currentState!.validate()) {
-        widget.onSubmit?.call(_formTitle, _formName, _formDescription, _questions);
-
-        var currentUserID = AuthService().currentUser?.id;
-
-        // Create the form with the provided details
-
-        var newForm = await FormService().createForm(
-          linkedProject: widget.projectId,
-          name: _formName,
-          description: _formDescription,
-          createdBy: currentUserID,
-        );
-
-        MyLogger.d('Form created with ID: ${newForm?.id}');
-
-        // add questions to the form
-
-        // list questions ids
-        List<String> questionIds = [];
-        await Future.forEach(_questions, (QuestionData question) async {
-          var newQuestion = await FormQuestionService().createQuestion(
-            formId: '${newForm?.id}',
-            type: question.type,
-            question: question.title,
-            isRequired: question.required ? true : false,
-            checkboxOptions: question.options ?? [],
-          );
-          questionIds.add(newQuestion?.id ?? '');
-          MyLogger.d('Question created with ID: ${newQuestion?.id}');
-        });
-
-        LoadingUtils.showSuccess('Form created successfully');
-
-        LoadingUtils.dismissLoading();
-
-        if (mounted) {
-          Navigator.of(context).pop();
-        }
-      }
-    } catch (e) {
-      LoadingUtils.dismissLoading();
-      LoadingUtils.showError(e.toString());
+    if (_formKey.currentState!.validate()) {
+      widget.onSubmit?.call(_formTitle, _formName, _formDescription, _questions);
+      Navigator.of(context).pop();
     }
   }
 }

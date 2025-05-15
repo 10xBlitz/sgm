@@ -13,6 +13,10 @@ import 'package:sgm/mainTabs/projects/subTabs/projects.list.sub_tab.dart';
 import 'package:sgm/mainTabs/user_management.tab.dart';
 import 'package:sgm/services/project.service.dart';
 import 'package:sgm/services/task.service.dart';
+import 'package:sgm/services/form.service.dart';
+import 'package:sgm/services/auth.service.dart';
+import 'package:sgm/services/form_question.service.dart';
+import 'package:sgm/utils/loading_utils.dart';
 import 'package:sgm/widgets/form/dialog/add_form_dialog.dart';
 import 'package:sgm/widgets/side_nav.dart';
 
@@ -41,6 +45,7 @@ class _MainScreenState extends State<MainScreen> {
   String get selectedTab => widget.currentTab;
   String? get selectedSubTab => widget.subTab;
   final _projectsListSubTabKey = GlobalKey();
+  final _key = GlobalKey<ExpandableFabState>();
 
   @override
   Widget build(BuildContext context) {
@@ -146,9 +151,13 @@ class _MainScreenState extends State<MainScreen> {
     );
   }
 
+
+
   Widget _buildFab(BuildContext context) {
     if (!_isProjectDetailTabs()) return const SizedBox.shrink();
     return ExpandableFab(
+      key: _key,
+
       distance: 70,
       type: ExpandableFabType.up,
       children: [
@@ -162,6 +171,7 @@ class _MainScreenState extends State<MainScreen> {
               child: const Icon(Icons.add_task_outlined),
               onPressed: () {
                 _handleAddTask(context);
+                _closeFab();
               },
             ),
           ],
@@ -174,12 +184,24 @@ class _MainScreenState extends State<MainScreen> {
               tooltip: 'Add Form',
               heroTag: null,
               child: const Icon(Icons.menu_book_outlined),
-              onPressed: () => _handleAddForm(context),
+              onPressed: () {
+                _closeFab();
+                _handleAddForm(context);
+              },
             ),
           ],
         ),
       ],
     );
+  }
+
+  void _closeFab() {
+      // close fab
+    final state = _key.currentState;
+    if (state != null) {
+      debugPrint('isOpen:${state.isOpen}');
+      state.toggle();
+    }
   }
 
   Future<void> _handleAddTask(BuildContext context) async {
@@ -241,7 +263,55 @@ class _MainScreenState extends State<MainScreen> {
       barrierDismissible: false,
       builder: (context) =>
           AddFormDialog(
-              projectId: '${widget.projectId}',
+            projectId: '${widget.projectId}',
+            onSubmit: (formTitle, formName, formDescription, questions) async {
+              debugPrint('Form added: $formName, Description: $formDescription');
+              LoadingUtils.showLoading();
+              try {
+                var currentUserID = AuthService().currentUser?.id;
+                
+                // Create the form
+                var newForm = await FormService().createForm(
+                  linkedProject: widget.projectId,
+                  name: formName,
+                  description: formDescription,
+                  createdBy: currentUserID,
+                );
+
+                debugPrint('Form created with ID: ${newForm?.id}');
+
+                // Add questions to the form
+                await Future.forEach(questions, (QuestionData question) async {
+                  await FormQuestionService().createQuestion(
+                    formId: '${newForm?.id}',
+                    type: question.type,
+                    question: question.title,
+                    isRequired: question.required,
+                    checkboxOptions: question.options ?? [],
+                  );
+                });
+
+                LoadingUtils.dismissLoading();
+                LoadingUtils.showSuccess('Form created successfully!');
+
+                if (mounted) {
+                  setState(() {
+                    // Reload both API and forms
+                    (_projectsListSubTabKey.currentState as ProjectsListSubTabState?)?.reloadAPI();
+                    (_projectsListSubTabKey.currentState as ProjectsListSubTabState?)?.reloadForms();
+                  });
+                }
+              } catch (e) {
+                LoadingUtils.dismissLoading();
+                if (mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('Error: $e'),
+                    ),
+                  );
+                }
+              }
+            },
           ),
     );
   }
