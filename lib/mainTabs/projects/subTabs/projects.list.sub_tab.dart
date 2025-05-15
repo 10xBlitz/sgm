@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:sgm/row_row_row_generated/tables/form.row.dart';
 import 'package:sgm/row_row_row_generated/tables/project.row.dart';
 import 'package:sgm/row_row_row_generated/tables/task.row.dart';
 import 'package:sgm/row_row_row_generated/tables/user.row.dart';
 import 'package:sgm/row_row_row_generated/tables/project_task_status.row.dart';
+import 'package:sgm/services/form.service.dart';
 import 'package:sgm/services/project.service.dart';
 import 'package:sgm/services/task.service.dart';
 import 'package:sgm/services/user.service.dart';
@@ -23,6 +25,7 @@ class ProjectsListSubTab extends StatefulWidget {
 
 abstract class ProjectsListSubTabState extends State<ProjectsListSubTab> {
   Future<void> reloadAPI();
+  Future<void> reloadForms();
 }
 
 class _ProjectsListSubTabState extends ProjectsListSubTabState {
@@ -30,9 +33,12 @@ class _ProjectsListSubTabState extends ProjectsListSubTabState {
   final _paginatedDataKey = GlobalKey<PaginatedDataState>();
   final _userService = UserService();
   final _statusService = ProjectTaskStatusService();
+  final _formService = FormService();
   Map<String, UserRow> _assigneeCache = {};
   Map<String, ProjectTaskStatusRow> _statusCache = {};
+  List<FormRow> _forms = [];
   bool _isLoading = true;
+  bool _isLoadingForms = true;
 
   // Define consistent column widths as constants
   static const double _titleWidth = 220.0;
@@ -47,6 +53,7 @@ class _ProjectsListSubTabState extends ProjectsListSubTabState {
   void initState() {
     super.initState();
     _loadCaches();
+    _loadForms();
   }
 
   Future<void> _loadCaches() async {
@@ -61,6 +68,13 @@ class _ProjectsListSubTabState extends ProjectsListSubTabState {
       // Load all statuses for the project
       final statuses = await _statusService.getStatusByProjectID(widget.projectId);
       _statusCache = {for (var status in statuses) status.id: status};
+
+      // map current project status to the status cache
+      if (project != null) {
+        project = project!.copyWith(
+          status: _statusCache[project!.status]?.status,
+        );
+      }
       
       if (mounted) {
         setState(() => _isLoading = false);
@@ -69,6 +83,26 @@ class _ProjectsListSubTabState extends ProjectsListSubTabState {
       debugPrint('Error loading caches: $e');
       if (mounted) {
         setState(() => _isLoading = false);
+      }
+    }
+  }
+
+  Future<void> _loadForms() async {
+    if (!mounted) return;
+    try {
+      final forms = await _formService.getFormsByProject(widget.projectId);
+      if (mounted) {
+        setState(() {
+          _forms = forms;
+          _isLoadingForms = false;
+        });
+      }
+    } catch (e) {
+      debugPrint('Error loading forms: $e');
+      if (mounted) {
+        setState(() {
+          _isLoadingForms = false;
+        });
       }
     }
   }
@@ -94,6 +128,13 @@ class _ProjectsListSubTabState extends ProjectsListSubTabState {
     } catch (e) {
       debugPrint("Error reloading API: $e");
     }
+  }
+
+  @override
+  Future<void> reloadForms() async {
+    if (!mounted) return;
+    setState(() => _isLoadingForms = true);
+    await _loadForms();
   }
 
   String _getAssigneeName(String? assigneeId) {
@@ -122,67 +163,61 @@ class _ProjectsListSubTabState extends ProjectsListSubTabState {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Container(
-          padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
-          width: double.infinity,
-          color: theme.colorScheme.surfaceContainerHigh,
-          child: Text("List by Creation Date"),
-        ),
-        Divider(height: 1, color: theme.colorScheme.outlineVariant),
+        // Combined scrollable content
         Expanded(
           child: SingleChildScrollView(
-            child: PaginatedData(
-              key: _paginatedDataKey,
-              builder: (context, data, isLoading) {
-                // Calculate total table width from column widths
-                final tableWidth = _titleWidth + _statusWidth + _dueDateWidth +
-                    _assigneeWidth + _birthdayWidth + _nationalityWidth + _phoneWidth;
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                // Forms section
+                if (_isLoadingForms)
+                  const Padding(padding: EdgeInsets.all(16.0), child: Center(child: CircularProgressIndicator()))
+                else if (_forms.isEmpty)
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Text('No forms for this project.', style: theme.textTheme.bodyMedium),
+                  )
+                else
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+                        child: Text('Forms', style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
+                      ),
+                      ..._forms.map((form) => _formItem(theme, form)),
+                      const Divider(height: 1),
+                    ],
+                  ),
 
-                return SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: SizedBox(
-                    // Set fixed width for the entire table to ensure alignment
-                    width: tableWidth,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // Header row
-                        Container(
-                          decoration: BoxDecoration(
-                            color: theme.colorScheme.surfaceContainerHighest,
-                            border: Border(
-                              bottom: BorderSide(
-                                color: theme.colorScheme.outlineVariant,
-                              ),
-                            ),
-                          ),
-                          child: Row(
-                            children: [
-                              _buildHeaderCell("Title", width: _titleWidth),
-                              _buildHeaderCell("Status", width: _statusWidth),
-                              _buildHeaderCell("Due Date", width: _dueDateWidth),
-                              _buildHeaderCell("Assignee", width: _assigneeWidth),
-                              _buildHeaderCell("Birthday", width: _birthdayWidth),
-                              _buildHeaderCell("Nationality", width: _nationalityWidth),
-                              _buildHeaderCell("Phone", width: _phoneWidth),
-                            ],
-                          ),
-                        ),
+                // List section header
+                Container(
+                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+                  width: double.infinity,
+                  color: theme.colorScheme.surfaceContainerHigh,
+                  child: const Text("List by Creation Date"),
+                ),
+                const Divider(height: 1),
 
-                        // Data rows
-                        ...List.generate(data.length, (index) {
-                          final item = data[index] as TaskRow;
-                          return InkWell(
-                            onTap: () {
-                              showGeneralDialog(
-                                context: context,
-                                pageBuilder: (context, a1, a2) {
-                                  return TaskView(task: item);
-                                },
-                              );
-                            },
-                            child: Container(
+                // List content
+                PaginatedData(
+                  key: _paginatedDataKey,
+                  builder: (context, data, isLoading) {
+                    // Calculate total table width from column widths
+                    final tableWidth = _titleWidth + _statusWidth + _dueDateWidth +
+                        _assigneeWidth + _birthdayWidth + _nationalityWidth + _phoneWidth;
+
+                    return SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: SizedBox(
+                        width: tableWidth,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // Header row
+                            Container(
                               decoration: BoxDecoration(
+                                color: theme.colorScheme.surfaceContainerHighest,
                                 border: Border(
                                   bottom: BorderSide(
                                     color: theme.colorScheme.outlineVariant,
@@ -191,57 +226,90 @@ class _ProjectsListSubTabState extends ProjectsListSubTabState {
                               ),
                               child: Row(
                                 children: [
-                                  _buildDataCell(item.title ?? "", width: _titleWidth),
-                                  _buildStatusCell(item, width: _statusWidth),
-                                  _buildDataCell(
-                                    item.dateDue != null
-                                        ? _formatDateTime(item.dateDue!)
-                                        : "No Due Date",
-                                    width: _dueDateWidth,
-                                    style:
-                                    item.dateDue != null
-                                        ? null
-                                        : theme.textTheme.bodyMedium
-                                        ?.copyWith(
-                                      fontStyle: FontStyle.italic,
-                                    ),
-                                  ),
-                                  _buildDataCell(_getAssigneeName(item.assignee), width: _assigneeWidth),
-                                  _buildDataCell(
-                                    item.customerBirthday != null
-                                        ? _formatDateOnly(item.customerBirthday!)
-                                        : "",
-                                    width: _birthdayWidth,
-                                  ),
-                                  _buildDataCell(
-                                    item.customerNationality ?? "",
-                                    width: _nationalityWidth,
-                                  ),
-                                  _buildDataCell(
-                                    item.customerPhone ?? "",
-                                    width: _phoneWidth,
-                                  ),
+                                  _buildHeaderCell("Title", width: _titleWidth),
+                                  _buildHeaderCell("Status", width: _statusWidth),
+                                  _buildHeaderCell("Due Date", width: _dueDateWidth),
+                                  _buildHeaderCell("Assignee", width: _assigneeWidth),
+                                  _buildHeaderCell("Birthday", width: _birthdayWidth),
+                                  _buildHeaderCell("Nationality", width: _nationalityWidth),
+                                  _buildHeaderCell("Phone", width: _phoneWidth),
                                 ],
                               ),
                             ),
-                          );
-                        }),
-                      ],
-                    ),
-                  ),
-                );
-              },
-              getPage: (int page, int pageSize) async {
-                return await TaskService().getPage(
-                  widget.projectId,
-                  page,
-                  pageSize,
-                );
-              },
-              getCount: () async {
-                return await TaskService().getCount(widget.projectId);
-              },
-              initialPage: 1,
+
+                            // Data rows
+                            ...List.generate(data.length, (index) {
+                              final item = data[index] as TaskRow;
+                              return InkWell(
+                                onTap: () {
+                                  showGeneralDialog(
+                                    context: context,
+                                    pageBuilder: (context, a1, a2) {
+                                      return TaskView(task: item);
+                                    },
+                                  );
+                                },
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    border: Border(
+                                      bottom: BorderSide(
+                                        color: theme.colorScheme.outlineVariant,
+                                      ),
+                                    ),
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      _buildDataCell(item.title ?? "", width: _titleWidth),
+                                      _buildStatusCell(item, width: _statusWidth),
+                                      _buildDataCell(
+                                        item.dateDue != null
+                                            ? _formatDateTime(item.dateDue!)
+                                            : "No Due Date",
+                                        width: _dueDateWidth,
+                                        style: item.dateDue != null
+                                            ? null
+                                            : theme.textTheme.bodyMedium?.copyWith(
+                                                fontStyle: FontStyle.italic,
+                                              ),
+                                      ),
+                                      _buildDataCell(_getAssigneeName(item.assignee), width: _assigneeWidth),
+                                      _buildDataCell(
+                                        item.customerBirthday != null
+                                            ? _formatDateOnly(item.customerBirthday!)
+                                            : "",
+                                        width: _birthdayWidth,
+                                      ),
+                                      _buildDataCell(
+                                        item.customerNationality ?? "",
+                                        width: _nationalityWidth,
+                                      ),
+                                      _buildDataCell(
+                                        item.customerPhone ?? "",
+                                        width: _phoneWidth,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            }),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                  getPage: (int page, int pageSize) async {
+                    return await TaskService().getPage(
+                      widget.projectId,
+                      page,
+                      pageSize,
+                    );
+                  },
+                  getCount: () async {
+                    return await TaskService().getCount(widget.projectId);
+                  },
+                  initialPage: 1,
+                ),
+              ],
             ),
           ),
         ),
@@ -338,5 +406,25 @@ class _ProjectsListSubTabState extends ProjectsListSubTabState {
     ).format(localDateTime);
 
     return formattedDate;
+  }
+
+  Widget _formItem(ThemeData theme, FormRow form) {
+    return Container(
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+      decoration: BoxDecoration(border: Border(bottom: BorderSide(color: theme.colorScheme.outlineVariant))),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(Icons.description, color: theme.colorScheme.primary),
+          const SizedBox(width: 8),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(form.name ?? 'Untitled Form', style: theme.textTheme.titleMedium),
+                Text('${form.description}'),]
+          ),
+        ],
+      ),
+    );
   }
 }
