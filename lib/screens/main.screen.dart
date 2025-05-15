@@ -147,7 +147,7 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   Widget _buildFab(BuildContext context) {
-    if (!isProjectDetailTabs()) return const SizedBox.shrink();
+    if (!_isProjectDetailTabs()) return const SizedBox.shrink();
     return ExpandableFab(
       distance: 70,
       type: ExpandableFabType.up,
@@ -174,9 +174,7 @@ class _MainScreenState extends State<MainScreen> {
               tooltip: 'Add Form',
               heroTag: null,
               child: const Icon(Icons.menu_book_outlined),
-              onPressed: () {
-
-              },
+              onPressed: () => _handleAddForm(context),
             ),
           ],
         ),
@@ -241,7 +239,10 @@ class _MainScreenState extends State<MainScreen> {
     await showDialog(
       context: context,
       barrierDismissible: false,
-      builder: (context) => const AddFormDialog(),
+      builder: (context) =>
+          AddFormDialog(
+              projectId: '${widget.projectId}',
+          ),
     );
   }
 
@@ -265,7 +266,8 @@ class _MainScreenState extends State<MainScreen> {
     };
   }
 
-  bool isProjectDetailTabs(){
+  bool _isProjectDetailTabs(){
     return widget.projectId != null && widget.currentTab == ProjectsTab.tabTitle;
   }
+
 }

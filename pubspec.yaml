@@ -21,6 +21,7 @@ dependencies:
   supabase_flutter: ^2.3.1
   flutter_quill: ^11.4.0
   flutter_expandable_fab: ^2.5.1
+  flutter_easyloading: ^3.0.5
 
 dev_dependencies:
   flutter_test:
