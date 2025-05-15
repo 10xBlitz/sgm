@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:sgm/row_row_row_generated/tables/form.row.dart';
 import 'package:sgm/row_row_row_generated/tables/project.row.dart';
 import 'package:sgm/row_row_row_generated/tables/task.row.dart';
 import 'package:sgm/row_row_row_generated/tables/user.row.dart';
 import 'package:sgm/row_row_row_generated/tables/project_task_status.row.dart';
+import 'package:sgm/services/form.service.dart';
 import 'package:sgm/services/project.service.dart';
 import 'package:sgm/services/task.service.dart';
 import 'package:sgm/services/user.service.dart';
@@ -30,9 +32,12 @@ class _ProjectsListSubTabState extends ProjectsListSubTabState {
   final _paginatedDataKey = GlobalKey<PaginatedDataState>();
   final _userService = UserService();
   final _statusService = ProjectTaskStatusService();
+  final _formService = FormService();
   Map<String, UserRow> _assigneeCache = {};
   Map<String, ProjectTaskStatusRow> _statusCache = {};
+  List<FormRow> _forms = [];
   bool _isLoading = true;
+  bool _isLoadingForms = true;
 
   // Define consistent column widths as constants
   static const double _titleWidth = 220.0;
@@ -47,6 +52,7 @@ class _ProjectsListSubTabState extends ProjectsListSubTabState {
   void initState() {
     super.initState();
     _loadCaches();
+    _loadForms();
   }
 
   Future<void> _loadCaches() async {
@@ -76,6 +82,26 @@ class _ProjectsListSubTabState extends ProjectsListSubTabState {
       debugPrint('Error loading caches: $e');
       if (mounted) {
         setState(() => _isLoading = false);
+      }
+    }
+  }
+
+  Future<void> _loadForms() async {
+    if (!mounted) return;
+    try {
+      final forms = await _formService.getFormsByProject(widget.projectId);
+      if (mounted) {
+        setState(() {
+          _forms = forms;
+          _isLoadingForms = false;
+        });
+      }
+    } catch (e) {
+      debugPrint('Error loading forms: $e');
+      if (mounted) {
+        setState(() {
+          _isLoadingForms = false;
+        });
       }
     }
   }
@@ -129,6 +155,26 @@ class _ProjectsListSubTabState extends ProjectsListSubTabState {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
+        if (_isLoadingForms)
+          const Padding(padding: EdgeInsets.all(16.0), child: Center(child: CircularProgressIndicator()))
+        else if (_forms.isEmpty)
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Text('No forms for this project.', style: theme.textTheme.bodyMedium),
+          )
+        else
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+                child: Text('Forms', style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
+              ),
+              ..._forms.map((form) => _formItem(theme, form)),
+              const Divider(height: 1),
+            ],
+          ),
+
         Container(
           padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
           width: double.infinity,
@@ -345,5 +391,24 @@ class _ProjectsListSubTabState extends ProjectsListSubTabState {
     ).format(localDateTime);
 
     return formattedDate;
+  }
+
+  Widget _formItem(ThemeData theme, FormRow form) {
+    return Container(
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+      decoration: BoxDecoration(border: Border(bottom: BorderSide(color: theme.colorScheme.outlineVariant))),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(Icons.description, color: theme.colorScheme.primary),
+          const SizedBox(width: 8),
+          Column(
+              children: [
+                Text(form.name ?? 'Untitled Form', style: theme.textTheme.titleMedium),
+                Text('${form.description}'),]
+          ),
+        ],
+      ),
+    );
   }
 }

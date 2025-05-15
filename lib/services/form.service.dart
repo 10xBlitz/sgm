@@ -49,4 +49,34 @@ class FormService {
       return null;
     }
   }
+
+  /// Gets all forms for a specific project.
+  Future<List<FormRow>> getFormsByProject(String projectId) async {
+    try {
+      final response = await _supabase
+          .from(FormRow.table)
+          .select()
+          .eq(FormRow.field.linkedProject, projectId)
+          .order(FormRow.field.createdAt, ascending: false);
+      return response.map<FormRow>((f) => FormRow.fromJson(f)).toList();
+    } catch (e) {
+      debugPrint('Error fetching forms for project: $e');
+      return [];
+    }
+  }
+
+  /// Gets a single form by its ID.
+  Future<FormRow?> getForm(String id) async {
+    try {
+      final response = await _supabase
+          .from(FormRow.table)
+          .select()
+          .eq(FormRow.field.id, id)
+          .single();
+      return FormRow.fromJson(response);
+    } catch (e) {
+      debugPrint('Error fetching form by ID: $e');
+      return null;
+    }
+  }
 } 
