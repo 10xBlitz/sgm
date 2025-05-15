@@ -61,6 +61,13 @@ class _ProjectsListSubTabState extends ProjectsListSubTabState {
       // Load all statuses for the project
       final statuses = await _statusService.getStatusByProjectID(widget.projectId);
       _statusCache = {for (var status in statuses) status.id: status};
+
+      // map current project status to the status cache
+      if (project != null) {
+        project = project!.copyWith(
+          status: _statusCache[project!.status]?.status,
+        );
+      }
       
       if (mounted) {
         setState(() => _isLoading = false);
