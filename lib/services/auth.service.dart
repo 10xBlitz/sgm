@@ -81,7 +81,6 @@ class AuthService extends ChangeNotifier {
           .from('user')
           .select()
           .eq(UserRow.field.id, supabaseService.currentUser!.id);
-      debugPrint("Load Profile Response: $response");
       if (response.isEmpty) return false;
       if (response.length > 1) throw Exception("Multiple profiles found");
       currentUserRow = UserRow.fromJson(

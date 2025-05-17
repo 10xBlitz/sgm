@@ -11,7 +11,7 @@ import 'package:sgm/services/task.service.dart';
 import 'package:sgm/services/user.service.dart';
 import 'package:sgm/services/project_task_status.service.dart';
 import 'package:sgm/widgets/paginated_data.dart';
-import 'package:sgm/widgets/task/task.view.dart';
+import 'package:sgm/widgets/task/taskview/task.view.dart';
 
 class ClinicsListSubTab extends StatefulWidget {
   static const String title = 'List';
@@ -327,14 +327,18 @@ class _ClinicsListSubTabState extends State<ClinicsListSubTab> {
             return const CircularProgressIndicator();
           }
           final statuses = snapshot.data ?? [];
-          final status = statuses.firstWhere(
-            (s) => s.id == row.status,
-            orElse: () => statuses.firstWhere(
-              (s) => s.forNullStatus,
-              orElse: () => statuses.first,
-            ),
-          );
-          return Text(status.status ?? 'No Status');
+          if(statuses.isEmpty) {
+            return const Text('No Statuses');
+          }else{
+            final status = statuses.firstWhere(
+                  (s) => s.id == row.status,
+              orElse: () => statuses.firstWhere(
+                    (s) => s.forNullStatus,
+                orElse: () => statuses.first,
+              ),
+            );
+            return Text(status.status ?? 'No Status');
+          }
         },
       ),
     );
@@ -351,7 +355,7 @@ class _ClinicsListSubTabState extends State<ClinicsListSubTab> {
             return Text('Error: ${snapshot.error}');
           }
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const CircularProgressIndicator();
+            return Center(child: const CircularProgressIndicator());
           }
           final users = snapshot.data ?? [];
           final user = users.firstWhere(

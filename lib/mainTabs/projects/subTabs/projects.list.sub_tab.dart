@@ -11,7 +11,7 @@ import 'package:sgm/services/task.service.dart';
 import 'package:sgm/services/user.service.dart';
 import 'package:sgm/services/project_task_status.service.dart';
 import 'package:sgm/widgets/paginated_data.dart';
-import 'package:sgm/widgets/task/task.view.dart';
+import 'package:sgm/widgets/task/taskview/task.view.dart';
 import 'package:sgm/widgets/task/dialog/update_task_status_dialog.dart';
 
 class ProjectsListSubTab extends StatefulWidget {

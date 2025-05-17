@@ -70,6 +70,21 @@ class FormQuestionService {
     }
   }
 
+  // Fetches all questions for a given form ID.
+  Future<List<FormQuestionRow>> fetchQuestionsByForm(String formId) async {
+    try {
+      final response = await _supabase
+          .from(FormQuestionRow.table)
+          .select()
+          .eq(FormQuestionRow.field.form, formId)
+          .order(FormQuestionRow.field.order);
+      return (response as List).map((e) => FormQuestionRow.fromJson(e)).toList();
+    } catch (error) {
+      debugPrint('Error fetching questions: $error');
+      return [];
+    }
+  }
+
   String _questionTypeToString(QuestionType type) {
     switch (type) {
       case QuestionType.text:
