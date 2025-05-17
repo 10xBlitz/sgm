@@ -3,7 +3,7 @@ import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sgm/mainTabs/announcements.tab.dart';
 import 'package:sgm/mainTabs/chat.tab.dart';
-import 'package:sgm/mainTabs/clinics.tab.dart';
+import 'package:sgm/mainTabs/clinics/clinics.tab.dart';
 import 'package:sgm/mainTabs/dashboard.tab.dart';
 import 'package:sgm/mainTabs/forms.tab.dart';
 import 'package:sgm/mainTabs/my_task.tab.dart';
@@ -321,7 +321,11 @@ class _MainScreenState extends State<MainScreen> {
       DashboardTab.tabTitle => DashboardTab(),
       ChatTab.tabTitle => ChatTab(),
       MyTaskTab.tabTitle => MyTaskTab(),
-      ClinicsTab.tabTitle => ClinicsTab(),
+      ClinicsTab.tabTitle => ClinicsTab(
+          projectId: widget.projectId,
+          subTab: widget.subTab,
+          subTabKey: _projectsListSubTabKey,
+        ),
       ProjectsTab.tabTitle => ProjectsTab(
           projectId: widget.projectId,
           subTabKey: _projectsListSubTabKey,

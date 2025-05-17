@@ -12,141 +12,59 @@ import 'package:sgm/services/user.service.dart';
 import 'package:sgm/services/project_task_status.service.dart';
 import 'package:sgm/widgets/paginated_data.dart';
 import 'package:sgm/widgets/task/task.view.dart';
-import 'package:sgm/widgets/task/dialog/update_task_status_dialog.dart';
 
-class ProjectsListSubTab extends StatefulWidget {
+class ClinicsListSubTab extends StatefulWidget {
   static const String title = 'List';
-  const ProjectsListSubTab({super.key, required this.projectId});
+  const ClinicsListSubTab({super.key, required this.projectId});
   final String projectId;
 
   @override
-  State<ProjectsListSubTab> createState() => _ProjectsListSubTabState();
+  State<ClinicsListSubTab> createState() => _ClinicsListSubTabState();
 }
 
-abstract class ProjectsListSubTabState extends State<ProjectsListSubTab> {
-  Future<void> reloadAPI();
-  Future<void> reloadForms();
-}
-
-class _ProjectsListSubTabState extends ProjectsListSubTabState {
+class _ClinicsListSubTabState extends State<ClinicsListSubTab> {
   ProjectRow? project;
-  final _paginatedDataKey = GlobalKey<PaginatedDataState>();
-  final _userService = UserService();
-  final _statusService = ProjectTaskStatusService();
-  final _formService = FormService();
-  Map<String, UserRow> _assigneeCache = {};
-  Map<String, ProjectTaskStatusRow> _statusCache = {};
   List<FormRow> _forms = [];
   bool _isLoadingForms = true;
-
-  // Define consistent column widths as constants
-  static const double _titleWidth = 220.0;
-  static const double _statusWidth = 160.0;
-  static const double _dueDateWidth = 180.0;
-  static const double _assigneeWidth = 180.0;
-  static const double _birthdayWidth = 180.0;
-  static const double _nationalityWidth = 180.0;
-  static const double _phoneWidth = 180.0;
+  final _paginatedDataKey = GlobalKey<PaginatedDataState>();
 
   @override
   void initState() {
     super.initState();
-    _loadCaches();
     _loadForms();
   }
 
-  Future<void> _loadCaches() async {
-    if (!mounted) return;
+  Future<void> _loadForms() async {
+    setState(() {
+      _isLoadingForms = true;
+    });
 
     try {
-      // Load all users for assignee mapping
-      final users = await _userService.getAllUsers(activated: false, isBanned: false);
-      _assigneeCache = {for (var user in users) user.id: user};
-
-      // Load all statuses for the project
-      final statuses = await _statusService.getStatusByProjectID(widget.projectId);
-      _statusCache = {for (var status in statuses) status.id: status};
-
-      // map current project status to the status cache
-      if (project != null) {
-        project = project!.copyWith(
-          status: _statusCache[project!.status]?.status,
+      final forms = await FormService().getFormsByProject(widget.projectId);
+      setState(() {
+        _forms = forms;
+        _isLoadingForms = false;
+      });
+    } catch (e) {
+      setState(() {
+        _isLoadingForms = false;
+      });
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error loading forms: $e')),
         );
       }
-      
-      if (mounted) {
-      }
-    } catch (e) {
-      debugPrint('Error loading caches: $e');
-      if (mounted) {
-      }
     }
   }
 
-  Future<void> _loadForms() async {
-    if (!mounted) return;
-    try {
-      final forms = await _formService.getFormsByProject(widget.projectId);
-      if (mounted) {
-        setState(() {
-          _forms = forms;
-          _isLoadingForms = false;
-        });
-      }
-    } catch (e) {
-      debugPrint('Error loading forms: $e');
-      if (mounted) {
-        setState(() {
-          _isLoadingForms = false;
-        });
-      }
-    }
-  }
-
-  @override
-  Future<void> reloadAPI() async {
-    debugPrint("Reloading API");
-    if (!mounted) return;
-
-    try {
-      final value = await ProjectService().getFromId(widget.projectId);
-      if (!mounted) return;
-
-      setState(() {
-        project = value;
-      });
-
-      // Refresh the task list
-      final paginatedState = _paginatedDataKey.currentState;
-      if (paginatedState != null) {
-        await paginatedState.refresh();
-      }
-    } catch (e) {
-      debugPrint("Error reloading API: $e");
-    }
-  }
-
-  @override
-  Future<void> reloadForms() async {
-    if (!mounted) return;
-    setState(() => _isLoadingForms = true);
-    await _loadForms();
-  }
-
-  String _getAssigneeName(String? assigneeId) {
-    if (assigneeId == null) return '';
-    return _assigneeCache[assigneeId]?.name ?? 'Unknown';
-  }
-
-  String _getStatusName(TaskRow? row) {
-    if (row == null) return '';
-    return _statusCache[row.status]?.status ?? row.status ?? 'Unknown';
-  }
-
-  // Get status color based on status ID
-  Color _getStatusColor(String? statusId) {
-   return Colors.green;
-  }
+  // Column widths
+  final double _titleWidth = 200.0;
+  final double _statusWidth = 120.0;
+  final double _dueDateWidth = 120.0;
+  final double _assigneeWidth = 150.0;
+  final double _birthdayWidth = 120.0;
+  final double _nationalityWidth = 120.0;
+  final double _phoneWidth = 120.0;
 
   @override
   Widget build(BuildContext context) {
@@ -159,6 +77,65 @@ class _ProjectsListSubTabState extends ProjectsListSubTabState {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
+        // Clinic details header
+        if (project != null)
+          Container(
+            padding: const EdgeInsets.all(16.0),
+            color: theme.colorScheme.surfaceContainerHigh,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  project!.title ?? 'Untitled Clinic',
+                  style: theme.textTheme.headlineSmall?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                if (project!.description != null) ...[
+                  const SizedBox(height: 8),
+                  Text(
+                    project!.description!,
+                    style: theme.textTheme.bodyMedium,
+                  ),
+                ],
+                const SizedBox(height: 8),
+                Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8.0,
+                        vertical: 4.0,
+                      ),
+                      decoration: BoxDecoration(
+                        color: theme.colorScheme.primaryContainer,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Text(
+                        project!.status ?? 'No Status',
+                        style: theme.textTheme.labelSmall?.copyWith(
+                          color: theme.colorScheme.onPrimaryContainer,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Icon(
+                      Icons.calendar_today,
+                      size: 12,
+                      color: theme.colorScheme.outline,
+                    ),
+                    const SizedBox(width: 4),
+                    Text(
+                      DateFormat('yyyy-MM-dd').format(project!.createdAt),
+                      style: theme.textTheme.labelSmall?.copyWith(
+                        color: theme.colorScheme.outline,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+
         // Combined scrollable content
         Expanded(
           child: SingleChildScrollView(
@@ -171,7 +148,7 @@ class _ProjectsListSubTabState extends ProjectsListSubTabState {
                 else if (_forms.isEmpty)
                   Padding(
                     padding: const EdgeInsets.all(16.0),
-                    child: Text('No forms for this project.', style: theme.textTheme.bodyMedium),
+                    child: Text('No forms for this clinic.', style: theme.textTheme.bodyMedium),
                   )
                 else
                   Column(
@@ -255,32 +232,30 @@ class _ProjectsListSubTabState extends ProjectsListSubTabState {
                                   ),
                                   child: Row(
                                     children: [
-                                      _buildDataCell(item.title ?? "", width: _titleWidth),
+                                      _buildDataCell(
+                                        item.title ?? 'Untitled Task',
+                                        width: _titleWidth,
+                                      ),
                                       _buildStatusCell(item, width: _statusWidth),
                                       _buildDataCell(
                                         item.dateDue != null
-                                            ? _formatDateTime(item.dateDue!)
-                                            : "No Due Date",
+                                            ? DateFormat('yyyy-MM-dd').format(item.dateDue!)
+                                            : 'No due date',
                                         width: _dueDateWidth,
-                                        style: item.dateDue != null
-                                            ? null
-                                            : theme.textTheme.bodyMedium?.copyWith(
-                                                fontStyle: FontStyle.italic,
-                                              ),
                                       ),
-                                      _buildDataCell(_getAssigneeName(item.assignee), width: _assigneeWidth),
+                                      _buildAssigneeCell(item, width: _assigneeWidth),
                                       _buildDataCell(
                                         item.customerBirthday != null
-                                            ? _formatDateOnly(item.customerBirthday!)
-                                            : "",
+                                            ? DateFormat('yyyy-MM-dd').format(item.customerBirthday!)
+                                            : 'No birthday',
                                         width: _birthdayWidth,
                                       ),
                                       _buildDataCell(
-                                        item.customerNationality ?? "",
+                                        item.customerNationality ?? 'No nationality',
                                         width: _nationalityWidth,
                                       ),
                                       _buildDataCell(
-                                        item.customerPhone ?? "",
+                                        item.customerPhone ?? 'No phone',
                                         width: _phoneWidth,
                                       ),
                                     ],
@@ -338,70 +313,55 @@ class _ProjectsListSubTabState extends ProjectsListSubTabState {
     );
   }
 
-  Widget _buildStatusCell(TaskRow row, {
-    required double width,
-  }) {
+  Widget _buildStatusCell(TaskRow row, {required double width}) {
     return Container(
       width: width,
       padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
-      child: GestureDetector(
-        onTap: () {
-          showDialog(
-            context: context,
-            builder: (context) => UpdateTaskStatusDialog(
-              projectId: widget.projectId,
-              taskId: row.id,
-              currentStatus: row.status ?? '',
-              onStatusUpdated: reloadAPI,
+      child: FutureBuilder<List<ProjectTaskStatusRow>>(
+        future: ProjectTaskStatusService().getStatusByProjectID(widget.projectId),
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return Text('Error: ${snapshot.error}');
+          }
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const CircularProgressIndicator();
+          }
+          final statuses = snapshot.data ?? [];
+          final status = statuses.firstWhere(
+            (s) => s.id == row.status,
+            orElse: () => statuses.firstWhere(
+              (s) => s.forNullStatus,
+              orElse: () => statuses.first,
             ),
           );
+          return Text(status.status ?? 'No Status');
         },
-        child: Align(
-          alignment: Alignment.centerLeft,
-          child: IntrinsicWidth(
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-              decoration: BoxDecoration(
-                color: _getStatusColor(row.status),
-                borderRadius: BorderRadius.circular(4),
-              ),
-              child: Text(
-                _getStatusName(row),
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 12,
-                  fontWeight: FontWeight.w500,
-                ),
-                overflow: TextOverflow.ellipsis,
-                maxLines: 1,
-              ),
-            ),
-          ),
-        ),
       ),
     );
   }
 
-  String _formatDateOnly(DateTime dateTime) {
-    // Convert UTC time to local time
-    final localDateTime = dateTime.toLocal();
-
-    // Format in "Month 12, 2020" format
-    final formattedDate = DateFormat('MMMM d, yyyy').format(localDateTime);
-
-    return formattedDate;
-  }
-
-  String _formatDateTime(DateTime dateTime) {
-    // Convert UTC time to local time
-    final localDateTime = dateTime.toLocal();
-
-    // Format in "Month 12, 2020 11:11" format with military time
-    final formattedDate = DateFormat(
-      'MMMM d, yyyy HH:mm',
-    ).format(localDateTime);
-
-    return formattedDate;
+  Widget _buildAssigneeCell(TaskRow row, {required double width}) {
+    return Container(
+      width: width,
+      padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
+      child: FutureBuilder<List<UserRow>>(
+        future: UserService().getAllUsers(activated: false, isBanned: false),
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return Text('Error: ${snapshot.error}');
+          }
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const CircularProgressIndicator();
+          }
+          final users = snapshot.data ?? [];
+          final user = users.firstWhere(
+            (u) => u.id == row.assignee,
+            orElse: () => users.first,
+          );
+          return Text(user.name ?? 'No Assignee');
+        },
+      ),
+    );
   }
 
   Widget _formItem(ThemeData theme, FormRow form) {
