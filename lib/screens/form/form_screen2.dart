@@ -5,9 +5,7 @@ import 'package:sgm/services/form_question.service.dart';
 import 'package:sgm/row_row_row_generated/tables/form_question.row.dart';
 import 'package:sgm/services/project_task_status.service.dart';
 import 'package:sgm/services/task.service.dart';
-import 'package:sgm/utils/loading_utils.dart';
 import 'package:sgm/utils/my_logger.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:sgm/row_row_row_generated/tables/task_form_response.row.dart';
 import 'package:sgm/services/task_form_response.service.dart';
 
@@ -27,7 +25,6 @@ class _FormScreenState extends State<FormScreen> {
   final Map<String, Set<String>> _checkboxAnswers = {};
   final Map<String, PlatformFile?> _fileAnswers = {};
   String? _errorMessage;
-  bool _isSubmitting = false;
   List<FormQuestionRow>? _questions;
 
   // Example dropdown options
@@ -207,7 +204,7 @@ class _FormScreenState extends State<FormScreen> {
         );
       case 'checkbox':
         return _CheckboxFieldWidget(
-          key: key ?? ValueKey('checkbox-${question.id}'),
+          customKey: key ?? ValueKey('checkbox-${question.id}'),
           label: label,
           options: question.checkboxOptions ?? [],
           values: _checkboxAnswers[question.id] ?? {},
@@ -216,7 +213,7 @@ class _FormScreenState extends State<FormScreen> {
         );
       case 'attachment':
         return _AttachmentFieldWidget(
-          key: ValueKey('attachment-${question.id}'),
+          customKey: ValueKey('attachment-${question.id}'),
           label: label,
           file: _fileAnswers[question.id],
           onPick: (file) {
@@ -253,7 +250,6 @@ class _FormScreenState extends State<FormScreen> {
       return;
     }
 
-    setState(() => _isSubmitting = true);
     setState(() => _errorMessage = null);
 
     try {
@@ -328,7 +324,6 @@ class _FormScreenState extends State<FormScreen> {
       setState(() => _errorMessage = 'Error submitting form: $e');
     } finally {
       if (mounted) {
-        setState(() => _isSubmitting = false);
       }
     }
   }
@@ -458,7 +453,7 @@ class _CustomDropdownContainerState<T> extends State<CustomDropdownContainer<T>>
                           ListTile(
                             title: Text(item.toString()),
                             onTap: () => Navigator.pop(context, item),
-                          )).toList(),
+                          ),).toList(),
                     ),
               );
               if (selected != null) {
@@ -496,7 +491,7 @@ class _CustomDropdownContainerState<T> extends State<CustomDropdownContainer<T>>
 
 class _CheckboxFieldWidget extends StatelessWidget {
   const _CheckboxFieldWidget({
-    required this.key,
+    required this.customKey,
     required this.label,
     required this.options,
     required this.values,
@@ -504,7 +499,7 @@ class _CheckboxFieldWidget extends StatelessWidget {
     this.required = false,
   });
 
-  final Key key;
+  final Key customKey;
   final String label;
   final List<String> options;
   final Set<String> values;
@@ -541,7 +536,7 @@ class _CheckboxFieldWidget extends StatelessWidget {
               title: Text(opt, style: const TextStyle(fontSize: 14)),
               controlAffinity: ListTileControlAffinity.leading,
               contentPadding: EdgeInsets.zero,
-            )),
+            ),),
       ],
     );
   }
@@ -549,13 +544,13 @@ class _CheckboxFieldWidget extends StatelessWidget {
 
 class _AttachmentFieldWidget extends StatefulWidget {
   const _AttachmentFieldWidget({
-    required this.key,
+    required this.customKey,
     required this.label,
     required this.file,
     required this.onPick,
   });
 
-  final ValueKey key;
+  final ValueKey customKey;
   final String label;
   final PlatformFile? file;
   final void Function(PlatformFile?) onPick;

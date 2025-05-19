@@ -317,7 +317,7 @@ class _MainScreenState extends State<MainScreen> {
                 }
               } catch (e) {
                 LoadingUtils.dismissLoading();
-                if (mounted) {
+                if (context.mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                       content: Text('Error: $e'),

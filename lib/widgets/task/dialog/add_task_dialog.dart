@@ -75,10 +75,8 @@ class _AddTaskDialogState extends State<AddTaskDialog> {
               return file.path;
             },
           ),
-        ));
+        ),);
   }();
-  final FocusNode _editorFocusNode = FocusNode();
-  final ScrollController _editorScrollController = ScrollController();
 
   @override
   void initState() {
@@ -114,6 +112,7 @@ class _AddTaskDialogState extends State<AddTaskDialog> {
       lastDate: DateTime.now().add(const Duration(days: 365)),
     );
     if (picked != null) {
+      if(!context.mounted) return;
       final TimeOfDay? time = await showTimePicker(
         context: context,
         initialTime: TimeOfDay.now(),

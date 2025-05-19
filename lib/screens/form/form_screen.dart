@@ -221,7 +221,7 @@ class _FormScreenState extends State<FormScreen> {
         );
       case 'checkbox':
         return _CheckboxFieldWidget(
-          key: key ?? ValueKey('checkbox-${question.id}'),
+          customKey: key ?? ValueKey('checkbox-${question.id}'),
           label: label,
           options: question.checkboxOptions ?? [],
           values: _checkboxAnswers[question.id] ?? {},
@@ -230,7 +230,7 @@ class _FormScreenState extends State<FormScreen> {
         );
       case 'attachment':
         return _AttachmentFieldWidget(
-          key: ValueKey('attachment-${question.id}'),
+          customKey: ValueKey('attachment-${question.id}'),
           label: label,
           file: _fileAnswers[question.id],
           onPick: (file) {
@@ -245,9 +245,7 @@ class _FormScreenState extends State<FormScreen> {
   }
 
   Future<void> _submitForm() async {
-    bool errorShown = false;
     void showError(String message) {
-      errorShown = true;
       _showFieldError(message);
     }
 
@@ -311,7 +309,7 @@ class _FormScreenState extends State<FormScreen> {
         customerGender: _textControllers[kGender]?.text ?? '',
         customerNationality: _textControllers[kNationality]?.text ?? '',
         customerCountryResidence: _textControllers[kCountryResidence]?.text ?? '',
-        customerPhone: _textControllers[kPhoneNumber]?.text?.replaceAll(RegExp(r'[^0-9]'), '') ?? '',
+        customerPhone: _textControllers[kPhoneNumber]?.text.replaceAll(RegExp(r'[^0-9]'), '') ?? '',
         customerBirthday: _parseDate(_textControllers[kDateOfBirth]?.text),
         status: status.id,
         form: widget.formId,
@@ -472,7 +470,7 @@ class _TextFieldWidget extends StatelessWidget {
       children: [
         RichText(
           text: TextSpan(
-            text: label ?? '-',
+            text: label.isNotEmpty ? label : 'No title question',
             style: const TextStyle(color: Colors.black, fontWeight: FontWeight.w500, fontSize: 16),
             children: required ? [const TextSpan(text: ' *', style: TextStyle(color: Colors.red))] : [],
           ),
@@ -579,7 +577,7 @@ class CustomDropdownContainer<T> extends StatelessWidget {
 
 class _CheckboxFieldWidget extends StatelessWidget {
   const _CheckboxFieldWidget({
-    required this.key,
+    required this.customKey,
     required this.label,
     required this.options,
     required this.values,
@@ -587,7 +585,7 @@ class _CheckboxFieldWidget extends StatelessWidget {
     this.required = false,
   });
 
-  final Key key;
+  final Key customKey;
   final String label;
   final List<String> options;
   final Set<String> values;
@@ -631,13 +629,13 @@ class _CheckboxFieldWidget extends StatelessWidget {
 
 class _AttachmentFieldWidget extends StatefulWidget {
   const _AttachmentFieldWidget({
-    required this.key,
+    required this.customKey,
     required this.label,
     required this.file,
     required this.onPick,
   });
 
-  final ValueKey key;
+  final ValueKey customKey;
   final String label;
   final PlatformFile? file;
   final void Function(PlatformFile?) onPick;
@@ -692,10 +690,7 @@ class _AttachmentFieldWidgetState extends State<_AttachmentFieldWidget> {
         onPressed: null,
         icon: const Icon(Icons.attach_file),
         label: const Text('Select a file'),
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.grey[200],
-          foregroundColor: Colors.black87,
-        ),
+        style: ElevatedButton.styleFrom(backgroundColor: Colors.grey[200], foregroundColor: Colors.black87),
       );
     }
 

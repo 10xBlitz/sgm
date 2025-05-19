@@ -1,6 +1,5 @@
 import 'package:sgm/row_row_row_generated/tables/project_task_status.row.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:flutter/foundation.dart';
 
 class ProjectTaskStatusService {
   // Singleton instance
@@ -21,7 +20,6 @@ class ProjectTaskStatusService {
   /// Need to make issue in Flutter
   final Map _cache = {};
 
-  List<ProjectTaskStatusRow>? _clinicsCache;
 
   Future<List<ProjectTaskStatusRow>> getStatusByProjectID(String projectId) async {
     try {

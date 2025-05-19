@@ -417,7 +417,7 @@ class _ProjectsListSubTabState extends ProjectsListSubTabState {
             crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(form.name ?? 'Untitled Form', style: theme.textTheme.titleMedium),
-                Text('${form.description}'),]
+                Text('${form.description}'),],
           ),
         ],
       ),
