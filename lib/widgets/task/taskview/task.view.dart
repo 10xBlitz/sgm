@@ -37,8 +37,10 @@ class _TaskViewState extends State<TaskView> {
     if (widget.task.form == null) {
       return;
     }
-    var answers = await TaskRepository()
-        .getAnswersForTask(formId: widget.task.form!, taskId: widget.task.id);
+    var answers = await TaskRepository().getAnswersForTask(
+      formId: widget.task.form!,
+      taskId: widget.task.id,
+    );
     if (mounted) {
       setState(() {
         _answers = answers;
@@ -62,9 +64,10 @@ class _TaskViewState extends State<TaskView> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final project = widget.task.project != null
-        ? ProjectService().getFromCache(widget.task.project!)
-        : null;
+    final project =
+        widget.task.project != null
+            ? ProjectService().getFromCache(widget.task.project!)
+            : null;
     return Material(
       child: Theme(
         data: theme,
@@ -86,8 +89,10 @@ class _TaskViewState extends State<TaskView> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             SizedBox(height: 12.0),
-                            Text(widget.task.title ?? "No title",
-                                style: theme.textTheme.titleLarge),
+                            Text(
+                              widget.task.title ?? "No title",
+                              style: theme.textTheme.titleLarge,
+                            ),
                             Text(project?.title ?? "No project"),
                           ],
                         ),
@@ -122,11 +127,15 @@ class _TaskViewState extends State<TaskView> {
                           child: TabBarView(
                             children: [
                               TaskCustomerDetail(
-                                  task: widget.task, answers: _answers),
+                                task: widget.task,
+                                answers: _answers,
+                              ),
                               Center(child: Text('Content for Tab 2')),
                               AppointmentDetailsTaskViewTab(task: widget.task),
                               TaskAdditionalInfo(
-                                  task: widget.task, assignee: _assignee),
+                                task: widget.task,
+                                assignee: _assignee,
+                              ),
                             ],
                           ),
                         ),

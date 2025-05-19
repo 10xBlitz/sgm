@@ -49,12 +49,24 @@ class TaskAppointmentRow {
       createdAt: DateTime.parse(json[field.createdAt]),
       task: json[field.task] as String,
       generalDeposit: (json[field.generalDeposit] as num).toDouble(),
-      generalDiscountRate: json[field.generalDiscountRate] == null ? null : (json[field.generalDiscountRate] as num?)?.toDouble(),
-      generalDiscountAmount: json[field.generalDiscountAmount] == null ? null : (json[field.generalDiscountAmount] as num?)?.toDouble(),
-      dueDate: json[field.dueDate] == null ? null : DateTime.tryParse(json[field.dueDate] ?? ''),
+      generalDiscountRate:
+          json[field.generalDiscountRate] == null
+              ? null
+              : (json[field.generalDiscountRate] as num?)?.toDouble(),
+      generalDiscountAmount:
+          json[field.generalDiscountAmount] == null
+              ? null
+              : (json[field.generalDiscountAmount] as num?)?.toDouble(),
+      dueDate:
+          json[field.dueDate] == null
+              ? null
+              : DateTime.tryParse(json[field.dueDate] ?? ''),
       notes: json[field.notes],
       addedBy: json[field.addedBy],
-      generalRefund: json[field.generalRefund] == null ? null : (json[field.generalRefund] as num?)?.toDouble(),
+      generalRefund:
+          json[field.generalRefund] == null
+              ? null
+              : (json[field.generalRefund] as num?)?.toDouble(),
       assignedClinic: json[field.assignedClinic],
     );
   }
@@ -93,7 +105,8 @@ class TaskAppointmentRow {
       task: task ?? this.task,
       generalDeposit: generalDeposit ?? this.generalDeposit,
       generalDiscountRate: generalDiscountRate ?? this.generalDiscountRate,
-      generalDiscountAmount: generalDiscountAmount ?? this.generalDiscountAmount,
+      generalDiscountAmount:
+          generalDiscountAmount ?? this.generalDiscountAmount,
       dueDate: dueDate ?? this.dueDate,
       notes: notes ?? this.notes,
       addedBy: addedBy ?? this.addedBy,

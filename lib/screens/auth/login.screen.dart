@@ -17,9 +17,13 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final _fullNameController = TextEditingController();
-  final _emailController = TextEditingController(text: kDebugMode? "business+admin@10xblitz.com" : null);
+  final _emailController = TextEditingController(
+    text: kDebugMode ? "business+admin@10xblitz.com" : null,
+  );
   final _phoneNumberController = TextEditingController();
-  final _passwordController = TextEditingController(text: kDebugMode? "qwerqwer" : null );
+  final _passwordController = TextEditingController(
+    text: kDebugMode ? "qwerqwer" : null,
+  );
   final _confirmPasswordController = TextEditingController();
   bool _isLoading = false;
   bool _isRegistering = false;

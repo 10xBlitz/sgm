@@ -3,18 +3,12 @@
 class TaskCustomerProcedureClinicRow {
   static const table = 'task_customer_procedure_clinic';
 
-  static const field = (
-    task: 'task',
-    clinic: 'clinic',
-  );
+  static const field = (task: 'task', clinic: 'clinic');
 
   final String? task;
   final String? clinic;
 
-  const TaskCustomerProcedureClinicRow({
-    this.task,
-    this.clinic,
-  });
+  const TaskCustomerProcedureClinicRow({this.task, this.clinic});
 
   factory TaskCustomerProcedureClinicRow.fromJson(Map<String, dynamic> json) {
     return TaskCustomerProcedureClinicRow(
@@ -23,16 +17,10 @@ class TaskCustomerProcedureClinicRow {
     );
   }
   Map<String, dynamic> toJson() {
-    return {
-      field.task: task,
-      field.clinic: clinic,
-    };
+    return {field.task: task, field.clinic: clinic};
   }
 
-  TaskCustomerProcedureClinicRow copyWith({
-    String? task,
-    String? clinic,
-  }) {
+  TaskCustomerProcedureClinicRow copyWith({String? task, String? clinic}) {
     return TaskCustomerProcedureClinicRow(
       task: task ?? this.task,
       clinic: clinic ?? this.clinic,

@@ -31,7 +31,10 @@ class ProcedureCountPerCategoryRow {
       name: json[field.name],
       clinicName: json[field.clinicName],
       clinicId: json[field.clinicId],
-      totalProcedureCount: json[field.totalProcedureCount] == null ? null : (json[field.totalProcedureCount] as num?)?.toInt(),
+      totalProcedureCount:
+          json[field.totalProcedureCount] == null
+              ? null
+              : (json[field.totalProcedureCount] as num?)?.toInt(),
     );
   }
   Map<String, dynamic> toJson() {

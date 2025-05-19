@@ -49,9 +49,14 @@ class DueDateTaskSubtaskCustomerProcedureViewRow {
     this.projectName,
   });
 
-  factory DueDateTaskSubtaskCustomerProcedureViewRow.fromJson(Map<String, dynamic> json) {
+  factory DueDateTaskSubtaskCustomerProcedureViewRow.fromJson(
+    Map<String, dynamic> json,
+  ) {
     return DueDateTaskSubtaskCustomerProcedureViewRow(
-      dueDate: json[field.dueDate] == null ? null : DateTime.tryParse(json[field.dueDate] ?? ''),
+      dueDate:
+          json[field.dueDate] == null
+              ? null
+              : DateTime.tryParse(json[field.dueDate] ?? ''),
       taskId: json[field.taskId],
       subtaskId: json[field.subtaskId],
       customerProcedureId: json[field.customerProcedureId],

@@ -41,9 +41,12 @@ class UserRolePermissionsViewRow {
     chattingRemoveGroupMembers: 'chatting_remove_group_members',
     chattingViewGroupMembers: 'chatting_view_group_members',
     chattingStartPrivateConversations: 'chatting_start_private_conversations',
-    procedurePricingViewProcedurePricing: 'procedure_pricing_view_procedure_pricing',
-    procedurePricingEditProcedurePricing: 'procedure_pricing_edit_procedure_pricing',
-    procedurePricingSaveProcedurePricing: 'procedure_pricing_save_procedure_pricing',
+    procedurePricingViewProcedurePricing:
+        'procedure_pricing_view_procedure_pricing',
+    procedurePricingEditProcedurePricing:
+        'procedure_pricing_edit_procedure_pricing',
+    procedurePricingSaveProcedurePricing:
+        'procedure_pricing_save_procedure_pricing',
     projectsViewProjects: 'projects_view_projects',
     projectsCreateProjects: 'projects_create_projects',
     projectsEditProjects: 'projects_edit_projects',
@@ -54,7 +57,8 @@ class UserRolePermissionsViewRow {
     personalDashboardByConsultant: 'personal_dashboard_by_consultant',
     personalDashboardByStatus: 'personal_dashboard_by_status',
     personalDashboardByProject: 'personal_dashboard_by_project',
-    personalDashboardTodaysEmployeeStatistics: 'personal_dashboard_todays_employee_statistics',
+    personalDashboardTodaysEmployeeStatistics:
+        'personal_dashboard_todays_employee_statistics',
     personalDashboardMyStatistics: 'personal_dashboard_my_statistics',
     personalDashboardMyTasks: 'personal_dashboard_my_tasks',
     personalDashboardMyNotes: 'personal_dashboard_my_notes',
@@ -63,16 +67,20 @@ class UserRolePermissionsViewRow {
     financialDashboardActualSales: 'financial_dashboard_actual_sales',
     financialDashboardEstimatedSales: 'financial_dashboard_estimated_sales',
     financialDashboardNetProfit: 'financial_dashboard_net_profit',
-    financialDashboardTotalCommissionEarnedFromProductSales: 'financial_dashboard_total_commission_earned_from_product_sales',
-    financialDashboardTotalProductsSold: 'financial_dashboard_total_products_sold',
+    financialDashboardTotalCommissionEarnedFromProductSales:
+        'financial_dashboard_total_commission_earned_from_product_sales',
+    financialDashboardTotalProductsSold:
+        'financial_dashboard_total_products_sold',
     financialDashboardExpenses: 'financial_dashboard_expenses',
     financialDashboardAddExpenses: 'financial_dashboard_add_expenses',
     financialDashboardDeleteExpenses: 'financial_dashboard_delete_expenses',
     financialDashboardEditExpenses: 'financial_dashboard_edit_expenses',
-    financialDashboardNumberOfPatients: 'financial_dashboard_number_of_patients',
+    financialDashboardNumberOfPatients:
+        'financial_dashboard_number_of_patients',
     financialDashboardTotalCost: 'financial_dashboard_total_cost',
     financialDashboardTotalRefund: 'financial_dashboard_total_refund',
-    financialDashboardOperatingExpenses: 'financial_dashboard_operating_expenses',
+    financialDashboardOperatingExpenses:
+        'financial_dashboard_operating_expenses',
     dashboardMarketingDashboard: 'dashboard_marketing_dashboard',
     marketingDashboardAddExpenses: 'marketing_dashboard_add_expenses',
     marketingDashboardDeleteExpenses: 'marketing_dashboard_delete_expenses',
@@ -82,9 +90,12 @@ class UserRolePermissionsViewRow {
     marketingDashboardEditCampaign: 'marketing_dashboard_edit_campaign',
     marketingDashboardDeleteCampaign: 'marketing_dashboard_delete_campaign_',
     marketingDashboardViewCampaign: 'marketing_dashboard_view_campaign',
-    marketingDashboardAddMembersToCampaign: 'marketing_dashboard_add_members_to_campaign',
-    marketingDashboardLinkProjectsToCampaign: 'marketing_dashboard_link_projects_to_campaign',
-    marketingDashboardChangeCampaignStatus: 'marketing_dashboard_change_campaign_status',
+    marketingDashboardAddMembersToCampaign:
+        'marketing_dashboard_add_members_to_campaign',
+    marketingDashboardLinkProjectsToCampaign:
+        'marketing_dashboard_link_projects_to_campaign',
+    marketingDashboardChangeCampaignStatus:
+        'marketing_dashboard_change_campaign_status',
     adminSettingsManageProjects: 'admin_settings_manage_projects',
     adminSettingsManageUsers: 'admin_settings_manage_users',
     adminSettingsManageForms: 'admin_settings_manage_forms',
@@ -94,7 +105,8 @@ class UserRolePermissionsViewRow {
     announcementsViewAnnouncment: 'announcements_view_announcment',
     announcementsEditAnnouncement: 'announcements_edit_announcement',
     announcementsDeleteAnnouncement: 'announcements_delete_announcement',
-    announcementsCreateAnnouncementGroups: 'announcements_create_announcement_groups',
+    announcementsCreateAnnouncementGroups:
+        'announcements_create_announcement_groups',
     user: 'user',
   );
 
@@ -294,8 +306,14 @@ class UserRolePermissionsViewRow {
       email: json[field.email],
       role: json[field.role],
       id: json[field.id],
-      createdAt: json[field.createdAt] == null ? null : DateTime.tryParse(json[field.createdAt] ?? ''),
-      updatedAt: json[field.updatedAt] == null ? null : DateTime.tryParse(json[field.updatedAt] ?? ''),
+      createdAt:
+          json[field.createdAt] == null
+              ? null
+              : DateTime.tryParse(json[field.createdAt] ?? ''),
+      updatedAt:
+          json[field.updatedAt] == null
+              ? null
+              : DateTime.tryParse(json[field.updatedAt] ?? ''),
       userManagementViewUser: json[field.userManagementViewUser],
       userManagementAddUser: json[field.userManagementAddUser],
       userManagementDeleteUser: json[field.userManagementDeleteUser],
@@ -324,10 +342,14 @@ class UserRolePermissionsViewRow {
       chattingAddGroupMembers: json[field.chattingAddGroupMembers],
       chattingRemoveGroupMembers: json[field.chattingRemoveGroupMembers],
       chattingViewGroupMembers: json[field.chattingViewGroupMembers],
-      chattingStartPrivateConversations: json[field.chattingStartPrivateConversations],
-      procedurePricingViewProcedurePricing: json[field.procedurePricingViewProcedurePricing],
-      procedurePricingEditProcedurePricing: json[field.procedurePricingEditProcedurePricing],
-      procedurePricingSaveProcedurePricing: json[field.procedurePricingSaveProcedurePricing],
+      chattingStartPrivateConversations:
+          json[field.chattingStartPrivateConversations],
+      procedurePricingViewProcedurePricing:
+          json[field.procedurePricingViewProcedurePricing],
+      procedurePricingEditProcedurePricing:
+          json[field.procedurePricingEditProcedurePricing],
+      procedurePricingSaveProcedurePricing:
+          json[field.procedurePricingSaveProcedurePricing],
       projectsViewProjects: json[field.projectsViewProjects],
       projectsCreateProjects: json[field.projectsCreateProjects],
       projectsEditProjects: json[field.projectsEditProjects],
@@ -338,47 +360,67 @@ class UserRolePermissionsViewRow {
       personalDashboardByConsultant: json[field.personalDashboardByConsultant],
       personalDashboardByStatus: json[field.personalDashboardByStatus],
       personalDashboardByProject: json[field.personalDashboardByProject],
-      personalDashboardTodaysEmployeeStatistics: json[field.personalDashboardTodaysEmployeeStatistics],
+      personalDashboardTodaysEmployeeStatistics:
+          json[field.personalDashboardTodaysEmployeeStatistics],
       personalDashboardMyStatistics: json[field.personalDashboardMyStatistics],
       personalDashboardMyTasks: json[field.personalDashboardMyTasks],
       personalDashboardMyNotes: json[field.personalDashboardMyNotes],
       personalDashboardMyCalendar: json[field.personalDashboardMyCalendar],
       dashboardFinancialDashboard: json[field.dashboardFinancialDashboard],
       financialDashboardActualSales: json[field.financialDashboardActualSales],
-      financialDashboardEstimatedSales: json[field.financialDashboardEstimatedSales],
+      financialDashboardEstimatedSales:
+          json[field.financialDashboardEstimatedSales],
       financialDashboardNetProfit: json[field.financialDashboardNetProfit],
-      financialDashboardTotalCommissionEarnedFromProductSales: json[field.financialDashboardTotalCommissionEarnedFromProductSales],
-      financialDashboardTotalProductsSold: json[field.financialDashboardTotalProductsSold],
+      financialDashboardTotalCommissionEarnedFromProductSales:
+          json[field.financialDashboardTotalCommissionEarnedFromProductSales],
+      financialDashboardTotalProductsSold:
+          json[field.financialDashboardTotalProductsSold],
       financialDashboardExpenses: json[field.financialDashboardExpenses],
       financialDashboardAddExpenses: json[field.financialDashboardAddExpenses],
-      financialDashboardDeleteExpenses: json[field.financialDashboardDeleteExpenses],
-      financialDashboardEditExpenses: json[field.financialDashboardEditExpenses],
-      financialDashboardNumberOfPatients: json[field.financialDashboardNumberOfPatients],
+      financialDashboardDeleteExpenses:
+          json[field.financialDashboardDeleteExpenses],
+      financialDashboardEditExpenses:
+          json[field.financialDashboardEditExpenses],
+      financialDashboardNumberOfPatients:
+          json[field.financialDashboardNumberOfPatients],
       financialDashboardTotalCost: json[field.financialDashboardTotalCost],
       financialDashboardTotalRefund: json[field.financialDashboardTotalRefund],
-      financialDashboardOperatingExpenses: json[field.financialDashboardOperatingExpenses],
+      financialDashboardOperatingExpenses:
+          json[field.financialDashboardOperatingExpenses],
       dashboardMarketingDashboard: json[field.dashboardMarketingDashboard],
       marketingDashboardAddExpenses: json[field.marketingDashboardAddExpenses],
-      marketingDashboardDeleteExpenses: json[field.marketingDashboardDeleteExpenses],
-      marketingDashboardEditExpenses: json[field.marketingDashboardEditExpenses],
-      marketingDashboardViewExpenses: json[field.marketingDashboardViewExpenses],
+      marketingDashboardDeleteExpenses:
+          json[field.marketingDashboardDeleteExpenses],
+      marketingDashboardEditExpenses:
+          json[field.marketingDashboardEditExpenses],
+      marketingDashboardViewExpenses:
+          json[field.marketingDashboardViewExpenses],
       marketingDashboardAddCampaign: json[field.marketingDashboardAddCampaign],
-      marketingDashboardEditCampaign: json[field.marketingDashboardEditCampaign],
-      marketingDashboardDeleteCampaign: json[field.marketingDashboardDeleteCampaign],
-      marketingDashboardViewCampaign: json[field.marketingDashboardViewCampaign],
-      marketingDashboardAddMembersToCampaign: json[field.marketingDashboardAddMembersToCampaign],
-      marketingDashboardLinkProjectsToCampaign: json[field.marketingDashboardLinkProjectsToCampaign],
-      marketingDashboardChangeCampaignStatus: json[field.marketingDashboardChangeCampaignStatus],
+      marketingDashboardEditCampaign:
+          json[field.marketingDashboardEditCampaign],
+      marketingDashboardDeleteCampaign:
+          json[field.marketingDashboardDeleteCampaign],
+      marketingDashboardViewCampaign:
+          json[field.marketingDashboardViewCampaign],
+      marketingDashboardAddMembersToCampaign:
+          json[field.marketingDashboardAddMembersToCampaign],
+      marketingDashboardLinkProjectsToCampaign:
+          json[field.marketingDashboardLinkProjectsToCampaign],
+      marketingDashboardChangeCampaignStatus:
+          json[field.marketingDashboardChangeCampaignStatus],
       adminSettingsManageProjects: json[field.adminSettingsManageProjects],
       adminSettingsManageUsers: json[field.adminSettingsManageUsers],
       adminSettingsManageForms: json[field.adminSettingsManageForms],
       adminSettingsManageChat: json[field.adminSettingsManageChat],
       adminSettingsManageTeams: json[field.adminSettingsManageTeams],
-      announcementsCreateAnnouncment: json[field.announcementsCreateAnnouncment],
+      announcementsCreateAnnouncment:
+          json[field.announcementsCreateAnnouncment],
       announcementsViewAnnouncment: json[field.announcementsViewAnnouncment],
       announcementsEditAnnouncement: json[field.announcementsEditAnnouncement],
-      announcementsDeleteAnnouncement: json[field.announcementsDeleteAnnouncement],
-      announcementsCreateAnnouncementGroups: json[field.announcementsCreateAnnouncementGroups],
+      announcementsDeleteAnnouncement:
+          json[field.announcementsDeleteAnnouncement],
+      announcementsCreateAnnouncementGroups:
+          json[field.announcementsCreateAnnouncementGroups],
       user: json[field.user],
     );
   }
@@ -420,10 +462,14 @@ class UserRolePermissionsViewRow {
       field.chattingAddGroupMembers: chattingAddGroupMembers,
       field.chattingRemoveGroupMembers: chattingRemoveGroupMembers,
       field.chattingViewGroupMembers: chattingViewGroupMembers,
-      field.chattingStartPrivateConversations: chattingStartPrivateConversations,
-      field.procedurePricingViewProcedurePricing: procedurePricingViewProcedurePricing,
-      field.procedurePricingEditProcedurePricing: procedurePricingEditProcedurePricing,
-      field.procedurePricingSaveProcedurePricing: procedurePricingSaveProcedurePricing,
+      field.chattingStartPrivateConversations:
+          chattingStartPrivateConversations,
+      field.procedurePricingViewProcedurePricing:
+          procedurePricingViewProcedurePricing,
+      field.procedurePricingEditProcedurePricing:
+          procedurePricingEditProcedurePricing,
+      field.procedurePricingSaveProcedurePricing:
+          procedurePricingSaveProcedurePricing,
       field.projectsViewProjects: projectsViewProjects,
       field.projectsCreateProjects: projectsCreateProjects,
       field.projectsEditProjects: projectsEditProjects,
@@ -434,7 +480,8 @@ class UserRolePermissionsViewRow {
       field.personalDashboardByConsultant: personalDashboardByConsultant,
       field.personalDashboardByStatus: personalDashboardByStatus,
       field.personalDashboardByProject: personalDashboardByProject,
-      field.personalDashboardTodaysEmployeeStatistics: personalDashboardTodaysEmployeeStatistics,
+      field.personalDashboardTodaysEmployeeStatistics:
+          personalDashboardTodaysEmployeeStatistics,
       field.personalDashboardMyStatistics: personalDashboardMyStatistics,
       field.personalDashboardMyTasks: personalDashboardMyTasks,
       field.personalDashboardMyNotes: personalDashboardMyNotes,
@@ -443,16 +490,20 @@ class UserRolePermissionsViewRow {
       field.financialDashboardActualSales: financialDashboardActualSales,
       field.financialDashboardEstimatedSales: financialDashboardEstimatedSales,
       field.financialDashboardNetProfit: financialDashboardNetProfit,
-      field.financialDashboardTotalCommissionEarnedFromProductSales: financialDashboardTotalCommissionEarnedFromProductSales,
-      field.financialDashboardTotalProductsSold: financialDashboardTotalProductsSold,
+      field.financialDashboardTotalCommissionEarnedFromProductSales:
+          financialDashboardTotalCommissionEarnedFromProductSales,
+      field.financialDashboardTotalProductsSold:
+          financialDashboardTotalProductsSold,
       field.financialDashboardExpenses: financialDashboardExpenses,
       field.financialDashboardAddExpenses: financialDashboardAddExpenses,
       field.financialDashboardDeleteExpenses: financialDashboardDeleteExpenses,
       field.financialDashboardEditExpenses: financialDashboardEditExpenses,
-      field.financialDashboardNumberOfPatients: financialDashboardNumberOfPatients,
+      field.financialDashboardNumberOfPatients:
+          financialDashboardNumberOfPatients,
       field.financialDashboardTotalCost: financialDashboardTotalCost,
       field.financialDashboardTotalRefund: financialDashboardTotalRefund,
-      field.financialDashboardOperatingExpenses: financialDashboardOperatingExpenses,
+      field.financialDashboardOperatingExpenses:
+          financialDashboardOperatingExpenses,
       field.dashboardMarketingDashboard: dashboardMarketingDashboard,
       field.marketingDashboardAddExpenses: marketingDashboardAddExpenses,
       field.marketingDashboardDeleteExpenses: marketingDashboardDeleteExpenses,
@@ -462,9 +513,12 @@ class UserRolePermissionsViewRow {
       field.marketingDashboardEditCampaign: marketingDashboardEditCampaign,
       field.marketingDashboardDeleteCampaign: marketingDashboardDeleteCampaign,
       field.marketingDashboardViewCampaign: marketingDashboardViewCampaign,
-      field.marketingDashboardAddMembersToCampaign: marketingDashboardAddMembersToCampaign,
-      field.marketingDashboardLinkProjectsToCampaign: marketingDashboardLinkProjectsToCampaign,
-      field.marketingDashboardChangeCampaignStatus: marketingDashboardChangeCampaignStatus,
+      field.marketingDashboardAddMembersToCampaign:
+          marketingDashboardAddMembersToCampaign,
+      field.marketingDashboardLinkProjectsToCampaign:
+          marketingDashboardLinkProjectsToCampaign,
+      field.marketingDashboardChangeCampaignStatus:
+          marketingDashboardChangeCampaignStatus,
       field.adminSettingsManageProjects: adminSettingsManageProjects,
       field.adminSettingsManageUsers: adminSettingsManageUsers,
       field.adminSettingsManageForms: adminSettingsManageForms,
@@ -474,7 +528,8 @@ class UserRolePermissionsViewRow {
       field.announcementsViewAnnouncment: announcementsViewAnnouncment,
       field.announcementsEditAnnouncement: announcementsEditAnnouncement,
       field.announcementsDeleteAnnouncement: announcementsDeleteAnnouncement,
-      field.announcementsCreateAnnouncementGroups: announcementsCreateAnnouncementGroups,
+      field.announcementsCreateAnnouncementGroups:
+          announcementsCreateAnnouncementGroups,
       field.user: user,
     };
   }
@@ -582,89 +637,185 @@ class UserRolePermissionsViewRow {
       id: id ?? this.id,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
-      userManagementViewUser: userManagementViewUser ?? this.userManagementViewUser,
-      userManagementAddUser: userManagementAddUser ?? this.userManagementAddUser,
-      userManagementDeleteUser: userManagementDeleteUser ?? this.userManagementDeleteUser,
-      userManagementEditUser: userManagementEditUser ?? this.userManagementEditUser,
-      userManagementChangePosition: userManagementChangePosition ?? this.userManagementChangePosition,
-      userManagementCreateTeams: userManagementCreateTeams ?? this.userManagementCreateTeams,
-      userManagementEditTeams: userManagementEditTeams ?? this.userManagementEditTeams,
-      userManagementViewTeams: userManagementViewTeams ?? this.userManagementViewTeams,
-      userManagementViewTeamMembers: userManagementViewTeamMembers ?? this.userManagementViewTeamMembers,
-      userManagementDeleteTeams: userManagementDeleteTeams ?? this.userManagementDeleteTeams,
-      userManagementAddToTeam: userManagementAddToTeam ?? this.userManagementAddToTeam,
-      userManagementDeleteFromTeam: userManagementDeleteFromTeam ?? this.userManagementDeleteFromTeam,
-      formManagementViewForm: formManagementViewForm ?? this.formManagementViewForm,
-      formManagementCreateForm: formManagementCreateForm ?? this.formManagementCreateForm,
-      formManagementEditForm: formManagementEditForm ?? this.formManagementEditForm,
-      formManagementDeleteForm: formManagementDeleteForm ?? this.formManagementDeleteForm,
-      formManagementApplyFilters: formManagementApplyFilters ?? this.formManagementApplyFilters,
-      formManagementCopyForms: formManagementCopyForms ?? this.formManagementCopyForms,
-      formManagementShareForms: formManagementShareForms ?? this.formManagementShareForms,
-      formManagementPublishForms: formManagementPublishForms ?? this.formManagementPublishForms,
-      formManagementLinkProject: formManagementLinkProject ?? this.formManagementLinkProject,
+      userManagementViewUser:
+          userManagementViewUser ?? this.userManagementViewUser,
+      userManagementAddUser:
+          userManagementAddUser ?? this.userManagementAddUser,
+      userManagementDeleteUser:
+          userManagementDeleteUser ?? this.userManagementDeleteUser,
+      userManagementEditUser:
+          userManagementEditUser ?? this.userManagementEditUser,
+      userManagementChangePosition:
+          userManagementChangePosition ?? this.userManagementChangePosition,
+      userManagementCreateTeams:
+          userManagementCreateTeams ?? this.userManagementCreateTeams,
+      userManagementEditTeams:
+          userManagementEditTeams ?? this.userManagementEditTeams,
+      userManagementViewTeams:
+          userManagementViewTeams ?? this.userManagementViewTeams,
+      userManagementViewTeamMembers:
+          userManagementViewTeamMembers ?? this.userManagementViewTeamMembers,
+      userManagementDeleteTeams:
+          userManagementDeleteTeams ?? this.userManagementDeleteTeams,
+      userManagementAddToTeam:
+          userManagementAddToTeam ?? this.userManagementAddToTeam,
+      userManagementDeleteFromTeam:
+          userManagementDeleteFromTeam ?? this.userManagementDeleteFromTeam,
+      formManagementViewForm:
+          formManagementViewForm ?? this.formManagementViewForm,
+      formManagementCreateForm:
+          formManagementCreateForm ?? this.formManagementCreateForm,
+      formManagementEditForm:
+          formManagementEditForm ?? this.formManagementEditForm,
+      formManagementDeleteForm:
+          formManagementDeleteForm ?? this.formManagementDeleteForm,
+      formManagementApplyFilters:
+          formManagementApplyFilters ?? this.formManagementApplyFilters,
+      formManagementCopyForms:
+          formManagementCopyForms ?? this.formManagementCopyForms,
+      formManagementShareForms:
+          formManagementShareForms ?? this.formManagementShareForms,
+      formManagementPublishForms:
+          formManagementPublishForms ?? this.formManagementPublishForms,
+      formManagementLinkProject:
+          formManagementLinkProject ?? this.formManagementLinkProject,
       chattingViewMessages: chattingViewMessages ?? this.chattingViewMessages,
       chattingSendMessages: chattingSendMessages ?? this.chattingSendMessages,
-      chattingCreateGroupChats: chattingCreateGroupChats ?? this.chattingCreateGroupChats,
+      chattingCreateGroupChats:
+          chattingCreateGroupChats ?? this.chattingCreateGroupChats,
       chattingEditMessage: chattingEditMessage ?? this.chattingEditMessage,
-      chattingAddGroupMembers: chattingAddGroupMembers ?? this.chattingAddGroupMembers,
-      chattingRemoveGroupMembers: chattingRemoveGroupMembers ?? this.chattingRemoveGroupMembers,
-      chattingViewGroupMembers: chattingViewGroupMembers ?? this.chattingViewGroupMembers,
-      chattingStartPrivateConversations: chattingStartPrivateConversations ?? this.chattingStartPrivateConversations,
-      procedurePricingViewProcedurePricing: procedurePricingViewProcedurePricing ?? this.procedurePricingViewProcedurePricing,
-      procedurePricingEditProcedurePricing: procedurePricingEditProcedurePricing ?? this.procedurePricingEditProcedurePricing,
-      procedurePricingSaveProcedurePricing: procedurePricingSaveProcedurePricing ?? this.procedurePricingSaveProcedurePricing,
+      chattingAddGroupMembers:
+          chattingAddGroupMembers ?? this.chattingAddGroupMembers,
+      chattingRemoveGroupMembers:
+          chattingRemoveGroupMembers ?? this.chattingRemoveGroupMembers,
+      chattingViewGroupMembers:
+          chattingViewGroupMembers ?? this.chattingViewGroupMembers,
+      chattingStartPrivateConversations:
+          chattingStartPrivateConversations ??
+          this.chattingStartPrivateConversations,
+      procedurePricingViewProcedurePricing:
+          procedurePricingViewProcedurePricing ??
+          this.procedurePricingViewProcedurePricing,
+      procedurePricingEditProcedurePricing:
+          procedurePricingEditProcedurePricing ??
+          this.procedurePricingEditProcedurePricing,
+      procedurePricingSaveProcedurePricing:
+          procedurePricingSaveProcedurePricing ??
+          this.procedurePricingSaveProcedurePricing,
       projectsViewProjects: projectsViewProjects ?? this.projectsViewProjects,
-      projectsCreateProjects: projectsCreateProjects ?? this.projectsCreateProjects,
+      projectsCreateProjects:
+          projectsCreateProjects ?? this.projectsCreateProjects,
       projectsEditProjects: projectsEditProjects ?? this.projectsEditProjects,
-      projectsSearchProjects: projectsSearchProjects ?? this.projectsSearchProjects,
-      projectsManageProjects: projectsManageProjects ?? this.projectsManageProjects,
-      dashboardPersonalDashboard: dashboardPersonalDashboard ?? this.dashboardPersonalDashboard,
-      personalDashboardFilter: personalDashboardFilter ?? this.personalDashboardFilter,
-      personalDashboardByConsultant: personalDashboardByConsultant ?? this.personalDashboardByConsultant,
-      personalDashboardByStatus: personalDashboardByStatus ?? this.personalDashboardByStatus,
-      personalDashboardByProject: personalDashboardByProject ?? this.personalDashboardByProject,
-      personalDashboardTodaysEmployeeStatistics: personalDashboardTodaysEmployeeStatistics ?? this.personalDashboardTodaysEmployeeStatistics,
-      personalDashboardMyStatistics: personalDashboardMyStatistics ?? this.personalDashboardMyStatistics,
-      personalDashboardMyTasks: personalDashboardMyTasks ?? this.personalDashboardMyTasks,
-      personalDashboardMyNotes: personalDashboardMyNotes ?? this.personalDashboardMyNotes,
-      personalDashboardMyCalendar: personalDashboardMyCalendar ?? this.personalDashboardMyCalendar,
-      dashboardFinancialDashboard: dashboardFinancialDashboard ?? this.dashboardFinancialDashboard,
-      financialDashboardActualSales: financialDashboardActualSales ?? this.financialDashboardActualSales,
-      financialDashboardEstimatedSales: financialDashboardEstimatedSales ?? this.financialDashboardEstimatedSales,
-      financialDashboardNetProfit: financialDashboardNetProfit ?? this.financialDashboardNetProfit,
-      financialDashboardTotalCommissionEarnedFromProductSales: financialDashboardTotalCommissionEarnedFromProductSales ?? this.financialDashboardTotalCommissionEarnedFromProductSales,
-      financialDashboardTotalProductsSold: financialDashboardTotalProductsSold ?? this.financialDashboardTotalProductsSold,
-      financialDashboardExpenses: financialDashboardExpenses ?? this.financialDashboardExpenses,
-      financialDashboardAddExpenses: financialDashboardAddExpenses ?? this.financialDashboardAddExpenses,
-      financialDashboardDeleteExpenses: financialDashboardDeleteExpenses ?? this.financialDashboardDeleteExpenses,
-      financialDashboardEditExpenses: financialDashboardEditExpenses ?? this.financialDashboardEditExpenses,
-      financialDashboardNumberOfPatients: financialDashboardNumberOfPatients ?? this.financialDashboardNumberOfPatients,
-      financialDashboardTotalCost: financialDashboardTotalCost ?? this.financialDashboardTotalCost,
-      financialDashboardTotalRefund: financialDashboardTotalRefund ?? this.financialDashboardTotalRefund,
-      financialDashboardOperatingExpenses: financialDashboardOperatingExpenses ?? this.financialDashboardOperatingExpenses,
-      dashboardMarketingDashboard: dashboardMarketingDashboard ?? this.dashboardMarketingDashboard,
-      marketingDashboardAddExpenses: marketingDashboardAddExpenses ?? this.marketingDashboardAddExpenses,
-      marketingDashboardDeleteExpenses: marketingDashboardDeleteExpenses ?? this.marketingDashboardDeleteExpenses,
-      marketingDashboardEditExpenses: marketingDashboardEditExpenses ?? this.marketingDashboardEditExpenses,
-      marketingDashboardViewExpenses: marketingDashboardViewExpenses ?? this.marketingDashboardViewExpenses,
-      marketingDashboardAddCampaign: marketingDashboardAddCampaign ?? this.marketingDashboardAddCampaign,
-      marketingDashboardEditCampaign: marketingDashboardEditCampaign ?? this.marketingDashboardEditCampaign,
-      marketingDashboardDeleteCampaign: marketingDashboardDeleteCampaign ?? this.marketingDashboardDeleteCampaign,
-      marketingDashboardViewCampaign: marketingDashboardViewCampaign ?? this.marketingDashboardViewCampaign,
-      marketingDashboardAddMembersToCampaign: marketingDashboardAddMembersToCampaign ?? this.marketingDashboardAddMembersToCampaign,
-      marketingDashboardLinkProjectsToCampaign: marketingDashboardLinkProjectsToCampaign ?? this.marketingDashboardLinkProjectsToCampaign,
-      marketingDashboardChangeCampaignStatus: marketingDashboardChangeCampaignStatus ?? this.marketingDashboardChangeCampaignStatus,
-      adminSettingsManageProjects: adminSettingsManageProjects ?? this.adminSettingsManageProjects,
-      adminSettingsManageUsers: adminSettingsManageUsers ?? this.adminSettingsManageUsers,
-      adminSettingsManageForms: adminSettingsManageForms ?? this.adminSettingsManageForms,
-      adminSettingsManageChat: adminSettingsManageChat ?? this.adminSettingsManageChat,
-      adminSettingsManageTeams: adminSettingsManageTeams ?? this.adminSettingsManageTeams,
-      announcementsCreateAnnouncment: announcementsCreateAnnouncment ?? this.announcementsCreateAnnouncment,
-      announcementsViewAnnouncment: announcementsViewAnnouncment ?? this.announcementsViewAnnouncment,
-      announcementsEditAnnouncement: announcementsEditAnnouncement ?? this.announcementsEditAnnouncement,
-      announcementsDeleteAnnouncement: announcementsDeleteAnnouncement ?? this.announcementsDeleteAnnouncement,
-      announcementsCreateAnnouncementGroups: announcementsCreateAnnouncementGroups ?? this.announcementsCreateAnnouncementGroups,
+      projectsSearchProjects:
+          projectsSearchProjects ?? this.projectsSearchProjects,
+      projectsManageProjects:
+          projectsManageProjects ?? this.projectsManageProjects,
+      dashboardPersonalDashboard:
+          dashboardPersonalDashboard ?? this.dashboardPersonalDashboard,
+      personalDashboardFilter:
+          personalDashboardFilter ?? this.personalDashboardFilter,
+      personalDashboardByConsultant:
+          personalDashboardByConsultant ?? this.personalDashboardByConsultant,
+      personalDashboardByStatus:
+          personalDashboardByStatus ?? this.personalDashboardByStatus,
+      personalDashboardByProject:
+          personalDashboardByProject ?? this.personalDashboardByProject,
+      personalDashboardTodaysEmployeeStatistics:
+          personalDashboardTodaysEmployeeStatistics ??
+          this.personalDashboardTodaysEmployeeStatistics,
+      personalDashboardMyStatistics:
+          personalDashboardMyStatistics ?? this.personalDashboardMyStatistics,
+      personalDashboardMyTasks:
+          personalDashboardMyTasks ?? this.personalDashboardMyTasks,
+      personalDashboardMyNotes:
+          personalDashboardMyNotes ?? this.personalDashboardMyNotes,
+      personalDashboardMyCalendar:
+          personalDashboardMyCalendar ?? this.personalDashboardMyCalendar,
+      dashboardFinancialDashboard:
+          dashboardFinancialDashboard ?? this.dashboardFinancialDashboard,
+      financialDashboardActualSales:
+          financialDashboardActualSales ?? this.financialDashboardActualSales,
+      financialDashboardEstimatedSales:
+          financialDashboardEstimatedSales ??
+          this.financialDashboardEstimatedSales,
+      financialDashboardNetProfit:
+          financialDashboardNetProfit ?? this.financialDashboardNetProfit,
+      financialDashboardTotalCommissionEarnedFromProductSales:
+          financialDashboardTotalCommissionEarnedFromProductSales ??
+          this.financialDashboardTotalCommissionEarnedFromProductSales,
+      financialDashboardTotalProductsSold:
+          financialDashboardTotalProductsSold ??
+          this.financialDashboardTotalProductsSold,
+      financialDashboardExpenses:
+          financialDashboardExpenses ?? this.financialDashboardExpenses,
+      financialDashboardAddExpenses:
+          financialDashboardAddExpenses ?? this.financialDashboardAddExpenses,
+      financialDashboardDeleteExpenses:
+          financialDashboardDeleteExpenses ??
+          this.financialDashboardDeleteExpenses,
+      financialDashboardEditExpenses:
+          financialDashboardEditExpenses ?? this.financialDashboardEditExpenses,
+      financialDashboardNumberOfPatients:
+          financialDashboardNumberOfPatients ??
+          this.financialDashboardNumberOfPatients,
+      financialDashboardTotalCost:
+          financialDashboardTotalCost ?? this.financialDashboardTotalCost,
+      financialDashboardTotalRefund:
+          financialDashboardTotalRefund ?? this.financialDashboardTotalRefund,
+      financialDashboardOperatingExpenses:
+          financialDashboardOperatingExpenses ??
+          this.financialDashboardOperatingExpenses,
+      dashboardMarketingDashboard:
+          dashboardMarketingDashboard ?? this.dashboardMarketingDashboard,
+      marketingDashboardAddExpenses:
+          marketingDashboardAddExpenses ?? this.marketingDashboardAddExpenses,
+      marketingDashboardDeleteExpenses:
+          marketingDashboardDeleteExpenses ??
+          this.marketingDashboardDeleteExpenses,
+      marketingDashboardEditExpenses:
+          marketingDashboardEditExpenses ?? this.marketingDashboardEditExpenses,
+      marketingDashboardViewExpenses:
+          marketingDashboardViewExpenses ?? this.marketingDashboardViewExpenses,
+      marketingDashboardAddCampaign:
+          marketingDashboardAddCampaign ?? this.marketingDashboardAddCampaign,
+      marketingDashboardEditCampaign:
+          marketingDashboardEditCampaign ?? this.marketingDashboardEditCampaign,
+      marketingDashboardDeleteCampaign:
+          marketingDashboardDeleteCampaign ??
+          this.marketingDashboardDeleteCampaign,
+      marketingDashboardViewCampaign:
+          marketingDashboardViewCampaign ?? this.marketingDashboardViewCampaign,
+      marketingDashboardAddMembersToCampaign:
+          marketingDashboardAddMembersToCampaign ??
+          this.marketingDashboardAddMembersToCampaign,
+      marketingDashboardLinkProjectsToCampaign:
+          marketingDashboardLinkProjectsToCampaign ??
+          this.marketingDashboardLinkProjectsToCampaign,
+      marketingDashboardChangeCampaignStatus:
+          marketingDashboardChangeCampaignStatus ??
+          this.marketingDashboardChangeCampaignStatus,
+      adminSettingsManageProjects:
+          adminSettingsManageProjects ?? this.adminSettingsManageProjects,
+      adminSettingsManageUsers:
+          adminSettingsManageUsers ?? this.adminSettingsManageUsers,
+      adminSettingsManageForms:
+          adminSettingsManageForms ?? this.adminSettingsManageForms,
+      adminSettingsManageChat:
+          adminSettingsManageChat ?? this.adminSettingsManageChat,
+      adminSettingsManageTeams:
+          adminSettingsManageTeams ?? this.adminSettingsManageTeams,
+      announcementsCreateAnnouncment:
+          announcementsCreateAnnouncment ?? this.announcementsCreateAnnouncment,
+      announcementsViewAnnouncment:
+          announcementsViewAnnouncment ?? this.announcementsViewAnnouncment,
+      announcementsEditAnnouncement:
+          announcementsEditAnnouncement ?? this.announcementsEditAnnouncement,
+      announcementsDeleteAnnouncement:
+          announcementsDeleteAnnouncement ??
+          this.announcementsDeleteAnnouncement,
+      announcementsCreateAnnouncementGroups:
+          announcementsCreateAnnouncementGroups ??
+          this.announcementsCreateAnnouncementGroups,
       user: user ?? this.user,
     );
   }

@@ -66,15 +66,30 @@ class TaskAppointmentProcedureRow {
       procedureName: json[field.procedureName],
       procedurePrice: (json[field.procedurePrice] as num).toDouble(),
       procedureCommission: (json[field.procedureCommission] as num).toDouble(),
-      discountRate: json[field.discountRate] == null ? null : (json[field.discountRate] as num?)?.toDouble(),
+      discountRate:
+          json[field.discountRate] == null
+              ? null
+              : (json[field.discountRate] as num?)?.toDouble(),
       discountAmount: (json[field.discountAmount] as num).toDouble(),
       createdAt: DateTime.parse(json[field.createdAt]),
       createdBy: json[field.createdBy],
       clinic: json[field.clinic],
-      refundAmount: json[field.refundAmount] == null ? null : (json[field.refundAmount] as num?)?.toDouble(),
-      paidOn: json[field.paidOn] == null ? null : DateTime.tryParse(json[field.paidOn] ?? ''),
-      commissionEnteredByUser: json[field.commissionEnteredByUser] == null ? null : (json[field.commissionEnteredByUser] as num?)?.toDouble(),
-      originalProcedurePrice: json[field.originalProcedurePrice] == null ? null : (json[field.originalProcedurePrice] as num?)?.toDouble(),
+      refundAmount:
+          json[field.refundAmount] == null
+              ? null
+              : (json[field.refundAmount] as num?)?.toDouble(),
+      paidOn:
+          json[field.paidOn] == null
+              ? null
+              : DateTime.tryParse(json[field.paidOn] ?? ''),
+      commissionEnteredByUser:
+          json[field.commissionEnteredByUser] == null
+              ? null
+              : (json[field.commissionEnteredByUser] as num?)?.toDouble(),
+      originalProcedurePrice:
+          json[field.originalProcedurePrice] == null
+              ? null
+              : (json[field.originalProcedurePrice] as num?)?.toDouble(),
       notes: json[field.notes],
     );
   }
@@ -131,8 +146,10 @@ class TaskAppointmentProcedureRow {
       clinic: clinic ?? this.clinic,
       refundAmount: refundAmount ?? this.refundAmount,
       paidOn: paidOn ?? this.paidOn,
-      commissionEnteredByUser: commissionEnteredByUser ?? this.commissionEnteredByUser,
-      originalProcedurePrice: originalProcedurePrice ?? this.originalProcedurePrice,
+      commissionEnteredByUser:
+          commissionEnteredByUser ?? this.commissionEnteredByUser,
+      originalProcedurePrice:
+          originalProcedurePrice ?? this.originalProcedurePrice,
       notes: notes ?? this.notes,
     );
   }

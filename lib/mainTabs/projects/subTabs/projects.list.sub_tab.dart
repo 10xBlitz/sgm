@@ -60,13 +60,16 @@ class _ProjectsListSubTabState extends ProjectsListSubTabState {
 
     try {
       // Load all users for assignee mapping
-      final users =
-          await _userService.getAllUsers(activated: false, isBanned: false);
+      final users = await _userService.getAllUsers(
+        activated: false,
+        isBanned: false,
+      );
       _assigneeCache = {for (var user in users) user.id: user};
 
       // Load all statuses for the project
-      final statuses =
-          await _statusService.getStatusByProjectID(widget.projectId);
+      final statuses = await _statusService.getStatusByProjectID(
+        widget.projectId,
+      );
       _statusCache = {for (var status in statuses) status.id: status};
 
       // map current project status to the status cache
@@ -187,8 +190,9 @@ class _ProjectsListSubTabState extends ProjectsListSubTabState {
                         padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
                         child: Text(
                           'Forms',
-                          style: theme.textTheme.titleMedium
-                              ?.copyWith(fontWeight: FontWeight.bold),
+                          style: theme.textTheme.titleMedium?.copyWith(
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
                       ..._forms.map((form) => _formItem(theme, form)),
@@ -210,7 +214,8 @@ class _ProjectsListSubTabState extends ProjectsListSubTabState {
                   key: _paginatedDataKey,
                   builder: (context, data, isLoading) {
                     // Calculate total table width from column widths
-                    final tableWidth = _titleWidth +
+                    final tableWidth =
+                        _titleWidth +
                         _statusWidth +
                         _dueDateWidth +
                         _assigneeWidth +
@@ -299,12 +304,14 @@ class _ProjectsListSubTabState extends ProjectsListSubTabState {
                                             ? _formatDateTime(item.dateDue!)
                                             : "No Due Date",
                                         width: _dueDateWidth,
-                                        style: item.dateDue != null
-                                            ? null
-                                            : theme.textTheme.bodyMedium
-                                                ?.copyWith(
-                                                fontStyle: FontStyle.italic,
-                                              ),
+                                        style:
+                                            item.dateDue != null
+                                                ? null
+                                                : theme.textTheme.bodyMedium
+                                                    ?.copyWith(
+                                                      fontStyle:
+                                                          FontStyle.italic,
+                                                    ),
                                       ),
                                       _buildDataCell(
                                         _getAssigneeName(item.assignee),
@@ -313,8 +320,8 @@ class _ProjectsListSubTabState extends ProjectsListSubTabState {
                                       _buildDataCell(
                                         item.customerBirthday != null
                                             ? _formatDateOnly(
-                                                item.customerBirthday!,
-                                              )
+                                              item.customerBirthday!,
+                                            )
                                             : "",
                                         width: _birthdayWidth,
                                       ),
@@ -381,10 +388,7 @@ class _ProjectsListSubTabState extends ProjectsListSubTabState {
     );
   }
 
-  Widget _buildStatusCell(
-    TaskRow row, {
-    required double width,
-  }) {
+  Widget _buildStatusCell(TaskRow row, {required double width}) {
     return Container(
       width: width,
       padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
@@ -392,12 +396,13 @@ class _ProjectsListSubTabState extends ProjectsListSubTabState {
         onTap: () {
           showDialog(
             context: context,
-            builder: (context) => UpdateTaskStatusDialog(
-              projectId: widget.projectId,
-              taskId: row.id,
-              currentStatus: row.status ?? '',
-              onStatusUpdated: reloadAPI,
-            ),
+            builder:
+                (context) => UpdateTaskStatusDialog(
+                  projectId: widget.projectId,
+                  taskId: row.id,
+                  currentStatus: row.status ?? '',
+                  onStatusUpdated: reloadAPI,
+                ),
           );
         },
         child: Align(
@@ -452,8 +457,9 @@ class _ProjectsListSubTabState extends ProjectsListSubTabState {
     return Container(
       padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
       decoration: BoxDecoration(
-        border:
-            Border(bottom: BorderSide(color: theme.colorScheme.outlineVariant)),
+        border: Border(
+          bottom: BorderSide(color: theme.colorScheme.outlineVariant),
+        ),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,

@@ -20,7 +20,11 @@ class UserService {
   final Map<String, UserRow> _cache = {};
 
   /// Gets all users with optional filters.
-  Future<List<UserRow>> getAllUsers({String? role, bool? activated, bool? isBanned}) async {
+  Future<List<UserRow>> getAllUsers({
+    String? role,
+    bool? activated,
+    bool? isBanned,
+  }) async {
     try {
       var query = _supabase.from(UserRow.table).select();
 
@@ -38,7 +42,10 @@ class UserService {
       }
 
       // Then apply ordering
-      final response = await query.order(UserRow.field.createdAt, ascending: false);
+      final response = await query.order(
+        UserRow.field.createdAt,
+        ascending: false,
+      );
 
       final users =
           response.map<UserRow>((dynamic data) {
@@ -96,11 +103,11 @@ class UserService {
     }
     try {
       final response =
-      await _supabase
-          .from(UserRow.table)
-          .select()
-          .eq(UserRow.field.id, id)
-          .single();
+          await _supabase
+              .from(UserRow.table)
+              .select()
+              .eq(UserRow.field.id, id)
+              .single();
       final user = UserRow.fromJson(response);
       _cache[id] = user;
       return user;
@@ -109,6 +116,7 @@ class UserService {
       return null;
     }
   }
+
   /// Clears the cache
   void clearCache() {
     _cache.clear();

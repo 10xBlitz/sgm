@@ -38,8 +38,14 @@ class UserGroupRow {
       description: json[field.description],
       createdBy: json[field.createdBy],
       createdAt: DateTime.parse(json[field.createdAt]),
-      updatedAt: json[field.updatedAt] == null ? null : DateTime.tryParse(json[field.updatedAt] ?? ''),
-      deletedAt: json[field.deletedAt] == null ? null : DateTime.tryParse(json[field.deletedAt] ?? ''),
+      updatedAt:
+          json[field.updatedAt] == null
+              ? null
+              : DateTime.tryParse(json[field.updatedAt] ?? ''),
+      deletedAt:
+          json[field.deletedAt] == null
+              ? null
+              : DateTime.tryParse(json[field.deletedAt] ?? ''),
     );
   }
   Map<String, dynamic> toJson() {

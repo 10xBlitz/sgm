@@ -20,7 +20,8 @@ class ClinicsListAllTab extends StatefulWidget {
 class _ClinicsListAllTabState extends State<ClinicsListAllTab> {
   // Supabase auth id
 
-  final String supabaseAuthId = Supabase.instance.client.auth.currentUser?.id ?? '';
+  final String supabaseAuthId =
+      Supabase.instance.client.auth.currentUser?.id ?? '';
 
   final ProjectService projectService = ProjectService();
 
@@ -32,7 +33,9 @@ class _ClinicsListAllTabState extends State<ClinicsListAllTab> {
       return Center(
         child: Text(
           'User not authenticated',
-          style: theme.textTheme.bodyLarge?.copyWith(color: theme.colorScheme.error),
+          style: theme.textTheme.bodyLarge?.copyWith(
+            color: theme.colorScheme.error,
+          ),
         ),
       );
     }
@@ -48,7 +51,9 @@ class _ClinicsListAllTabState extends State<ClinicsListAllTab> {
           return Center(
             child: Text(
               'Error loading clinics: ${snapshot.error}',
-              style: theme.textTheme.bodyLarge?.copyWith(color: theme.colorScheme.error),
+              style: theme.textTheme.bodyLarge?.copyWith(
+                color: theme.colorScheme.error,
+              ),
             ),
           );
         }
@@ -56,7 +61,9 @@ class _ClinicsListAllTabState extends State<ClinicsListAllTab> {
         final clinics = snapshot.data ?? [];
 
         if (clinics.isEmpty) {
-          return Center(child: Text('No clinics found', style: theme.textTheme.titleMedium));
+          return Center(
+            child: Text('No clinics found', style: theme.textTheme.titleMedium),
+          );
         }
 
         return ListView.separated(
@@ -64,7 +71,11 @@ class _ClinicsListAllTabState extends State<ClinicsListAllTab> {
           separatorBuilder: (context, index) => const Divider(height: 1),
           itemBuilder: (context, index) {
             final clinic = clinics[index];
-            return ItemProject(item: clinic, onTap: () => widget.onTapClinic?.call(clinic), theme: theme);
+            return ItemProject(
+              item: clinic,
+              onTap: () => widget.onTapClinic?.call(clinic),
+              theme: theme,
+            );
           },
         );
       },

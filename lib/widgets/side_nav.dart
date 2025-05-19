@@ -77,7 +77,7 @@ class _SideNavState extends State<SideNav> {
                           UserAvatar(
                             imageUrl:
                                 authService.currentUserProfile?.profileImage ??
-                                    '',
+                                '',
                           ),
                           SizedBox(width: 8),
                         ],
@@ -97,10 +97,9 @@ class _SideNavState extends State<SideNav> {
                 Text(
                   authService.currentUserProfile?.name ?? 'No Name',
                   style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                        color:
-                            Theme.of(context).colorScheme.onSecondaryContainer,
-                        fontWeight: FontWeight.w900,
-                      ),
+                    color: Theme.of(context).colorScheme.onSecondaryContainer,
+                    fontWeight: FontWeight.w900,
+                  ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -108,8 +107,8 @@ class _SideNavState extends State<SideNav> {
                 Text(
                   authService.currentUserProfile?.email ?? 'No Email',
                   style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                        fontWeight: FontWeight.w400,
-                      ),
+                    fontWeight: FontWeight.w400,
+                  ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -117,11 +116,10 @@ class _SideNavState extends State<SideNav> {
                 Text(
                   authService.currentUserProfile?.phoneNumber ?? 'No Phone',
                   style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                        fontStyle: FontStyle.italic,
-                        fontWeight: FontWeight.w900,
-                        color:
-                            Theme.of(context).colorScheme.onSecondaryContainer,
-                      ),
+                    fontStyle: FontStyle.italic,
+                    fontWeight: FontWeight.w900,
+                    color: Theme.of(context).colorScheme.onSecondaryContainer,
+                  ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),

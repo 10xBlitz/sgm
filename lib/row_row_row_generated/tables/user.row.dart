@@ -67,14 +67,26 @@ class UserRow {
       email: json[field.email],
       activated: json[field.activated] as bool,
       phoneNumber: json[field.phoneNumber],
-      acceptedAt: json[field.acceptedAt] == null ? null : DateTime.tryParse(json[field.acceptedAt] ?? ''),
-      rejectedAt: json[field.rejectedAt] == null ? null : DateTime.tryParse(json[field.rejectedAt] ?? ''),
+      acceptedAt:
+          json[field.acceptedAt] == null
+              ? null
+              : DateTime.tryParse(json[field.acceptedAt] ?? ''),
+      rejectedAt:
+          json[field.rejectedAt] == null
+              ? null
+              : DateTime.tryParse(json[field.rejectedAt] ?? ''),
       profileImage: json[field.profileImage],
       details: json[field.details],
       isBanned: json[field.isBanned],
       asanaGid: json[field.asanaGid],
-      acceptedTermsAt: json[field.acceptedTermsAt] == null ? null : DateTime.tryParse(json[field.acceptedTermsAt] ?? ''),
-      emailConfirmedAt: json[field.emailConfirmedAt] == null ? null : DateTime.tryParse(json[field.emailConfirmedAt] ?? ''),
+      acceptedTermsAt:
+          json[field.acceptedTermsAt] == null
+              ? null
+              : DateTime.tryParse(json[field.acceptedTermsAt] ?? ''),
+      emailConfirmedAt:
+          json[field.emailConfirmedAt] == null
+              ? null
+              : DateTime.tryParse(json[field.emailConfirmedAt] ?? ''),
       emailConfirmationCode: json[field.emailConfirmationCode],
     );
   }
@@ -133,7 +145,8 @@ class UserRow {
       asanaGid: asanaGid ?? this.asanaGid,
       acceptedTermsAt: acceptedTermsAt ?? this.acceptedTermsAt,
       emailConfirmedAt: emailConfirmedAt ?? this.emailConfirmedAt,
-      emailConfirmationCode: emailConfirmationCode ?? this.emailConfirmationCode,
+      emailConfirmationCode:
+          emailConfirmationCode ?? this.emailConfirmationCode,
     );
   }
 }

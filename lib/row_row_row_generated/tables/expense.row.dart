@@ -40,9 +40,15 @@ class ExpenseRow {
   factory ExpenseRow.fromJson(Map<String, dynamic> json) {
     return ExpenseRow(
       id: json[field.id] as String,
-      amountKrw: json[field.amountKrw] == null ? null : (json[field.amountKrw] as num?)?.toDouble(),
+      amountKrw:
+          json[field.amountKrw] == null
+              ? null
+              : (json[field.amountKrw] as num?)?.toDouble(),
       type: json[field.type],
-      date: json[field.date] == null ? null : DateTime.tryParse(json[field.date] ?? ''),
+      date:
+          json[field.date] == null
+              ? null
+              : DateTime.tryParse(json[field.date] ?? ''),
       assignee: json[field.assignee],
       createdBy: json[field.createdBy],
       createdAt: DateTime.parse(json[field.createdAt]),

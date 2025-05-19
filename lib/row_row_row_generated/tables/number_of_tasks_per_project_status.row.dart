@@ -23,7 +23,10 @@ class NumberOfTasksPerProjectStatusRow {
     return NumberOfTasksPerProjectStatusRow(
       project: json[field.project],
       status: json[field.status],
-      numberOfTasks: json[field.numberOfTasks] == null ? null : (json[field.numberOfTasks] as num?)?.toInt(),
+      numberOfTasks:
+          json[field.numberOfTasks] == null
+              ? null
+              : (json[field.numberOfTasks] as num?)?.toInt(),
     );
   }
   Map<String, dynamic> toJson() {

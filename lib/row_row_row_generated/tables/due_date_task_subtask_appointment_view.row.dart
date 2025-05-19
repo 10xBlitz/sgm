@@ -61,9 +61,14 @@ class DueDateTaskSubtaskAppointmentViewRow {
     this.taskCollaborators,
   });
 
-  factory DueDateTaskSubtaskAppointmentViewRow.fromJson(Map<String, dynamic> json) {
+  factory DueDateTaskSubtaskAppointmentViewRow.fromJson(
+    Map<String, dynamic> json,
+  ) {
     return DueDateTaskSubtaskAppointmentViewRow(
-      dueDate: json[field.dueDate] == null ? null : DateTime.tryParse(json[field.dueDate] ?? ''),
+      dueDate:
+          json[field.dueDate] == null
+              ? null
+              : DateTime.tryParse(json[field.dueDate] ?? ''),
       taskId: json[field.taskId],
       subtaskId: json[field.subtaskId],
       taskAppointmentId: json[field.taskAppointmentId],
@@ -78,8 +83,14 @@ class DueDateTaskSubtaskAppointmentViewRow {
       appointmentDetails: json[field.appointmentDetails],
       projectId: json[field.projectId],
       projectName: json[field.projectName],
-      createdAt: json[field.createdAt] == null ? null : DateTime.tryParse(json[field.createdAt] ?? ''),
-      taskCollaborators: json[field.taskCollaborators] == null ? null : List<String>.from(json[field.taskCollaborators]),
+      createdAt:
+          json[field.createdAt] == null
+              ? null
+              : DateTime.tryParse(json[field.createdAt] ?? ''),
+      taskCollaborators:
+          json[field.taskCollaborators] == null
+              ? null
+              : List<String>.from(json[field.taskCollaborators]),
     );
   }
   Map<String, dynamic> toJson() {

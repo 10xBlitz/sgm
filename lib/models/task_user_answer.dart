@@ -12,4 +12,4 @@ class TaskUserAnswer {
   List<String>? get attachments => response?.images;
 
   String get type => question.type ?? 'text';
-} 
+}

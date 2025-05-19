@@ -43,8 +43,14 @@ class TaskClinicRefundRow {
   factory TaskClinicRefundRow.fromJson(Map<String, dynamic> json) {
     return TaskClinicRefundRow(
       id: json[field.id] as String,
-      date: json[field.date] == null ? null : DateTime.tryParse(json[field.date] ?? ''),
-      amount: json[field.amount] == null ? null : (json[field.amount] as num?)?.toDouble(),
+      date:
+          json[field.date] == null
+              ? null
+              : DateTime.tryParse(json[field.date] ?? ''),
+      amount:
+          json[field.amount] == null
+              ? null
+              : (json[field.amount] as num?)?.toDouble(),
       reason: json[field.reason],
       details: json[field.details],
       refundBy: json[field.refundBy],

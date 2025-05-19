@@ -24,7 +24,10 @@ class TaskCustomerDetail extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(task.customerName ?? '-', style: Theme.of(context).textTheme.titleLarge),
+                Text(
+                  task.customerName ?? '-',
+                  style: Theme.of(context).textTheme.titleLarge,
+                ),
                 ElevatedButton.icon(
                   onPressed: () {},
                   icon: const Icon(Icons.edit),
@@ -32,7 +35,9 @@ class TaskCustomerDetail extends StatelessWidget {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFFD1B36A),
                     foregroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
                   ),
                 ),
               ],
@@ -67,7 +72,10 @@ class CustomerStaticDetails extends StatelessWidget {
         _DetailItem(label: 'DOB', value: _formatDate(task.customerBirthday)),
         _DetailItem(label: 'Gender', value: task.customerGender),
         _DetailItem(label: 'Nationality', value: task.customerNationality),
-        _DetailItem(label: 'Country of residence', value: task.customerCountryResidence),
+        _DetailItem(
+          label: 'Country of residence',
+          value: task.customerCountryResidence,
+        ),
         _DetailItem(label: 'Phone number', value: task.customerPhone),
       ],
     );
@@ -86,7 +94,8 @@ class CustomerDynamicAnswers extends StatelessWidget {
     }
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: answers!.map((answer) => CustomerAnswerItem(answer: answer)).toList(),
+      children:
+          answers!.map((answer) => CustomerAnswerItem(answer: answer)).toList(),
     );
   }
 }
@@ -112,7 +121,9 @@ class CustomerAnswerItem extends StatelessWidget {
         );
         break;
       case 'attachment':
-        answerWidget = _AttachmentAnswerWidget(images: answer.attachments ?? []);
+        answerWidget = _AttachmentAnswerWidget(
+          images: answer.attachments ?? [],
+        );
         break;
       default:
         answerWidget = _DefaultAnswerWidget();
@@ -122,7 +133,14 @@ class CustomerAnswerItem extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(questionText, style: const TextStyle(fontWeight: FontWeight.w500, color: Colors.blueGrey, fontSize: 15)),
+          Text(
+            questionText,
+            style: const TextStyle(
+              fontWeight: FontWeight.w500,
+              color: Colors.blueGrey,
+              fontSize: 15,
+            ),
+          ),
           const SizedBox(height: 2),
           answerWidget,
         ],
@@ -158,8 +176,13 @@ class _CheckboxAnswerWidget extends StatelessWidget {
                 (opt) => Row(
                   children: [
                     Icon(
-                      checked.contains(opt) ? Icons.check_box : Icons.check_box_outline_blank,
-                      color: checked.contains(opt) ? const Color(0xFFD1B36A) : Colors.grey,
+                      checked.contains(opt)
+                          ? Icons.check_box
+                          : Icons.check_box_outline_blank,
+                      color:
+                          checked.contains(opt)
+                              ? const Color(0xFFD1B36A)
+                              : Colors.grey,
                     ),
                     const SizedBox(width: 8),
                     Text(opt, style: const TextStyle(fontSize: 16)),
@@ -189,7 +212,10 @@ class _AttachmentAnswerWidget extends StatelessWidget {
                   decoration: BoxDecoration(
                     color: Colors.grey[300],
                     borderRadius: BorderRadius.circular(12),
-                    image: DecorationImage(image: NetworkImage(imgUrl), fit: BoxFit.cover),
+                    image: DecorationImage(
+                      image: NetworkImage(imgUrl),
+                      fit: BoxFit.cover,
+                    ),
                   ),
                 ),
               )
@@ -218,9 +244,23 @@ class _DetailItem extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(label, style: const TextStyle(fontWeight: FontWeight.w500, color: Colors.blueGrey, fontSize: 15)),
+          Text(
+            label,
+            style: const TextStyle(
+              fontWeight: FontWeight.w500,
+              color: Colors.blueGrey,
+              fontSize: 15,
+            ),
+          ),
           const SizedBox(height: 2),
-          Text(value ?? '-', style: const TextStyle(fontWeight: FontWeight.normal, color: Colors.black, fontSize: 16)),
+          Text(
+            value ?? '-',
+            style: const TextStyle(
+              fontWeight: FontWeight.normal,
+              color: Colors.black,
+              fontSize: 16,
+            ),
+          ),
         ],
       ),
     );

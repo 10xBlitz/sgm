@@ -54,16 +54,34 @@ class FormQuestionRow {
       id: json[field.id] as String,
       question: json[field.question],
       description: json[field.description],
-      images: json[field.images] == null ? null : List<String>.from(json[field.images]),
+      images:
+          json[field.images] == null
+              ? null
+              : List<String>.from(json[field.images]),
       type: json[field.type],
       isRequired: json[field.isRequired],
       createdAt: DateTime.parse(json[field.createdAt]),
-      updatedAt: json[field.updatedAt] == null ? null : DateTime.tryParse(json[field.updatedAt] ?? ''),
+      updatedAt:
+          json[field.updatedAt] == null
+              ? null
+              : DateTime.tryParse(json[field.updatedAt] ?? ''),
       form: json[field.form],
-      order: json[field.order] == null ? null : (json[field.order] as num?)?.toInt(),
-      checkboxOptions: json[field.checkboxOptions] == null ? null : List<String>.from(json[field.checkboxOptions]),
-      checkboxDefault: json[field.checkboxDefault] == null ? null : List<String>.from(json[field.checkboxDefault]),
-      deletedAt: json[field.deletedAt] == null ? null : DateTime.tryParse(json[field.deletedAt] ?? ''),
+      order:
+          json[field.order] == null
+              ? null
+              : (json[field.order] as num?)?.toInt(),
+      checkboxOptions:
+          json[field.checkboxOptions] == null
+              ? null
+              : List<String>.from(json[field.checkboxOptions]),
+      checkboxDefault:
+          json[field.checkboxDefault] == null
+              ? null
+              : List<String>.from(json[field.checkboxDefault]),
+      deletedAt:
+          json[field.deletedAt] == null
+              ? null
+              : DateTime.tryParse(json[field.deletedAt] ?? ''),
     );
   }
   Map<String, dynamic> toJson() {

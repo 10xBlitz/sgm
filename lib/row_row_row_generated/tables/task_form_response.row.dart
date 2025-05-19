@@ -45,10 +45,16 @@ class TaskFormResponseRow {
       id: json[field.id] as String,
       answer: json[field.answer],
       createdAt: DateTime.parse(json[field.createdAt]),
-      images: json[field.images] == null ? null : List<String>.from(json[field.images]),
+      images:
+          json[field.images] == null
+              ? null
+              : List<String>.from(json[field.images]),
       question: json[field.question],
       task: json[field.task],
-      checkedBox: json[field.checkedBox] == null ? null : List<String>.from(json[field.checkedBox]),
+      checkedBox:
+          json[field.checkedBox] == null
+              ? null
+              : List<String>.from(json[field.checkedBox]),
       sysNotes: json[field.sysNotes],
       questionText: json[field.questionText],
       photoConverted: json[field.photoConverted] as bool,

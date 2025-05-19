@@ -56,8 +56,12 @@ class ProcedureService {
         if (explanation != null) ProcedureRow.field.explanation: explanation,
       };
 
-      final response = 
-          await _supabase.from(ProcedureRow.table).insert(data).select().single();
+      final response =
+          await _supabase
+              .from(ProcedureRow.table)
+              .insert(data)
+              .select()
+              .single();
 
       final procedure = ProcedureRow.fromJson(response);
       _cache[procedure.id] = procedure;
@@ -162,7 +166,10 @@ class ProcedureService {
           .from(ProcedureWithCategoryClinicAreaNamesRow.table)
           .select()
           .eq(ProcedureWithCategoryClinicAreaNamesRow.field.clinicId, clinicId)
-          .order(ProcedureWithCategoryClinicAreaNamesRow.field.createdAt, ascending: false);
+          .order(
+            ProcedureWithCategoryClinicAreaNamesRow.field.createdAt,
+            ascending: false,
+          );
 
       final procedures =
           response.map<ProcedureWithCategoryClinicAreaNamesRow>((data) {
@@ -177,17 +184,21 @@ class ProcedureService {
   }
 
   /// Gets procedures by clinic ID and category ID using the procedure_with_category_clinic_area_names view.
-  Future<List<ProcedureWithCategoryClinicAreaNamesRow>> getProceduresByClinicAndCategory(
-    String clinicId,
-    String categoryId,
-  ) async {
+  Future<List<ProcedureWithCategoryClinicAreaNamesRow>>
+  getProceduresByClinicAndCategory(String clinicId, String categoryId) async {
     try {
       final response = await _supabase
           .from(ProcedureWithCategoryClinicAreaNamesRow.table)
           .select()
           .eq(ProcedureWithCategoryClinicAreaNamesRow.field.clinicId, clinicId)
-          .eq(ProcedureWithCategoryClinicAreaNamesRow.field.category, categoryId)
-          .order(ProcedureWithCategoryClinicAreaNamesRow.field.createdAt, ascending: false);
+          .eq(
+            ProcedureWithCategoryClinicAreaNamesRow.field.category,
+            categoryId,
+          )
+          .order(
+            ProcedureWithCategoryClinicAreaNamesRow.field.createdAt,
+            ascending: false,
+          );
 
       final procedures =
           response.map<ProcedureWithCategoryClinicAreaNamesRow>((data) {
@@ -221,8 +232,10 @@ class ProcedureService {
       if (commission != null) data[ProcedureRow.field.commission] = commission;
       if (totalPrice != null) data[ProcedureRow.field.totalPrice] = totalPrice;
       if (category != null) data[ProcedureRow.field.category] = category;
-      if (description != null) data[ProcedureRow.field.description] = description;
-      if (explanation != null) data[ProcedureRow.field.explanation] = explanation;
+      if (description != null)
+        data[ProcedureRow.field.description] = description;
+      if (explanation != null)
+        data[ProcedureRow.field.explanation] = explanation;
 
       // Skip update if no fields were provided
       if (data.isEmpty) {
@@ -256,16 +269,19 @@ class ProcedureService {
   /// Deletes a procedure from the database.
   Future<bool> deleteProcedure(String id) async {
     try {
-      await _supabase.from(ProcedureRow.table).delete().eq(ProcedureRow.field.id, id);
-      
+      await _supabase
+          .from(ProcedureRow.table)
+          .delete()
+          .eq(ProcedureRow.field.id, id);
+
       // Update caches
       final procedure = _cache[id];
       _cache.remove(id);
-      
+
       if (procedure != null && procedure.category != null) {
         _categoryCache[procedure.category!]?.removeWhere((p) => p.id == id);
       }
-      
+
       return true;
     } catch (error) {
       debugPrint('Error deleting procedure: $error');
@@ -279,7 +295,9 @@ class ProcedureService {
       final response = await _supabase
           .from(ProcedureRow.table)
           .select()
-          .or('title_eng.ilike.%$query%,title_kor.ilike.%$query%,description.ilike.%$query%')
+          .or(
+            'title_eng.ilike.%$query%,title_kor.ilike.%$query%,description.ilike.%$query%',
+          )
           .order(ProcedureRow.field.createdAt, ascending: false);
 
       final procedures =
@@ -312,7 +330,11 @@ class ProcedureService {
       };
 
       final response =
-          await _supabase.from(ProcedureCategoryRow.table).insert(data).select().single();
+          await _supabase
+              .from(ProcedureCategoryRow.table)
+              .insert(data)
+              .select()
+              .single();
 
       final category = ProcedureCategoryRow.fromJson(response);
       _categoriesCache[category.id] = category;
@@ -330,7 +352,10 @@ class ProcedureService {
   }
 
   /// Gets a procedure category by its ID.
-  Future<ProcedureCategoryRow?> getCategoryFromId(String id, {bool cached = true}) async {
+  Future<ProcedureCategoryRow?> getCategoryFromId(
+    String id, {
+    bool cached = true,
+  }) async {
     // Return from cache if available and allowed
     if (cached && _categoriesCache.containsKey(id)) {
       return _categoriesCache[id];
@@ -430,16 +455,21 @@ class ProcedureService {
   /// Deletes a procedure category from the database.
   Future<bool> deleteProcedureCategory(String id) async {
     try {
-      await _supabase.from(ProcedureCategoryRow.table).delete().eq(ProcedureCategoryRow.field.id, id);
-      
+      await _supabase
+          .from(ProcedureCategoryRow.table)
+          .delete()
+          .eq(ProcedureCategoryRow.field.id, id);
+
       // Update caches
       final category = _categoriesCache[id];
       _categoriesCache.remove(id);
-      
+
       if (category != null && category.clinic != null) {
-        _clinicCategoriesCache[category.clinic!]?.removeWhere((c) => c.id == id);
+        _clinicCategoriesCache[category.clinic!]?.removeWhere(
+          (c) => c.id == id,
+        );
       }
-      
+
       return true;
     } catch (error) {
       debugPrint('Error deleting procedure category: $error');
@@ -451,7 +481,7 @@ class ProcedureService {
   ProcedureRow? getFromCache(String id) {
     return _cache[id];
   }
-  
+
   /// Returns a cached procedure category if available
   ProcedureCategoryRow? getCategoryFromCache(String id) {
     return _categoriesCache[id];

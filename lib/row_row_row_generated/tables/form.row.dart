@@ -51,7 +51,10 @@ class FormRow {
       url: json[field.url],
       description: json[field.description],
       createdAt: DateTime.parse(json[field.createdAt]),
-      updatedAt: json[field.updatedAt] == null ? null : DateTime.tryParse(json[field.updatedAt] ?? ''),
+      updatedAt:
+          json[field.updatedAt] == null
+              ? null
+              : DateTime.tryParse(json[field.updatedAt] ?? ''),
       createdBy: json[field.createdBy],
       redirectLinkAfterFillout: json[field.redirectLinkAfterFillout],
       customFormName: json[field.customFormName],
@@ -96,7 +99,8 @@ class FormRow {
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
       createdBy: createdBy ?? this.createdBy,
-      redirectLinkAfterFillout: redirectLinkAfterFillout ?? this.redirectLinkAfterFillout,
+      redirectLinkAfterFillout:
+          redirectLinkAfterFillout ?? this.redirectLinkAfterFillout,
       customFormName: customFormName ?? this.customFormName,
       previewImage: previewImage ?? this.previewImage,
     );

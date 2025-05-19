@@ -96,10 +96,13 @@ class _AddTaskDialogState extends State<AddTaskDialog> {
 
   Future<void> _loadData() async {
     try {
-      final users =
-          await _userService.getAllUsers(activated: false, isBanned: false);
-      final statuses =
-          await _statusService.getStatusByProjectID(widget.projectId);
+      final users = await _userService.getAllUsers(
+        activated: false,
+        isBanned: false,
+      );
+      final statuses = await _statusService.getStatusByProjectID(
+        widget.projectId,
+      );
       setState(() {
         _assignees = users;
         _statuses = statuses;
@@ -196,10 +199,9 @@ class _AddTaskDialogState extends State<AddTaskDialog> {
                   Expanded(
                     child: Text(
                       widget.projectTitle,
-                      style: Theme.of(context)
-                          .textTheme
-                          .titleLarge
-                          ?.copyWith(fontWeight: FontWeight.bold),
+                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                   IconButton(
@@ -216,9 +218,10 @@ class _AddTaskDialogState extends State<AddTaskDialog> {
                   padding: const EdgeInsets.all(24.0),
                   child: Form(
                     key: _formKey,
-                    autovalidateMode: _isSubmitted
-                        ? AutovalidateMode.always
-                        : AutovalidateMode.disabled,
+                    autovalidateMode:
+                        _isSubmitted
+                            ? AutovalidateMode.always
+                            : AutovalidateMode.disabled,
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -232,13 +235,17 @@ class _AddTaskDialogState extends State<AddTaskDialog> {
                               fontSize: 12,
                             ),
                             focusedErrorBorder: OutlineInputBorder(
-                              borderSide:
-                                  const BorderSide(color: Colors.red, width: 2),
+                              borderSide: const BorderSide(
+                                color: Colors.red,
+                                width: 2,
+                              ),
                               borderRadius: BorderRadius.circular(4),
                             ),
                             errorBorder: OutlineInputBorder(
-                              borderSide:
-                                  const BorderSide(color: Colors.red, width: 2),
+                              borderSide: const BorderSide(
+                                color: Colors.red,
+                                width: 2,
+                              ),
                               borderRadius: BorderRadius.circular(4),
                             ),
                           ),
@@ -308,15 +315,17 @@ class _AddTaskDialogState extends State<AddTaskDialog> {
                                 }
                               });
                             },
-                            items: _statuses
-                                .map(
-                                  (status) => DropdownMenuItem(
-                                    value: status.id,
-                                    child:
-                                        Text(status.status ?? 'Unknown Status'),
-                                  ),
-                                )
-                                .toList(),
+                            items:
+                                _statuses
+                                    .map(
+                                      (status) => DropdownMenuItem(
+                                        value: status.id,
+                                        child: Text(
+                                          status.status ?? 'Unknown Status',
+                                        ),
+                                      ),
+                                    )
+                                    .toList(),
                           ),
                         const SizedBox(height: 24),
                         Text(
@@ -365,16 +374,19 @@ class _AddTaskDialogState extends State<AddTaskDialog> {
                                 }
                               });
                             },
-                            items: _assignees
-                                .map(
-                                  (user) => DropdownMenuItem(
-                                    value: user.id,
-                                    child: Text(
-                                      user.name ?? user.email ?? 'Unknown User',
-                                    ),
-                                  ),
-                                )
-                                .toList(),
+                            items:
+                                _assignees
+                                    .map(
+                                      (user) => DropdownMenuItem(
+                                        value: user.id,
+                                        child: Text(
+                                          user.name ??
+                                              user.email ??
+                                              'Unknown User',
+                                        ),
+                                      ),
+                                    )
+                                    .toList(),
                           ),
                         const SizedBox(height: 24),
                         Text(
@@ -402,9 +414,10 @@ class _AddTaskDialogState extends State<AddTaskDialog> {
                                     ),
                                     decoration: BoxDecoration(
                                       border: Border.all(
-                                        color: state.hasError
-                                            ? Colors.red
-                                            : Colors.grey,
+                                        color:
+                                            state.hasError
+                                                ? Colors.red
+                                                : Colors.grey,
                                         width: state.hasError ? 2 : 1,
                                       ),
                                       borderRadius: BorderRadius.circular(4),
@@ -417,19 +430,21 @@ class _AddTaskDialogState extends State<AddTaskDialog> {
                                           dueDate == null
                                               ? 'Select due date'
                                               : DateFormat(
-                                                  'MMM dd, yyyy - hh:mm a',
-                                                ).format(dueDate!),
+                                                'MMM dd, yyyy - hh:mm a',
+                                              ).format(dueDate!),
                                           style: TextStyle(
-                                            color: dueDate == null
-                                                ? Colors.grey
-                                                : Colors.black87,
+                                            color:
+                                                dueDate == null
+                                                    ? Colors.grey
+                                                    : Colors.black87,
                                           ),
                                         ),
                                         Icon(
                                           Icons.calendar_today,
-                                          color: state.hasError
-                                              ? Colors.red
-                                              : Colors.grey,
+                                          color:
+                                              state.hasError
+                                                  ? Colors.red
+                                                  : Colors.grey,
                                         ),
                                       ],
                                     ),

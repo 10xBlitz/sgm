@@ -3,7 +3,12 @@ import 'package:flutter/material.dart';
 import '../../row_row_row_generated/tables/project.row.dart';
 
 class ItemProject extends StatelessWidget {
-  const ItemProject({super.key, required this.item, required this.onTap, required this.theme});
+  const ItemProject({
+    super.key,
+    required this.item,
+    required this.onTap,
+    required this.theme,
+  });
 
   final ProjectRow item;
   final ThemeData theme;
@@ -25,7 +30,9 @@ class ItemProject extends StatelessWidget {
                 children: [
                   Text(
                     item.title ?? 'Untitled Clinic',
-                    style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   const SizedBox(height: 4),
                   Text(
@@ -38,22 +45,33 @@ class ItemProject extends StatelessWidget {
                   Row(
                     children: [
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8.0,
+                          vertical: 4.0,
+                        ),
                         decoration: BoxDecoration(
                           color: theme.colorScheme.primaryContainer,
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: Text(
                           item.status ?? 'No Status',
-                          style: theme.textTheme.labelSmall?.copyWith(color: theme.colorScheme.onPrimaryContainer),
+                          style: theme.textTheme.labelSmall?.copyWith(
+                            color: theme.colorScheme.onPrimaryContainer,
+                          ),
                         ),
                       ),
                       const SizedBox(width: 8),
-                      Icon(Icons.calendar_today, size: 12, color: theme.colorScheme.outline),
+                      Icon(
+                        Icons.calendar_today,
+                        size: 12,
+                        color: theme.colorScheme.outline,
+                      ),
                       const SizedBox(width: 4),
                       Text(
                         _formatDate(item.createdAt),
-                        style: theme.textTheme.labelSmall?.copyWith(color: theme.colorScheme.outline),
+                        style: theme.textTheme.labelSmall?.copyWith(
+                          color: theme.colorScheme.outline,
+                        ),
                       ),
                     ],
                   ),

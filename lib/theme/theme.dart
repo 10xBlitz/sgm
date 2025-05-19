@@ -416,74 +416,73 @@ class MaterialTheme {
   }
 
   ThemeData theme(ColorScheme colorScheme) => ThemeData(
-        useMaterial3: true,
-        brightness: colorScheme.brightness,
-        colorScheme: colorScheme,
-        textTheme: textTheme.apply(
-          bodyColor: colorScheme.onSurface,
-          displayColor: colorScheme.onSurface,
+    useMaterial3: true,
+    brightness: colorScheme.brightness,
+    colorScheme: colorScheme,
+    textTheme: textTheme.apply(
+      bodyColor: colorScheme.onSurface,
+      displayColor: colorScheme.onSurface,
+    ),
+    scaffoldBackgroundColor: colorScheme.surface,
+    canvasColor: colorScheme.surface,
+    filledButtonTheme: FilledButtonThemeData(
+      style: ButtonStyle(
+        backgroundColor: WidgetStateProperty.all(colorScheme.primary),
+        foregroundColor: WidgetStateProperty.all(colorScheme.onPrimary),
+        textStyle: WidgetStateProperty.all(
+          TextStyle(fontWeight: FontWeight.w900),
         ),
-        scaffoldBackgroundColor: colorScheme.surface,
-        canvasColor: colorScheme.surface,
-        filledButtonTheme: FilledButtonThemeData(
-          style: ButtonStyle(
-            backgroundColor: WidgetStateProperty.all(colorScheme.primary),
-            foregroundColor: WidgetStateProperty.all(colorScheme.onPrimary),
-            textStyle: WidgetStateProperty.all(
-              TextStyle(fontWeight: FontWeight.w900),
-            ),
+      ),
+    ),
+    elevatedButtonTheme: ElevatedButtonThemeData(
+      style: ElevatedButton.styleFrom(
+        backgroundColor: colorScheme.primary,
+        foregroundColor: colorScheme.onPrimary,
+        textStyle: TextStyle(fontWeight: FontWeight.w900),
+        // shape: RoundedRectangleBorder(
+        //   borderRadius: BorderRadius.circular(8.0),
+        // ),
+      ),
+    ),
+    dropdownMenuTheme: DropdownMenuThemeData(
+      inputDecorationTheme: InputDecorationTheme(border: OutlineInputBorder()),
+    ),
+    inputDecorationTheme: InputDecorationTheme(
+      labelStyle: textTheme.labelLarge,
+      floatingLabelStyle: textTheme.labelLarge?.copyWith(
+        color: colorScheme.primary,
+      ),
+      hintStyle: textTheme.bodyMedium?.copyWith(
+        color: colorScheme.outlineVariant,
+      ),
+      border: OutlineInputBorder(),
+    ),
+    outlinedButtonTheme: OutlinedButtonThemeData(
+      style: ButtonStyle(
+        backgroundColor: WidgetStateProperty.all(
+          colorScheme.secondaryContainer,
+        ),
+        foregroundColor: WidgetStateProperty.all(colorScheme.onSurface),
+        textStyle: WidgetStateProperty.all(
+          textTheme.labelMedium?.copyWith(fontWeight: FontWeight.w800),
+        ),
+        shape: WidgetStateProperty.all(
+          RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12.0),
+            side: BorderSide(color: colorScheme.outline, width: 1.5),
           ),
         ),
-        elevatedButtonTheme: ElevatedButtonThemeData(
-          style: ElevatedButton.styleFrom(
-            backgroundColor: colorScheme.primary,
-            foregroundColor: colorScheme.onPrimary,
-            textStyle: TextStyle(fontWeight: FontWeight.w900),
-            // shape: RoundedRectangleBorder(
-            //   borderRadius: BorderRadius.circular(8.0),
-            // ),
-          ),
+      ),
+    ),
+    textButtonTheme: TextButtonThemeData(
+      style: TextButton.styleFrom(
+        textStyle: textTheme.labelLarge?.copyWith(
+          fontWeight: FontWeight.w800,
+          color: colorScheme.onSecondaryContainer,
         ),
-        dropdownMenuTheme: DropdownMenuThemeData(
-          inputDecorationTheme:
-              InputDecorationTheme(border: OutlineInputBorder()),
-        ),
-        inputDecorationTheme: InputDecorationTheme(
-          labelStyle: textTheme.labelLarge,
-          floatingLabelStyle: textTheme.labelLarge?.copyWith(
-            color: colorScheme.primary,
-          ),
-          hintStyle: textTheme.bodyMedium?.copyWith(
-            color: colorScheme.outlineVariant,
-          ),
-          border: OutlineInputBorder(),
-        ),
-        outlinedButtonTheme: OutlinedButtonThemeData(
-          style: ButtonStyle(
-            backgroundColor: WidgetStateProperty.all(
-              colorScheme.secondaryContainer,
-            ),
-            foregroundColor: WidgetStateProperty.all(colorScheme.onSurface),
-            textStyle: WidgetStateProperty.all(
-              textTheme.labelMedium?.copyWith(fontWeight: FontWeight.w800),
-            ),
-            shape: WidgetStateProperty.all(
-              RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12.0),
-                side: BorderSide(color: colorScheme.outline, width: 1.5),
-              ),
-            ),
-          ),
-        ),
-        textButtonTheme: TextButtonThemeData(
-          style: TextButton.styleFrom(
-            textStyle: textTheme.labelLarge?.copyWith(
-              fontWeight: FontWeight.w800,
-              color: colorScheme.onSecondaryContainer,
-            ),
-          ),
-        ),
-      );
+      ),
+    ),
+  );
 
   List<ExtendedColor> get extendedColors => [];
 }

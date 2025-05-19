@@ -3,11 +3,7 @@
 class TermsAndConditionRow {
   static const table = 'terms_and_condition';
 
-  static const field = (
-    id: 'id',
-    createdAt: 'created_at',
-    terms: 'terms',
-  );
+  static const field = (id: 'id', createdAt: 'created_at', terms: 'terms');
 
   final String id;
   final DateTime createdAt;

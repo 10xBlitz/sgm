@@ -3,36 +3,27 @@
 class NextOrderOfStatusRow {
   static const table = 'next_order_of_status';
 
-  static const field = (
-    project: 'project',
-    nextOrder: 'next_order',
-  );
+  static const field = (project: 'project', nextOrder: 'next_order');
 
   final String? project;
   final int? nextOrder;
 
-  const NextOrderOfStatusRow({
-    this.project,
-    this.nextOrder,
-  });
+  const NextOrderOfStatusRow({this.project, this.nextOrder});
 
   factory NextOrderOfStatusRow.fromJson(Map<String, dynamic> json) {
     return NextOrderOfStatusRow(
       project: json[field.project],
-      nextOrder: json[field.nextOrder] == null ? null : (json[field.nextOrder] as num?)?.toInt(),
+      nextOrder:
+          json[field.nextOrder] == null
+              ? null
+              : (json[field.nextOrder] as num?)?.toInt(),
     );
   }
   Map<String, dynamic> toJson() {
-    return {
-      field.project: project,
-      field.nextOrder: nextOrder,
-    };
+    return {field.project: project, field.nextOrder: nextOrder};
   }
 
-  NextOrderOfStatusRow copyWith({
-    String? project,
-    int? nextOrder,
-  }) {
+  NextOrderOfStatusRow copyWith({String? project, int? nextOrder}) {
     return NextOrderOfStatusRow(
       project: project ?? this.project,
       nextOrder: nextOrder ?? this.nextOrder,

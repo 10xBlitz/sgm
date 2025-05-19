@@ -35,7 +35,12 @@ class TaskFormService {
         TaskFormResponseRow.field.photoConverted: photoConverted,
         TaskFormResponseRow.field.createdAt: now.toIso8601String(),
       };
-      final response = await _supabase.from(TaskFormResponseRow.table).insert(data).select().single();
+      final response =
+          await _supabase
+              .from(TaskFormResponseRow.table)
+              .insert(data)
+              .select()
+              .single();
       return TaskFormResponseRow.fromJson(response);
     } catch (error) {
       debugPrint('Error creating task form response: $error');
@@ -44,7 +49,10 @@ class TaskFormService {
   }
 
   /// Fetches a single response for a given task and question.
-  Future<TaskFormResponseRow?> fetchResponseForQuestion({required String taskId, required String questionId}) async {
+  Future<TaskFormResponseRow?> fetchResponseForQuestion({
+    required String taskId,
+    required String questionId,
+  }) async {
     try {
       final response =
           await _supabase
@@ -69,7 +77,9 @@ class TaskFormService {
           .from(TaskFormResponseRow.table)
           .select()
           .eq(TaskFormResponseRow.field.task, taskId);
-      return (response as List).map((e) => TaskFormResponseRow.fromJson(e)).toList();
+      return (response as List)
+          .map((e) => TaskFormResponseRow.fromJson(e))
+          .toList();
     } catch (error) {
       debugPrint('Error fetching responses for task: $error');
       return [];
@@ -87,7 +97,9 @@ class TaskFormService {
           .select()
           .eq(TaskFormResponseRow.field.task, taskId)
           .eq(TaskFormResponseRow.field.question, questionId);
-      return (response as List).map((e) => TaskFormResponseRow.fromJson(e)).toList();
+      return (response as List)
+          .map((e) => TaskFormResponseRow.fromJson(e))
+          .toList();
     } catch (error) {
       debugPrint('Error fetching responses for question and task: $error');
       return [];

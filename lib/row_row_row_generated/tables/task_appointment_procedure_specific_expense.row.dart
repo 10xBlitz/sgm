@@ -34,7 +34,9 @@ class TaskAppointmentProcedureSpecificExpenseRow {
     required this.date,
   });
 
-  factory TaskAppointmentProcedureSpecificExpenseRow.fromJson(Map<String, dynamic> json) {
+  factory TaskAppointmentProcedureSpecificExpenseRow.fromJson(
+    Map<String, dynamic> json,
+  ) {
     return TaskAppointmentProcedureSpecificExpenseRow(
       id: json[field.id] as String,
       appointmentProcedure: json[field.appointmentProcedure] as String,

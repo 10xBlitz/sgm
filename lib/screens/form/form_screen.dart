@@ -59,8 +59,10 @@ class _FormScreenState extends State<FormScreen> {
               child: Form(
                 key: _formKey,
                 child: ListView(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 32, horizontal: 24),
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 32,
+                    horizontal: 24,
+                  ),
                   children: [
                     // Default required fields
                     _TextFieldWidget(
@@ -92,8 +94,8 @@ class _FormScreenState extends State<FormScreen> {
                       value: _dropdownAnswers[kCountryResidence],
                       required: true,
                       isCountryPicker: true,
-                      onSelect: (val) =>
-                          _dropdownAnswers[kCountryResidence] = val,
+                      onSelect:
+                          (val) => _dropdownAnswers[kCountryResidence] = val,
                       items: const [],
                     ),
                     const SizedBox(height: 20),
@@ -179,8 +181,9 @@ class _FormScreenState extends State<FormScreen> {
           options: question.checkboxOptions ?? [],
           values: _checkboxAnswers[question.id] ?? {},
           required: isRequired,
-          onChanged: (newSet) =>
-              setState(() => _checkboxAnswers[question.id] = newSet),
+          onChanged:
+              (newSet) =>
+                  setState(() => _checkboxAnswers[question.id] = newSet),
         );
       case 'attachment':
         return _AttachmentFieldWidget(
@@ -254,14 +257,15 @@ class _TextFieldWidget extends StatelessWidget {
               fontWeight: FontWeight.w500,
               fontSize: 16,
             ),
-            children: required
-                ? [
-                    const TextSpan(
-                      text: ' *',
-                      style: TextStyle(color: Colors.red),
-                    ),
-                  ]
-                : [],
+            children:
+                required
+                    ? [
+                      const TextSpan(
+                        text: ' *',
+                        style: TextStyle(color: Colors.red),
+                      ),
+                    ]
+                    : [],
           ),
         ),
         const SizedBox(height: 8),
@@ -272,10 +276,13 @@ class _TextFieldWidget extends StatelessWidget {
             hintText: hint,
             border: const OutlineInputBorder(),
           ),
-          validator: required
-              ? (val) =>
-                  (val == null || val.isEmpty) ? 'This field is required' : null
-              : null,
+          validator:
+              required
+                  ? (val) =>
+                      (val == null || val.isEmpty)
+                          ? 'This field is required'
+                          : null
+                  : null,
         ),
       ],
     );
@@ -336,14 +343,15 @@ class _CustomDropdownContainerState<T>
               fontWeight: FontWeight.w500,
               fontSize: 16,
             ),
-            children: widget.required
-                ? [
-                    const TextSpan(
-                      text: ' *',
-                      style: TextStyle(color: Colors.red),
-                    ),
-                  ]
-                : [],
+            children:
+                widget.required
+                    ? [
+                      const TextSpan(
+                        text: ' *',
+                        style: TextStyle(color: Colors.red),
+                      ),
+                    ]
+                    : [],
           ),
         ),
         const SizedBox(height: 8),
@@ -361,16 +369,18 @@ class _CustomDropdownContainerState<T>
             } else {
               final selected = await showModalBottomSheet<T>(
                 context: context,
-                builder: (context) => ListView(
-                  children: (widget.items ?? [])
-                      .map(
-                        (item) => ListTile(
-                          title: Text(item.toString()),
-                          onTap: () => Navigator.pop(context, item),
-                        ),
-                      )
-                      .toList(),
-                ),
+                builder:
+                    (context) => ListView(
+                      children:
+                          (widget.items ?? [])
+                              .map(
+                                (item) => ListTile(
+                                  title: Text(item.toString()),
+                                  onTap: () => Navigator.pop(context, item),
+                                ),
+                              )
+                              .toList(),
+                    ),
               );
               if (selected != null) {
                 setState(() => _selected = selected);
@@ -435,14 +445,15 @@ class _CheckboxFieldWidget extends StatelessWidget {
               fontWeight: FontWeight.w500,
               fontSize: 16,
             ),
-            children: required
-                ? [
-                    const TextSpan(
-                      text: ' *',
-                      style: TextStyle(color: Colors.red),
-                    ),
-                  ]
-                : [],
+            children:
+                required
+                    ? [
+                      const TextSpan(
+                        text: ' *',
+                        style: TextStyle(color: Colors.red),
+                      ),
+                    ]
+                    : [],
           ),
         ),
         ...options.map(
@@ -522,8 +533,9 @@ class _AttachmentFieldWidgetState extends State<_AttachmentFieldWidget> {
         width: 100,
         height: 100,
         fit: BoxFit.cover,
-        errorBuilder: (context, error, stackTrace) =>
-            const Icon(Icons.broken_image, size: 40, color: Colors.grey),
+        errorBuilder:
+            (context, error, stackTrace) =>
+                const Icon(Icons.broken_image, size: 40, color: Colors.grey),
       );
     } else if (_file != null) {
       fileWidget = Text(
@@ -556,8 +568,10 @@ class _AttachmentFieldWidgetState extends State<_AttachmentFieldWidget> {
         const SizedBox(height: 8),
         GestureDetector(
           onTap: () async {
-            final result = await FilePicker.platform
-                .pickFiles(type: FileType.any, withData: true);
+            final result = await FilePicker.platform.pickFiles(
+              type: FileType.any,
+              withData: true,
+            );
             if (result != null && result.files.isNotEmpty) {
               setState(() => _file = result.files.first);
               widget.onPick(result.files.first);

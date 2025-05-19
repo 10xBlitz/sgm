@@ -3,30 +3,26 @@
 class CustomerProcedureCommissionSumRow {
   static const table = 'customer_procedure_commission_sum';
 
-  static const field = (
-    taskId: 'task_id',
-    commissionSum: 'commission_sum',
-  );
+  static const field = (taskId: 'task_id', commissionSum: 'commission_sum');
 
   final String? taskId;
   final double? commissionSum;
 
-  const CustomerProcedureCommissionSumRow({
-    this.taskId,
-    this.commissionSum,
-  });
+  const CustomerProcedureCommissionSumRow({this.taskId, this.commissionSum});
 
-  factory CustomerProcedureCommissionSumRow.fromJson(Map<String, dynamic> json) {
+  factory CustomerProcedureCommissionSumRow.fromJson(
+    Map<String, dynamic> json,
+  ) {
     return CustomerProcedureCommissionSumRow(
       taskId: json[field.taskId],
-      commissionSum: json[field.commissionSum] == null ? null : (json[field.commissionSum] as num?)?.toDouble(),
+      commissionSum:
+          json[field.commissionSum] == null
+              ? null
+              : (json[field.commissionSum] as num?)?.toDouble(),
     );
   }
   Map<String, dynamic> toJson() {
-    return {
-      field.taskId: taskId,
-      field.commissionSum: commissionSum,
-    };
+    return {field.taskId: taskId, field.commissionSum: commissionSum};
   }
 
   CustomerProcedureCommissionSumRow copyWith({

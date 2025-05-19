@@ -41,13 +41,19 @@ class ProjectTaskStatusRow {
     return ProjectTaskStatusRow(
       id: json[field.id] as String,
       status: json[field.status],
-      order: json[field.order] == null ? null : (json[field.order] as num?)?.toInt(),
+      order:
+          json[field.order] == null
+              ? null
+              : (json[field.order] as num?)?.toInt(),
       createdAt: DateTime.parse(json[field.createdAt]),
       createdBy: json[field.createdBy],
       project: json[field.project],
       forNullStatus: json[field.forNullStatus] as bool,
       gid: json[field.gid],
-      sysCreatedAt: json[field.sysCreatedAt] == null ? null : DateTime.tryParse(json[field.sysCreatedAt] ?? ''),
+      sysCreatedAt:
+          json[field.sysCreatedAt] == null
+              ? null
+              : DateTime.tryParse(json[field.sysCreatedAt] ?? ''),
     );
   }
   Map<String, dynamic> toJson() {

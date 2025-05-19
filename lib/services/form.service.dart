@@ -42,7 +42,8 @@ class FormService {
         FormRow.field.previewImage: previewImage,
       };
 
-      final response = await _supabase.from(FormRow.table).insert(data).select().single();
+      final response =
+          await _supabase.from(FormRow.table).insert(data).select().single();
       return FormRow.fromJson(response);
     } catch (error) {
       debugPrint('Error creating form: $error');
@@ -68,15 +69,16 @@ class FormService {
   /// Gets a single form by its ID.
   Future<FormRow?> getForm(String id) async {
     try {
-      final response = await _supabase
-          .from(FormRow.table)
-          .select()
-          .eq(FormRow.field.id, id)
-          .single();
+      final response =
+          await _supabase
+              .from(FormRow.table)
+              .select()
+              .eq(FormRow.field.id, id)
+              .single();
       return FormRow.fromJson(response);
     } catch (e) {
       debugPrint('Error fetching form by ID: $e');
       return null;
     }
   }
-} 
+}

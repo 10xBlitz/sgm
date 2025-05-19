@@ -38,11 +38,17 @@ class SectionsFromAsanaTempRow {
     return SectionsFromAsanaTempRow(
       id: json[field.id] as String,
       gid: json[field.gid],
-      createdAt: json[field.createdAt] == null ? null : DateTime.tryParse(json[field.createdAt] ?? ''),
+      createdAt:
+          json[field.createdAt] == null
+              ? null
+              : DateTime.tryParse(json[field.createdAt] ?? ''),
       projectGid: json[field.projectGid],
       sysCreatedAt: DateTime.parse(json[field.sysCreatedAt]),
       name: json[field.name],
-      order: json[field.order] == null ? null : (json[field.order] as num?)?.toInt(),
+      order:
+          json[field.order] == null
+              ? null
+              : (json[field.order] as num?)?.toInt(),
       statusRef: json[field.statusRef],
     );
   }

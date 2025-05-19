@@ -14,7 +14,10 @@ class TaskRepository {
 
   TaskRepository._internal();
 
-  Future<List<TaskUserAnswer>> getAnswersForTask({required String formId, required String taskId}) async {
+  Future<List<TaskUserAnswer>> getAnswersForTask({
+    required String formId,
+    required String taskId,
+  }) async {
     final questions = await _fetchQuestionsByForm(formId);
     final List<TaskUserAnswer> result = [];
     for (final question in questions) {
@@ -35,8 +38,14 @@ class TaskRepository {
     return FormQuestionService().fetchQuestionsByForm(formId);
   }
 
-  Future<TaskFormResponseRow?> _fetchResponseForQuestion(String taskId, String questionId) async {
-    final response = await TaskFormService().fetchResponsesForQuestionAndTask(taskId: taskId, questionId: questionId);
+  Future<TaskFormResponseRow?> _fetchResponseForQuestion(
+    String taskId,
+    String questionId,
+  ) async {
+    final response = await TaskFormService().fetchResponsesForQuestionAndTask(
+      taskId: taskId,
+      questionId: questionId,
+    );
     return response.isNotEmpty ? response.first : null;
   }
 }

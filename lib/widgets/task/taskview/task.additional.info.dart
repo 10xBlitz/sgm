@@ -21,7 +21,10 @@ class TaskAdditionalInfo extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(task.title ?? '-', style: Theme.of(context).textTheme.titleLarge),
+                Text(
+                  task.title ?? '-',
+                  style: Theme.of(context).textTheme.titleLarge,
+                ),
                 // You can add an Edit button here if needed, similar to TaskCustomerDetail
               ],
             ),
@@ -48,9 +51,23 @@ class _DetailItem extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(label, style: const TextStyle(fontWeight: FontWeight.w500, color: Colors.blueGrey, fontSize: 15)),
+          Text(
+            label,
+            style: const TextStyle(
+              fontWeight: FontWeight.w500,
+              color: Colors.blueGrey,
+              fontSize: 15,
+            ),
+          ),
           const SizedBox(height: 2),
-          Text(value ?? '-', style: const TextStyle(fontWeight: FontWeight.normal, color: Colors.black, fontSize: 16)),
+          Text(
+            value ?? '-',
+            style: const TextStyle(
+              fontWeight: FontWeight.normal,
+              color: Colors.black,
+              fontSize: 16,
+            ),
+          ),
         ],
       ),
     );

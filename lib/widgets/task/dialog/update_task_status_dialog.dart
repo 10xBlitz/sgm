@@ -35,8 +35,9 @@ class _UpdateTaskStatusDialogState extends State<UpdateTaskStatusDialog> {
 
   Future<void> _loadStatuses() async {
     try {
-      final statuses =
-          await _statusService.getStatusByProjectID(widget.projectId);
+      final statuses = await _statusService.getStatusByProjectID(
+        widget.projectId,
+      );
       if (!mounted) return;
 
       // Find the current status ID
@@ -85,9 +86,9 @@ class _UpdateTaskStatusDialogState extends State<UpdateTaskStatusDialog> {
         _isLoading = false;
       });
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error updating status: $e')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Error updating status: $e')));
     }
   }
 
@@ -106,10 +107,9 @@ class _UpdateTaskStatusDialogState extends State<UpdateTaskStatusDialog> {
                 Expanded(
                   child: Text(
                     'Update Status',
-                    style: Theme.of(context)
-                        .textTheme
-                        .titleLarge
-                        ?.copyWith(fontWeight: FontWeight.bold),
+                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
                 IconButton(
@@ -139,12 +139,15 @@ class _UpdateTaskStatusDialogState extends State<UpdateTaskStatusDialog> {
                     borderRadius: BorderRadius.circular(4),
                   ),
                 ),
-                items: _statuses
-                    .map((status) => DropdownMenuItem(
-                          value: status.id,
-                          child: Text(status.status ?? 'Unknown Status'),
-                        ))
-                    .toList(),
+                items:
+                    _statuses
+                        .map(
+                          (status) => DropdownMenuItem(
+                            value: status.id,
+                            child: Text(status.status ?? 'Unknown Status'),
+                          ),
+                        )
+                        .toList(),
                 onChanged: (newStatusId) {
                   setState(() {
                     selectedStatusId = newStatusId;
@@ -161,7 +164,8 @@ class _UpdateTaskStatusDialogState extends State<UpdateTaskStatusDialog> {
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   textStyle: Theme.of(context).textTheme.titleMedium,
                   shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8)),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
                 ),
                 onPressed: _updateStatus,
                 child: const Text('Update Status'),

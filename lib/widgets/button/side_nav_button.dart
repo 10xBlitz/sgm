@@ -22,9 +22,10 @@ class SideNavButton extends StatelessWidget {
       },
       child: Container(
         decoration: BoxDecoration(
-          color: isSelected
-              ? theme.colorScheme.primary
-              : theme.colorScheme.secondaryContainer,
+          color:
+              isSelected
+                  ? theme.colorScheme.primary
+                  : theme.colorScheme.secondaryContainer,
         ),
         child: Padding(
           padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 16.0),
@@ -36,9 +37,10 @@ class SideNavButton extends StatelessWidget {
                 width: 32,
                 child: Icon(
                   Icons.dashboard,
-                  color: isSelected
-                      ? Colors.white
-                      : theme.colorScheme.onSurfaceVariant,
+                  color:
+                      isSelected
+                          ? Colors.white
+                          : theme.colorScheme.onSurfaceVariant,
                   size: 24,
                 ),
               ),
@@ -46,12 +48,13 @@ class SideNavButton extends StatelessWidget {
               Text(
                 title,
                 style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      color: isSelected
+                  color:
+                      isSelected
                           ? Colors.white
                           : theme.colorScheme.onSurfaceVariant,
-                      fontWeight: FontWeight.w800,
-                      fontSize: 20,
-                    ),
+                  fontWeight: FontWeight.w800,
+                  fontSize: 20,
+                ),
               ),
             ],
           ),

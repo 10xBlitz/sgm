@@ -28,7 +28,9 @@ class ClinicAreaProcedureCategoryDropdownEntriesRow {
     this.procedureCategoryName,
   });
 
-  factory ClinicAreaProcedureCategoryDropdownEntriesRow.fromJson(Map<String, dynamic> json) {
+  factory ClinicAreaProcedureCategoryDropdownEntriesRow.fromJson(
+    Map<String, dynamic> json,
+  ) {
     return ClinicAreaProcedureCategoryDropdownEntriesRow(
       clinicAreaId: json[field.clinicAreaId],
       areaName: json[field.areaName],
@@ -63,7 +65,8 @@ class ClinicAreaProcedureCategoryDropdownEntriesRow {
       clinicId: clinicId ?? this.clinicId,
       clinicName: clinicName ?? this.clinicName,
       procedureCategoryId: procedureCategoryId ?? this.procedureCategoryId,
-      procedureCategoryName: procedureCategoryName ?? this.procedureCategoryName,
+      procedureCategoryName:
+          procedureCategoryName ?? this.procedureCategoryName,
     );
   }
 }

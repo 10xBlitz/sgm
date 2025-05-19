@@ -41,7 +41,10 @@ class TaskAppointmentGeneralExpenseRow {
       details: json[field.details],
       amount: (json[field.amount] as num).toDouble(),
       appointment: json[field.appointment],
-      date: json[field.date] == null ? null : DateTime.tryParse(json[field.date] ?? ''),
+      date:
+          json[field.date] == null
+              ? null
+              : DateTime.tryParse(json[field.date] ?? ''),
       createdAt: DateTime.parse(json[field.createdAt]),
       createdBy: json[field.createdBy],
     );

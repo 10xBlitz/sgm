@@ -3,7 +3,12 @@ import 'package:flutter/material.dart';
 import '../../row_row_row_generated/tables/form.row.dart';
 
 class ItemForm extends StatelessWidget {
-  const ItemForm({super.key, required this.form, required this.theme, required this.onTap});
+  const ItemForm({
+    super.key,
+    required this.form,
+    required this.theme,
+    required this.onTap,
+  });
 
   final ThemeData theme;
   final FormRow form;
@@ -15,7 +20,11 @@ class ItemForm extends StatelessWidget {
       onTap: () => onTap?.call(),
       child: Container(
         padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
-        decoration: BoxDecoration(border: Border(bottom: BorderSide(color: theme.colorScheme.outlineVariant))),
+        decoration: BoxDecoration(
+          border: Border(
+            bottom: BorderSide(color: theme.colorScheme.outlineVariant),
+          ),
+        ),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -24,7 +33,10 @@ class ItemForm extends StatelessWidget {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(form.name ?? 'Untitled Form', style: theme.textTheme.titleMedium),
+                Text(
+                  form.name ?? 'Untitled Form',
+                  style: theme.textTheme.titleMedium,
+                ),
                 Text('${form.description}'),
               ],
             ),

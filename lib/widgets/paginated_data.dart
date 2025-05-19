@@ -19,7 +19,8 @@ class PaginatedData extends StatefulWidget {
   final FutureOr<List> Function(int page, int pageSize) getPage;
   final FutureOr<int> Function() getCount;
   final int initialPage;
-  final Widget Function(BuildContext context, List data, bool isLoading) builder;
+  final Widget Function(BuildContext context, List data, bool isLoading)
+  builder;
   final double bottomPadding;
 
   @override

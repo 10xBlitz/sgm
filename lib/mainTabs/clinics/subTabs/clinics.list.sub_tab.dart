@@ -57,9 +57,9 @@ class _ClinicsListSubTabState extends ClinicsListSubTabState {
         _isLoadingForms = false;
       });
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error loading forms: $e')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Error loading forms: $e')));
       }
     }
   }
@@ -151,11 +151,17 @@ class _ClinicsListSubTabState extends ClinicsListSubTabState {
               children: [
                 // Forms section
                 if (_isLoadingForms)
-                  const Padding(padding: EdgeInsets.all(16.0), child: Center(child: CircularProgressIndicator()))
+                  const Padding(
+                    padding: EdgeInsets.all(16.0),
+                    child: Center(child: CircularProgressIndicator()),
+                  )
                 else if (_forms.isEmpty)
                   Padding(
                     padding: const EdgeInsets.all(16.0),
-                    child: Text('No forms for this clinic.', style: theme.textTheme.bodyMedium),
+                    child: Text(
+                      'No forms for this clinic.',
+                      style: theme.textTheme.bodyMedium,
+                    ),
                   )
                 else
                   Column(
@@ -163,15 +169,28 @@ class _ClinicsListSubTabState extends ClinicsListSubTabState {
                     children: [
                       Padding(
                         padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-                        child: Text('Forms', style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
+                        child: Text(
+                          'Forms',
+                          style: theme.textTheme.titleMedium?.copyWith(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                       ),
-                      ..._forms.map((form) =>
-                          ItemForm(theme: theme, form: form, onTap: () {
-                            Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-                              return FormScreen(formId: form.id,
-                              );
-                            },),);
-                          },),),
+                      ..._forms.map(
+                        (form) => ItemForm(
+                          theme: theme,
+                          form: form,
+                          onTap: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) {
+                                  return FormScreen(formId: form.id);
+                                },
+                              ),
+                            );
+                          },
+                        ),
+                      ),
                       const Divider(height: 1),
                     ],
                   ),
@@ -190,8 +209,14 @@ class _ClinicsListSubTabState extends ClinicsListSubTabState {
                   key: _paginatedDataKey,
                   builder: (context, data, isLoading) {
                     // Calculate total table width from column widths
-                    final tableWidth = _titleWidth + _statusWidth + _dueDateWidth +
-                        _assigneeWidth + _birthdayWidth + _nationalityWidth + _phoneWidth;
+                    final tableWidth =
+                        _titleWidth +
+                        _statusWidth +
+                        _dueDateWidth +
+                        _assigneeWidth +
+                        _birthdayWidth +
+                        _nationalityWidth +
+                        _phoneWidth;
 
                     return SingleChildScrollView(
                       scrollDirection: Axis.horizontal,
@@ -203,7 +228,8 @@ class _ClinicsListSubTabState extends ClinicsListSubTabState {
                             // Header row
                             Container(
                               decoration: BoxDecoration(
-                                color: theme.colorScheme.surfaceContainerHighest,
+                                color:
+                                    theme.colorScheme.surfaceContainerHighest,
                                 border: Border(
                                   bottom: BorderSide(
                                     color: theme.colorScheme.outlineVariant,
@@ -213,11 +239,26 @@ class _ClinicsListSubTabState extends ClinicsListSubTabState {
                               child: Row(
                                 children: [
                                   _buildHeaderCell("Title", width: _titleWidth),
-                                  _buildHeaderCell("Status", width: _statusWidth),
-                                  _buildHeaderCell("Due Date", width: _dueDateWidth),
-                                  _buildHeaderCell("Assignee", width: _assigneeWidth),
-                                  _buildHeaderCell("Birthday", width: _birthdayWidth),
-                                  _buildHeaderCell("Nationality", width: _nationalityWidth),
+                                  _buildHeaderCell(
+                                    "Status",
+                                    width: _statusWidth,
+                                  ),
+                                  _buildHeaderCell(
+                                    "Due Date",
+                                    width: _dueDateWidth,
+                                  ),
+                                  _buildHeaderCell(
+                                    "Assignee",
+                                    width: _assigneeWidth,
+                                  ),
+                                  _buildHeaderCell(
+                                    "Birthday",
+                                    width: _birthdayWidth,
+                                  ),
+                                  _buildHeaderCell(
+                                    "Nationality",
+                                    width: _nationalityWidth,
+                                  ),
                                   _buildHeaderCell("Phone", width: _phoneWidth),
                                 ],
                               ),
@@ -249,22 +290,33 @@ class _ClinicsListSubTabState extends ClinicsListSubTabState {
                                         item.title ?? 'Untitled Task',
                                         width: _titleWidth,
                                       ),
-                                      _buildStatusCell(item, width: _statusWidth),
+                                      _buildStatusCell(
+                                        item,
+                                        width: _statusWidth,
+                                      ),
                                       _buildDataCell(
                                         item.dateDue != null
-                                            ? DateFormat('yyyy-MM-dd').format(item.dateDue!)
+                                            ? DateFormat(
+                                              'yyyy-MM-dd',
+                                            ).format(item.dateDue!)
                                             : 'No due date',
                                         width: _dueDateWidth,
                                       ),
-                                      _buildAssigneeCell(item, width: _assigneeWidth),
+                                      _buildAssigneeCell(
+                                        item,
+                                        width: _assigneeWidth,
+                                      ),
                                       _buildDataCell(
                                         item.customerBirthday != null
-                                            ? DateFormat('yyyy-MM-dd').format(item.customerBirthday!)
+                                            ? DateFormat(
+                                              'yyyy-MM-dd',
+                                            ).format(item.customerBirthday!)
                                             : 'No birthday',
                                         width: _birthdayWidth,
                                       ),
                                       _buildDataCell(
-                                        item.customerNationality ?? 'No nationality',
+                                        item.customerNationality ??
+                                            'No nationality',
                                         width: _nationalityWidth,
                                       ),
                                       _buildDataCell(
@@ -310,10 +362,10 @@ class _ClinicsListSubTabState extends ClinicsListSubTabState {
   }
 
   Widget _buildDataCell(
-      String text, {
-        required double width,
-        TextStyle? style,
-      }) {
+    String text, {
+    required double width,
+    TextStyle? style,
+  }) {
     return Container(
       width: width,
       padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
@@ -331,7 +383,9 @@ class _ClinicsListSubTabState extends ClinicsListSubTabState {
       width: width,
       padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
       child: FutureBuilder<List<ProjectTaskStatusRow>>(
-        future: ProjectTaskStatusService().getStatusByProjectID(widget.projectId),
+        future: ProjectTaskStatusService().getStatusByProjectID(
+          widget.projectId,
+        ),
         builder: (context, snapshot) {
           if (snapshot.hasError) {
             return Text('Error: ${snapshot.error}');
@@ -340,15 +394,16 @@ class _ClinicsListSubTabState extends ClinicsListSubTabState {
             return const LinearProgressIndicator();
           }
           final statuses = snapshot.data ?? [];
-          if(statuses.isEmpty) {
+          if (statuses.isEmpty) {
             return const Text('No Statuses');
-          }else{
+          } else {
             final status = statuses.firstWhere(
-                  (s) => s.id == row.status,
-              orElse: () => statuses.firstWhere(
+              (s) => s.id == row.status,
+              orElse:
+                  () => statuses.firstWhere(
                     (s) => s.forNullStatus,
-                orElse: () => statuses.first,
-              ),
+                    orElse: () => statuses.first,
+                  ),
             );
             return Text(status.status ?? 'No Status');
           }

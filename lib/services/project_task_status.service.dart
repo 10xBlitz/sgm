@@ -33,9 +33,10 @@ class ProjectTaskStatusService {
           .eq(ProjectTaskStatusRow.field.project, projectId)
           .order(ProjectTaskStatusRow.field.order);
 
-      final statuses = (response as List)
-          .map((json) => ProjectTaskStatusRow.fromJson(json))
-          .toList();
+      final statuses =
+          (response as List)
+              .map((json) => ProjectTaskStatusRow.fromJson(json))
+              .toList();
       return statuses;
     } catch (e) {
       throw Exception('Failed to fetch project task statuses: $e');

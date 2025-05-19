@@ -54,7 +54,10 @@ class ProjectRow {
       description: json[field.description],
       canChooseOtherClinic: json[field.canChooseOtherClinic] as bool,
       asanaProjectGid: json[field.asanaProjectGid],
-      pinOrder: json[field.pinOrder] == null ? null : DateTime.tryParse(json[field.pinOrder] ?? ''),
+      pinOrder:
+          json[field.pinOrder] == null
+              ? null
+              : DateTime.tryParse(json[field.pinOrder] ?? ''),
       area: json[field.area],
     );
   }

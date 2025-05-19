@@ -70,7 +70,11 @@ class _ProjectsListAllTabState extends State<ProjectsListAllTab> {
           separatorBuilder: (context, index) => const Divider(height: 1),
           itemBuilder: (context, index) {
             final project = projects[index];
-            return ItemProject(item: project, onTap: () => widget.onTapProject?.call(project), theme: theme);
+            return ItemProject(
+              item: project,
+              onTap: () => widget.onTapProject?.call(project),
+              theme: theme,
+            );
           },
         );
       },

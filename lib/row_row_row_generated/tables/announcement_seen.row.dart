@@ -31,11 +31,17 @@ class AnnouncementSeenRow {
   factory AnnouncementSeenRow.fromJson(Map<String, dynamic> json) {
     return AnnouncementSeenRow(
       id: json[field.id] as String,
-      seenAt: json[field.seenAt] == null ? null : DateTime.tryParse(json[field.seenAt] ?? ''),
+      seenAt:
+          json[field.seenAt] == null
+              ? null
+              : DateTime.tryParse(json[field.seenAt] ?? ''),
       expectedSeenBy: json[field.expectedSeenBy] as String,
       createdAt: DateTime.parse(json[field.createdAt]),
       announcement: json[field.announcement] as String,
-      deletedAt: json[field.deletedAt] == null ? null : DateTime.tryParse(json[field.deletedAt] ?? ''),
+      deletedAt:
+          json[field.deletedAt] == null
+              ? null
+              : DateTime.tryParse(json[field.deletedAt] ?? ''),
     );
   }
   Map<String, dynamic> toJson() {
