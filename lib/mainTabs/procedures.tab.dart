@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sgm/screens/procedures/procedures.screen.dart';
 
 class ProceduresTab extends StatelessWidget {
   static const String tabTitle = 'Procedures';
@@ -6,6 +7,6 @@ class ProceduresTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(child: Text(tabTitle, style: TextStyle(fontSize: 24)));
+    return ProceduresScreen();
   }
 }

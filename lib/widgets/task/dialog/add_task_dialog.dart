@@ -17,7 +17,13 @@ class AddTaskArgs {
   final String? statusId;
   final String? description;
 
-  const AddTaskArgs({required this.title, this.assigneeId, this.dueDate, this.statusId,this.description});
+  const AddTaskArgs({
+    required this.title,
+    this.assigneeId,
+    this.dueDate,
+    this.statusId,
+    this.description,
+  });
 }
 
 class AddTaskDialog extends StatefulWidget {
@@ -27,9 +33,9 @@ class AddTaskDialog extends StatefulWidget {
   final Future<void> Function()? onTaskAdded;
 
   const AddTaskDialog({
-    super.key, 
-    required this.projectTitle, 
-    required this.projectId, 
+    super.key,
+    required this.projectTitle,
+    required this.projectId,
     this.onAddTask,
     this.onTaskAdded,
   });
@@ -53,32 +59,33 @@ class _AddTaskDialogState extends State<AddTaskDialog> {
 
   final QuillController _controller = () {
     return QuillController.basic(
-        config: QuillControllerConfig(
-          clipboardConfig: QuillClipboardConfig(
-            enableExternalRichPaste: true,
-            onImagePaste: (imageBytes) async {
-              if (kIsWeb) {
-                // Dart IO is unsupported on the web.
-                return null;
-              }
-              // Save the image somewhere and return the image URL that will be
-              // stored in the Quill Delta JSON (the document).
-              final newFileName =
-                  'image-file-${DateTime.now().toIso8601String()}.png';
-              final newPath = path.join(
-                io.Directory.systemTemp.path,
-                newFileName,
-              );
-              final file = await io.File(
-                newPath,
-              ).writeAsBytes(imageBytes, flush: true);
-              return file.path;
-            },
-          ),
-        ));
+      config: QuillControllerConfig(
+        clipboardConfig: QuillClipboardConfig(
+          enableExternalRichPaste: true,
+          onImagePaste: (imageBytes) async {
+            if (kIsWeb) {
+              // Dart IO is unsupported on the web.
+              return null;
+            }
+            // Save the image somewhere and return the image URL that will be
+            // stored in the Quill Delta JSON (the document).
+            final newFileName =
+                'image-file-${DateTime.now().toIso8601String()}.png';
+            final newPath = path.join(
+              io.Directory.systemTemp.path,
+              newFileName,
+            );
+            final file = await io.File(
+              newPath,
+            ).writeAsBytes(imageBytes, flush: true);
+            return file.path;
+          },
+        ),
+      ),
+    );
   }();
-  final FocusNode _editorFocusNode = FocusNode();
-  final ScrollController _editorScrollController = ScrollController();
+  final FocusNode editorFocusNode = FocusNode();
+  final ScrollController editorScrollController = ScrollController();
 
   @override
   void initState() {
@@ -89,15 +96,19 @@ class _AddTaskDialogState extends State<AddTaskDialog> {
 
   Future<void> _loadData() async {
     try {
-      final users = await _userService.getAllUsers(activated: false, isBanned: false);
-      final statuses = await _statusService.getStatusByProjectID(widget.projectId);
+      final users =
+          await _userService.getAllUsers(activated: false, isBanned: false);
+      final statuses =
+          await _statusService.getStatusByProjectID(widget.projectId);
       setState(() {
         _assignees = users;
         _statuses = statuses;
         _isLoading = false;
       });
 
-      debugPrint('Initializing _loadData statues ${statuses.map((toElement) => toElement.status).toList()}');
+      debugPrint(
+        'Initializing _loadData statues ${statuses.map((toElement) => toElement.status).toList()}',
+      );
     } catch (e) {
       debugPrint('Error loading data: $e');
       setState(() {
@@ -114,16 +125,26 @@ class _AddTaskDialogState extends State<AddTaskDialog> {
       lastDate: DateTime.now().add(const Duration(days: 365)),
     );
     if (picked != null) {
+      if (!context.mounted) return;
       final TimeOfDay? time = await showTimePicker(
         context: context,
         initialTime: TimeOfDay.now(),
         builder: (context, child) {
-          return MediaQuery(data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: false), child: child!);
+          return MediaQuery(
+            data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: false),
+            child: child!,
+          );
         },
       );
       if (time != null) {
         setState(() {
-          dueDate = DateTime(picked.year, picked.month, picked.day, time.hour, time.minute);
+          dueDate = DateTime(
+            picked.year,
+            picked.month,
+            picked.day,
+            time.hour,
+            time.minute,
+          );
           if (_isSubmitted) {
             _formKey.currentState!.validate();
           }
@@ -136,7 +157,7 @@ class _AddTaskDialogState extends State<AddTaskDialog> {
     setState(() {
       _isSubmitted = true;
     });
-    
+
     if (_formKey.currentState!.validate()) {
       if (widget.onAddTask != null) {
         final args = AddTaskArgs(
@@ -147,7 +168,7 @@ class _AddTaskDialogState extends State<AddTaskDialog> {
           description: _controller.document.toPlainText(),
         );
         widget.onAddTask!(args);
-        
+
         // Reload project details after adding task
         if (widget.onTaskAdded != null) {
           await widget.onTaskAdded!();
@@ -175,10 +196,16 @@ class _AddTaskDialogState extends State<AddTaskDialog> {
                   Expanded(
                     child: Text(
                       widget.projectTitle,
-                      style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+                      style: Theme.of(context)
+                          .textTheme
+                          .titleLarge
+                          ?.copyWith(fontWeight: FontWeight.bold),
                     ),
                   ),
-                  IconButton(icon: const Icon(Icons.close), onPressed: () => Navigator.of(context).pop()),
+                  IconButton(
+                    icon: const Icon(Icons.close),
+                    onPressed: () => Navigator.of(context).pop(),
+                  ),
                 ],
               ),
             ),
@@ -189,7 +216,9 @@ class _AddTaskDialogState extends State<AddTaskDialog> {
                   padding: const EdgeInsets.all(24.0),
                   child: Form(
                     key: _formKey,
-                    autovalidateMode: _isSubmitted ? AutovalidateMode.always : AutovalidateMode.disabled,
+                    autovalidateMode: _isSubmitted
+                        ? AutovalidateMode.always
+                        : AutovalidateMode.disabled,
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -198,13 +227,18 @@ class _AddTaskDialogState extends State<AddTaskDialog> {
                           decoration: InputDecoration(
                             labelText: 'Enter Title...',
                             border: const OutlineInputBorder(),
-                            errorStyle: const TextStyle(color: Colors.red, fontSize: 12),
+                            errorStyle: const TextStyle(
+                              color: Colors.red,
+                              fontSize: 12,
+                            ),
                             focusedErrorBorder: OutlineInputBorder(
-                              borderSide: const BorderSide(color: Colors.red, width: 2),
+                              borderSide:
+                                  const BorderSide(color: Colors.red, width: 2),
                               borderRadius: BorderRadius.circular(4),
                             ),
                             errorBorder: OutlineInputBorder(
-                              borderSide: const BorderSide(color: Colors.red, width: 2),
+                              borderSide:
+                                  const BorderSide(color: Colors.red, width: 2),
                               borderRadius: BorderRadius.circular(4),
                             ),
                           ),
@@ -227,7 +261,10 @@ class _AddTaskDialogState extends State<AddTaskDialog> {
                           },
                         ),
                         const SizedBox(height: 24),
-                        Text('Status', style: Theme.of(context).textTheme.titleMedium),
+                        Text(
+                          'Status',
+                          style: Theme.of(context).textTheme.titleMedium,
+                        ),
                         const SizedBox(height: 8),
                         if (_isLoading)
                           const Center(child: CircularProgressIndicator())
@@ -237,13 +274,22 @@ class _AddTaskDialogState extends State<AddTaskDialog> {
                             value: selectedStatus,
                             hint: const Text('Select status'),
                             decoration: InputDecoration(
-                              errorStyle: const TextStyle(color: Colors.red, fontSize: 12),
+                              errorStyle: const TextStyle(
+                                color: Colors.red,
+                                fontSize: 12,
+                              ),
                               focusedErrorBorder: OutlineInputBorder(
-                                borderSide: const BorderSide(color: Colors.red, width: 2),
+                                borderSide: const BorderSide(
+                                  color: Colors.red,
+                                  width: 2,
+                                ),
                                 borderRadius: BorderRadius.circular(4),
                               ),
                               errorBorder: OutlineInputBorder(
-                                borderSide: const BorderSide(color: Colors.red, width: 2),
+                                borderSide: const BorderSide(
+                                  color: Colors.red,
+                                  width: 2,
+                                ),
                                 borderRadius: BorderRadius.circular(4),
                               ),
                               border: const OutlineInputBorder(),
@@ -262,16 +308,21 @@ class _AddTaskDialogState extends State<AddTaskDialog> {
                                 }
                               });
                             },
-                            items:
-                                _statuses
-                                    .map(
-                                      (status) =>
-                                          DropdownMenuItem(value: status.id, child: Text(status.status ?? 'Unknown Status')),
-                                    )
-                                    .toList(),
+                            items: _statuses
+                                .map(
+                                  (status) => DropdownMenuItem(
+                                    value: status.id,
+                                    child:
+                                        Text(status.status ?? 'Unknown Status'),
+                                  ),
+                                )
+                                .toList(),
                           ),
                         const SizedBox(height: 24),
-                        Text('Assignee', style: Theme.of(context).textTheme.titleMedium),
+                        Text(
+                          'Assignee',
+                          style: Theme.of(context).textTheme.titleMedium,
+                        ),
                         const SizedBox(height: 8),
                         if (_isLoading)
                           const Center(child: CircularProgressIndicator())
@@ -281,13 +332,22 @@ class _AddTaskDialogState extends State<AddTaskDialog> {
                             value: selectedAssignee,
                             hint: const Text('Select assignee'),
                             decoration: InputDecoration(
-                              errorStyle: const TextStyle(color: Colors.red, fontSize: 12),
+                              errorStyle: const TextStyle(
+                                color: Colors.red,
+                                fontSize: 12,
+                              ),
                               focusedErrorBorder: OutlineInputBorder(
-                                borderSide: const BorderSide(color: Colors.red, width: 2),
+                                borderSide: const BorderSide(
+                                  color: Colors.red,
+                                  width: 2,
+                                ),
                                 borderRadius: BorderRadius.circular(4),
                               ),
                               errorBorder: OutlineInputBorder(
-                                borderSide: const BorderSide(color: Colors.red, width: 2),
+                                borderSide: const BorderSide(
+                                  color: Colors.red,
+                                  width: 2,
+                                ),
                                 borderRadius: BorderRadius.circular(4),
                               ),
                             ),
@@ -305,18 +365,22 @@ class _AddTaskDialogState extends State<AddTaskDialog> {
                                 }
                               });
                             },
-                            items:
-                                _assignees
-                                    .map(
-                                      (user) => DropdownMenuItem(
-                                        value: user.id,
-                                        child: Text(user.name ?? user.email ?? 'Unknown User'),
-                                      ),
-                                    )
-                                    .toList(),
+                            items: _assignees
+                                .map(
+                                  (user) => DropdownMenuItem(
+                                    value: user.id,
+                                    child: Text(
+                                      user.name ?? user.email ?? 'Unknown User',
+                                    ),
+                                  ),
+                                )
+                                .toList(),
                           ),
                         const SizedBox(height: 24),
-                        Text('Due Date', style: Theme.of(context).textTheme.titleMedium),
+                        Text(
+                          'Due Date',
+                          style: Theme.of(context).textTheme.titleMedium,
+                        ),
                         const SizedBox(height: 8),
                         FormField<DateTime>(
                           validator: (value) {
@@ -332,24 +396,41 @@ class _AddTaskDialogState extends State<AddTaskDialog> {
                                 GestureDetector(
                                   onTap: () => _selectDate(context),
                                   child: Container(
-                                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 15),
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 12,
+                                      vertical: 15,
+                                    ),
                                     decoration: BoxDecoration(
                                       border: Border.all(
-                                        color: state.hasError ? Colors.red : Colors.grey,
+                                        color: state.hasError
+                                            ? Colors.red
+                                            : Colors.grey,
                                         width: state.hasError ? 2 : 1,
                                       ),
                                       borderRadius: BorderRadius.circular(4),
                                     ),
                                     child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
                                       children: [
                                         Text(
                                           dueDate == null
                                               ? 'Select due date'
-                                              : DateFormat('MMM dd, yyyy - hh:mm a').format(dueDate!),
-                                          style: TextStyle(color: dueDate == null ? Colors.grey : Colors.black87),
+                                              : DateFormat(
+                                                  'MMM dd, yyyy - hh:mm a',
+                                                ).format(dueDate!),
+                                          style: TextStyle(
+                                            color: dueDate == null
+                                                ? Colors.grey
+                                                : Colors.black87,
+                                          ),
                                         ),
-                                        Icon(Icons.calendar_today, color: state.hasError ? Colors.red : Colors.grey),
+                                        Icon(
+                                          Icons.calendar_today,
+                                          color: state.hasError
+                                              ? Colors.red
+                                              : Colors.grey,
+                                        ),
                                       ],
                                     ),
                                   ),
@@ -357,14 +438,23 @@ class _AddTaskDialogState extends State<AddTaskDialog> {
                                 if (state.hasError)
                                   Padding(
                                     padding: const EdgeInsets.only(top: 8.0),
-                                    child: Text(state.errorText!, style: const TextStyle(color: Colors.red, fontSize: 12)),
+                                    child: Text(
+                                      state.errorText!,
+                                      style: const TextStyle(
+                                        color: Colors.red,
+                                        fontSize: 12,
+                                      ),
+                                    ),
                                   ),
                               ],
                             );
                           },
                         ),
                         const SizedBox(height: 24),
-                        Text('Description', style: Theme.of(context).textTheme.titleMedium),
+                        Text(
+                          'Description',
+                          style: Theme.of(context).textTheme.titleMedium,
+                        ),
                         const SizedBox(height: 8),
                         Container(
                           height: 300,
@@ -438,7 +528,9 @@ class _AddTaskDialogState extends State<AddTaskDialog> {
                     foregroundColor: Colors.white,
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     textStyle: Theme.of(context).textTheme.titleMedium,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
                   ),
                   onPressed: _validateAndSubmit,
                   child: const Text('Add Task'),

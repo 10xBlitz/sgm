@@ -60,11 +60,13 @@ class _ProjectsListSubTabState extends ProjectsListSubTabState {
 
     try {
       // Load all users for assignee mapping
-      final users = await _userService.getAllUsers(activated: false, isBanned: false);
+      final users =
+          await _userService.getAllUsers(activated: false, isBanned: false);
       _assigneeCache = {for (var user in users) user.id: user};
 
       // Load all statuses for the project
-      final statuses = await _statusService.getStatusByProjectID(widget.projectId);
+      final statuses =
+          await _statusService.getStatusByProjectID(widget.projectId);
       _statusCache = {for (var status in statuses) status.id: status};
 
       // map current project status to the status cache
@@ -73,13 +75,11 @@ class _ProjectsListSubTabState extends ProjectsListSubTabState {
           status: _statusCache[project!.status]?.status,
         );
       }
-      
-      if (mounted) {
-      }
+
+      if (mounted) {}
     } catch (e) {
       debugPrint('Error loading caches: $e');
-      if (mounted) {
-      }
+      if (mounted) {}
     }
   }
 
@@ -145,7 +145,7 @@ class _ProjectsListSubTabState extends ProjectsListSubTabState {
 
   // Get status color based on status ID
   Color _getStatusColor(String? statusId) {
-   return Colors.green;
+    return Colors.green;
   }
 
   @override
@@ -167,11 +167,17 @@ class _ProjectsListSubTabState extends ProjectsListSubTabState {
               children: [
                 // Forms section
                 if (_isLoadingForms)
-                  const Padding(padding: EdgeInsets.all(16.0), child: Center(child: CircularProgressIndicator()))
+                  const Padding(
+                    padding: EdgeInsets.all(16.0),
+                    child: Center(child: CircularProgressIndicator()),
+                  )
                 else if (_forms.isEmpty)
                   Padding(
                     padding: const EdgeInsets.all(16.0),
-                    child: Text('No forms for this project.', style: theme.textTheme.bodyMedium),
+                    child: Text(
+                      'No forms for this project.',
+                      style: theme.textTheme.bodyMedium,
+                    ),
                   )
                 else
                   Column(
@@ -179,7 +185,11 @@ class _ProjectsListSubTabState extends ProjectsListSubTabState {
                     children: [
                       Padding(
                         padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-                        child: Text('Forms', style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
+                        child: Text(
+                          'Forms',
+                          style: theme.textTheme.titleMedium
+                              ?.copyWith(fontWeight: FontWeight.bold),
+                        ),
                       ),
                       ..._forms.map((form) => _formItem(theme, form)),
                       const Divider(height: 1),
@@ -200,8 +210,13 @@ class _ProjectsListSubTabState extends ProjectsListSubTabState {
                   key: _paginatedDataKey,
                   builder: (context, data, isLoading) {
                     // Calculate total table width from column widths
-                    final tableWidth = _titleWidth + _statusWidth + _dueDateWidth +
-                        _assigneeWidth + _birthdayWidth + _nationalityWidth + _phoneWidth;
+                    final tableWidth = _titleWidth +
+                        _statusWidth +
+                        _dueDateWidth +
+                        _assigneeWidth +
+                        _birthdayWidth +
+                        _nationalityWidth +
+                        _phoneWidth;
 
                     return SingleChildScrollView(
                       scrollDirection: Axis.horizontal,
@@ -213,7 +228,8 @@ class _ProjectsListSubTabState extends ProjectsListSubTabState {
                             // Header row
                             Container(
                               decoration: BoxDecoration(
-                                color: theme.colorScheme.surfaceContainerHighest,
+                                color:
+                                    theme.colorScheme.surfaceContainerHighest,
                                 border: Border(
                                   bottom: BorderSide(
                                     color: theme.colorScheme.outlineVariant,
@@ -223,11 +239,26 @@ class _ProjectsListSubTabState extends ProjectsListSubTabState {
                               child: Row(
                                 children: [
                                   _buildHeaderCell("Title", width: _titleWidth),
-                                  _buildHeaderCell("Status", width: _statusWidth),
-                                  _buildHeaderCell("Due Date", width: _dueDateWidth),
-                                  _buildHeaderCell("Assignee", width: _assigneeWidth),
-                                  _buildHeaderCell("Birthday", width: _birthdayWidth),
-                                  _buildHeaderCell("Nationality", width: _nationalityWidth),
+                                  _buildHeaderCell(
+                                    "Status",
+                                    width: _statusWidth,
+                                  ),
+                                  _buildHeaderCell(
+                                    "Due Date",
+                                    width: _dueDateWidth,
+                                  ),
+                                  _buildHeaderCell(
+                                    "Assignee",
+                                    width: _assigneeWidth,
+                                  ),
+                                  _buildHeaderCell(
+                                    "Birthday",
+                                    width: _birthdayWidth,
+                                  ),
+                                  _buildHeaderCell(
+                                    "Nationality",
+                                    width: _nationalityWidth,
+                                  ),
                                   _buildHeaderCell("Phone", width: _phoneWidth),
                                 ],
                               ),
@@ -255,8 +286,14 @@ class _ProjectsListSubTabState extends ProjectsListSubTabState {
                                   ),
                                   child: Row(
                                     children: [
-                                      _buildDataCell(item.title ?? "", width: _titleWidth),
-                                      _buildStatusCell(item, width: _statusWidth),
+                                      _buildDataCell(
+                                        item.title ?? "",
+                                        width: _titleWidth,
+                                      ),
+                                      _buildStatusCell(
+                                        item,
+                                        width: _statusWidth,
+                                      ),
                                       _buildDataCell(
                                         item.dateDue != null
                                             ? _formatDateTime(item.dateDue!)
@@ -264,14 +301,20 @@ class _ProjectsListSubTabState extends ProjectsListSubTabState {
                                         width: _dueDateWidth,
                                         style: item.dateDue != null
                                             ? null
-                                            : theme.textTheme.bodyMedium?.copyWith(
+                                            : theme.textTheme.bodyMedium
+                                                ?.copyWith(
                                                 fontStyle: FontStyle.italic,
                                               ),
                                       ),
-                                      _buildDataCell(_getAssigneeName(item.assignee), width: _assigneeWidth),
+                                      _buildDataCell(
+                                        _getAssigneeName(item.assignee),
+                                        width: _assigneeWidth,
+                                      ),
                                       _buildDataCell(
                                         item.customerBirthday != null
-                                            ? _formatDateOnly(item.customerBirthday!)
+                                            ? _formatDateOnly(
+                                                item.customerBirthday!,
+                                              )
                                             : "",
                                         width: _birthdayWidth,
                                       ),
@@ -322,10 +365,10 @@ class _ProjectsListSubTabState extends ProjectsListSubTabState {
   }
 
   Widget _buildDataCell(
-      String text, {
-        required double width,
-        TextStyle? style,
-      }) {
+    String text, {
+    required double width,
+    TextStyle? style,
+  }) {
     return Container(
       width: width,
       padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
@@ -338,7 +381,8 @@ class _ProjectsListSubTabState extends ProjectsListSubTabState {
     );
   }
 
-  Widget _buildStatusCell(TaskRow row, {
+  Widget _buildStatusCell(
+    TaskRow row, {
     required double width,
   }) {
     return Container(
@@ -407,7 +451,10 @@ class _ProjectsListSubTabState extends ProjectsListSubTabState {
   Widget _formItem(ThemeData theme, FormRow form) {
     return Container(
       padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
-      decoration: BoxDecoration(border: Border(bottom: BorderSide(color: theme.colorScheme.outlineVariant))),
+      decoration: BoxDecoration(
+        border:
+            Border(bottom: BorderSide(color: theme.colorScheme.outlineVariant)),
+      ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -415,9 +462,13 @@ class _ProjectsListSubTabState extends ProjectsListSubTabState {
           const SizedBox(width: 8),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(form.name ?? 'Untitled Form', style: theme.textTheme.titleMedium),
-                Text('${form.description}'),]
+            children: [
+              Text(
+                form.name ?? 'Untitled Form',
+                style: theme.textTheme.titleMedium,
+              ),
+              Text('${form.description}'),
+            ],
           ),
         ],
       ),

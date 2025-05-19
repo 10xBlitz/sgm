@@ -4,7 +4,6 @@ import 'package:sgm/row_row_row_generated/tables/task.row.dart';
 import 'package:sgm/row_row_row_generated/tables/user.row.dart';
 import 'package:sgm/services/project.service.dart';
 import 'package:sgm/services/user.service.dart';
-import 'package:sgm/utils/loading_utils.dart';
 import 'package:sgm/widgets/task/tabs/appointment_details.task.view.tab.dart';
 
 import '../../../repository/task_repository.dart';
@@ -25,21 +24,21 @@ class _TaskViewState extends State<TaskView> {
   List<TaskUserAnswer>? _answers;
   UserRow? _assignee;
 
-
   @override
   void initState() {
     super.initState();
-   WidgetsBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       _loadAssignee();
       _loadAnswers();
     });
   }
 
   _loadAnswers() async {
-    if(widget.task.form == null) {
+    if (widget.task.form == null) {
       return;
     }
-    var answers = await TaskRepository().getAnswersForTask(formId: widget.task.form!, taskId: widget.task.id);
+    var answers = await TaskRepository()
+        .getAnswersForTask(formId: widget.task.form!, taskId: widget.task.id);
     if (mounted) {
       setState(() {
         _answers = answers;
@@ -63,7 +62,9 @@ class _TaskViewState extends State<TaskView> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final project = widget.task.project != null ? ProjectService().getFromCache(widget.task.project!) : null;
+    final project = widget.task.project != null
+        ? ProjectService().getFromCache(widget.task.project!)
+        : null;
     return Material(
       child: Theme(
         data: theme,
@@ -85,7 +86,8 @@ class _TaskViewState extends State<TaskView> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             SizedBox(height: 12.0),
-                            Text(widget.task.title ?? "No title", style: theme.textTheme.titleLarge),
+                            Text(widget.task.title ?? "No title",
+                                style: theme.textTheme.titleLarge),
                             Text(project?.title ?? "No project"),
                           ],
                         ),
@@ -119,10 +121,12 @@ class _TaskViewState extends State<TaskView> {
                         Expanded(
                           child: TabBarView(
                             children: [
-                              TaskCustomerDetail(task: widget.task, answers: _answers),
+                              TaskCustomerDetail(
+                                  task: widget.task, answers: _answers),
                               Center(child: Text('Content for Tab 2')),
                               AppointmentDetailsTaskViewTab(task: widget.task),
-                              TaskAdditionalInfo(task: widget.task,  assignee: _assignee),
+                              TaskAdditionalInfo(
+                                  task: widget.task, assignee: _assignee),
                             ],
                           ),
                         ),

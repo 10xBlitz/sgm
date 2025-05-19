@@ -3,7 +3,8 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 class ProjectTaskStatusService {
   // Singleton instance
-  static final ProjectTaskStatusService _instance = ProjectTaskStatusService._internal();
+  static final ProjectTaskStatusService _instance =
+      ProjectTaskStatusService._internal();
 
   // Factory constructor to return the singleton instance
   factory ProjectTaskStatusService() => _instance;
@@ -20,9 +21,11 @@ class ProjectTaskStatusService {
   /// Need to make issue in Flutter
   final Map _cache = {};
 
-  List<ProjectTaskStatusRow>? _clinicsCache;
+  List<ProjectTaskStatusRow>? clinicsCache;
 
-  Future<List<ProjectTaskStatusRow>> getStatusByProjectID(String projectId) async {
+  Future<List<ProjectTaskStatusRow>> getStatusByProjectID(
+    String projectId,
+  ) async {
     try {
       final response = await _supabase
           .from(ProjectTaskStatusRow.table)
@@ -38,7 +41,6 @@ class ProjectTaskStatusService {
       throw Exception('Failed to fetch project task statuses: $e');
     }
   }
-
 
   /// Clears the cache
   void clearCache() {

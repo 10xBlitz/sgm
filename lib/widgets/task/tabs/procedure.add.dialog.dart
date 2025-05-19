@@ -13,7 +13,6 @@ class ProcedureAddDialog extends StatefulWidget {
   const ProcedureAddDialog({
     super.key,
     required this.appointmentSummary,
-
     this.initalClinic,
   });
 
@@ -29,11 +28,10 @@ class ProcedureAddDialog extends StatefulWidget {
     return Navigator.of(context).push<ProcedureRow?>(
       MaterialPageRoute<ProcedureRow?>(
         fullscreenDialog: true,
-        builder:
-            (context) => ProcedureAddDialog(
-              appointmentSummary: appointmentSummary,
-              initalClinic: initalClinic,
-            ),
+        builder: (context) => ProcedureAddDialog(
+          appointmentSummary: appointmentSummary,
+          initalClinic: initalClinic,
+        ),
       ),
     );
   }
@@ -115,7 +113,7 @@ class _ProcedureAddDialogState extends State<ProcedureAddDialog> {
               if (!snapshot.hasData || snapshot.data == null) {
                 return Text('Appointment not found');
               }
-              final appointment = snapshot.data;
+              // final appointment = snapshot.data;
               return Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Form(
@@ -193,8 +191,7 @@ class _ProcedureAddDialogState extends State<ProcedureAddDialog> {
                       // Category dropdown
                       if (_selectedClinic != null)
                         FutureBuilder<
-                          List<ProcedureWithCategoryClinicAreaNamesRow>
-                        >(
+                            List<ProcedureWithCategoryClinicAreaNamesRow>>(
                           future: ProcedureService().getProceduresByClinic(
                             _selectedClinic!,
                           ),
@@ -236,14 +233,13 @@ class _ProcedureAddDialogState extends State<ProcedureAddDialog> {
                                   // order by titleEng or titleKor
 
                                   _allProcedureInCategory =
-                                      _procedureResult =
-                                          procedures
-                                              .where(
-                                                (procedure) =>
-                                                    procedure.category ==
-                                                    value, // filter by selected category
-                                              )
-                                              .toList();
+                                      _procedureResult = procedures
+                                          .where(
+                                            (procedure) =>
+                                                procedure.category ==
+                                                value, // filter by selected category
+                                          )
+                                          .toList();
                                   _allProcedureInCategory.sort((a, b) {
                                     final titleA =
                                         a.titleEng ?? a.titleKor ?? '';
@@ -261,7 +257,6 @@ class _ProcedureAddDialogState extends State<ProcedureAddDialog> {
                                     style: theme.textTheme.labelLarge,
                                   ),
                                 ),
-
                                 ...categories.map(
                                   (category) => DropdownMenuItem(
                                     value: category['id'],
@@ -290,43 +285,41 @@ class _ProcedureAddDialogState extends State<ProcedureAddDialog> {
                           labelText: 'Search Procedure',
                           border: const OutlineInputBorder(),
                           prefixIcon: const Icon(Icons.search),
-                          suffixIcon:
-                              _searchQuery.isNotEmpty
-                                  ? IconButton(
-                                    icon: const Icon(Icons.clear),
-                                    onPressed: () {
-                                      _searchController.clear();
-                                      setState(() {
-                                        _searchQuery = '';
-                                        _procedureResult =
-                                            _allProcedureInCategory;
-                                      });
-                                    },
-                                  )
-                                  : null,
+                          suffixIcon: _searchQuery.isNotEmpty
+                              ? IconButton(
+                                  icon: const Icon(Icons.clear),
+                                  onPressed: () {
+                                    _searchController.clear();
+                                    setState(() {
+                                      _searchQuery = '';
+                                      _procedureResult =
+                                          _allProcedureInCategory;
+                                    });
+                                  },
+                                )
+                              : null,
                         ),
                         onChanged: (value) {
                           // filter based on the search query
 
                           setState(() {
                             _searchQuery = value;
-                            _procedureResult =
-                                _allProcedureInCategory
-                                    .where(
-                                      (procedure) =>
-                                          procedure.titleEng
-                                              ?.toLowerCase()
-                                              .contains(
-                                                _searchQuery.toLowerCase(),
-                                              ) ??
-                                          procedure.titleKor
-                                              ?.toLowerCase()
-                                              .contains(
-                                                _searchQuery.toLowerCase(),
-                                              ) ??
-                                          false,
-                                    )
-                                    .toList();
+                            _procedureResult = _allProcedureInCategory
+                                .where(
+                                  (procedure) =>
+                                      procedure.titleEng
+                                          ?.toLowerCase()
+                                          .contains(
+                                            _searchQuery.toLowerCase(),
+                                          ) ??
+                                      procedure.titleKor
+                                          ?.toLowerCase()
+                                          .contains(
+                                            _searchQuery.toLowerCase(),
+                                          ) ??
+                                      false,
+                                )
+                                .toList();
                           });
                         },
                       ),
@@ -342,30 +335,29 @@ class _ProcedureAddDialogState extends State<ProcedureAddDialog> {
                           ),
                           child: ListView.separated(
                             itemCount: _procedureResult.length,
-                            separatorBuilder:
-                                (context, index) => const Divider(height: 1),
-                            itemBuilder:
-                                (context, index) => ListTile(
-                                  title: Text(
-                                    _procedureResult[index].titleEng ??
-                                        _procedureResult[index].titleKor ??
-                                        'Unnamed Procedure',
-                                  ),
-                                  subtitle: Text(
-                                    (_procedureResult[index].totalPrice ?? 0)
-                                        .toString(),
-                                  ),
-                                  onTap: () async {
-                                    final procedure = await ProcedureService()
-                                        .getFromId(_procedureResult[index].id!);
-                                    // pop
-                                    if (!context.mounted) return;
-                                    Navigator.pop(context, {
-                                      'procedure': procedure,
-                                      'clinicId': _selectedClinic,
-                                    });
-                                  },
-                                ),
+                            separatorBuilder: (context, index) =>
+                                const Divider(height: 1),
+                            itemBuilder: (context, index) => ListTile(
+                              title: Text(
+                                _procedureResult[index].titleEng ??
+                                    _procedureResult[index].titleKor ??
+                                    'Unnamed Procedure',
+                              ),
+                              subtitle: Text(
+                                (_procedureResult[index].totalPrice ?? 0)
+                                    .toString(),
+                              ),
+                              onTap: () async {
+                                final procedure = await ProcedureService()
+                                    .getFromId(_procedureResult[index].id!);
+                                // pop
+                                if (!context.mounted) return;
+                                Navigator.pop(context, {
+                                  'procedure': procedure,
+                                  'clinicId': _selectedClinic,
+                                });
+                              },
+                            ),
                           ),
                         ),
                       ),

@@ -1,9 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:sgm/services/auth.service.dart';
-import 'package:sgm/services/form.service.dart';
-import 'package:sgm/services/form_question.service.dart';
-import 'package:sgm/utils/loading_utils.dart';
-import 'package:sgm/utils/my_logger.dart';
 
 enum QuestionType { text, checkbox, attachment }
 
@@ -13,13 +8,22 @@ class QuestionData {
   String title;
   bool required;
   List<String>? options; // For checkbox
-  QuestionData({String? id, required this.type, this.title = '', this.required = false, this.options})
-    : id = id ?? UniqueKey().toString();
+  QuestionData({
+    String? id,
+    required this.type,
+    this.title = '',
+    this.required = false,
+    this.options,
+  }) : id = id ?? UniqueKey().toString();
 }
 
 class AddFormDialog extends StatefulWidget {
-  final void Function(String formTitle, String formName, String formDescription, List<QuestionData> questions)?
-  onSubmit;
+  final void Function(
+    String formTitle,
+    String formName,
+    String formDescription,
+    List<QuestionData> questions,
+  )? onSubmit;
   final String projectId;
 
   const AddFormDialog({super.key, this.onSubmit, required this.projectId});
@@ -45,7 +49,8 @@ class ReferralQuestionBlock extends StatelessWidget {
     'Other',
   ];
 
-  const ReferralQuestionBlock({super.key, required this.enabled, required this.onToggle});
+  const ReferralQuestionBlock(
+      {super.key, required this.enabled, required this.onToggle});
 
   @override
   Widget build(BuildContext context) {
@@ -67,10 +72,16 @@ class ReferralQuestionBlock extends StatelessWidget {
                   'How did you hear from us?',
                   style: Theme.of(
                     context,
-                  ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold, color: Colors.black87),
+                  ).textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black87,
+                      ),
                 ),
               ),
-              Switch(value: enabled, activeColor: const Color(0xFFD1B06B), onChanged: onToggle),
+              Switch(
+                  value: enabled,
+                  activeColor: const Color(0xFFD1B06B),
+                  onChanged: onToggle),
             ],
           ),
           ...options.map(
@@ -81,7 +92,9 @@ class ReferralQuestionBlock extends StatelessWidget {
                   value: false,
                   onChanged: null, // Always disabled
                 ),
-                Text(option, style: const TextStyle(fontSize: 14, color: Color(0xFF7B7F8A))),
+                Text(option,
+                    style: const TextStyle(
+                        fontSize: 14, color: Color(0xFF7B7F8A))),
               ],
             ),
           ),
@@ -130,7 +143,8 @@ class _AddFormDialogState extends State<AddFormDialog> {
   void _addQuestion(QuestionType type) {
     setState(() {
       if (type == QuestionType.checkbox) {
-        _questions.add(QuestionData(type: type, options: ['Option 1', 'Option 2']));
+        _questions
+            .add(QuestionData(type: type, options: ['Option 1', 'Option 2']));
       } else {
         _questions.add(QuestionData(type: type));
       }
@@ -213,10 +227,15 @@ class _AddFormDialogState extends State<AddFormDialog> {
                       Expanded(
                         child: Text(
                           'Add Form',
-                          style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+                          style: Theme.of(context)
+                              .textTheme
+                              .titleLarge
+                              ?.copyWith(fontWeight: FontWeight.bold),
                         ),
                       ),
-                      IconButton(icon: const Icon(Icons.close), onPressed: () => Navigator.of(context).pop()),
+                      IconButton(
+                          icon: const Icon(Icons.close),
+                          onPressed: () => Navigator.of(context).pop()),
                     ],
                   ),
                 ),
@@ -233,13 +252,19 @@ class _AddFormDialogState extends State<AddFormDialog> {
                           children: [
                             Text(
                               'Add Form',
-                              style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .titleLarge
+                                  ?.copyWith(fontWeight: FontWeight.bold),
                             ),
                             const SizedBox(height: 24),
                             TextFormField(
-                              decoration: const InputDecoration(labelText: 'Form Name', border: OutlineInputBorder()),
+                              decoration: const InputDecoration(
+                                  labelText: 'Form Name',
+                                  border: OutlineInputBorder()),
                               onChanged: (v) => setState(() => _formName = v),
-                              validator: (v) => v == null || v.isEmpty ? 'Required' : null,
+                              validator: (v) =>
+                                  v == null || v.isEmpty ? 'Required' : null,
                             ),
                             const SizedBox(height: 16),
                             TextFormField(
@@ -247,7 +272,8 @@ class _AddFormDialogState extends State<AddFormDialog> {
                                 labelText: 'Form Description',
                                 border: OutlineInputBorder(),
                               ),
-                              onChanged: (v) => setState(() => _formDescription = v),
+                              onChanged: (v) =>
+                                  setState(() => _formDescription = v),
                               maxLines: 2,
                             ),
                             const SizedBox(height: 24),
@@ -257,16 +283,20 @@ class _AddFormDialogState extends State<AddFormDialog> {
                               decoration: BoxDecoration(
                                 color: const Color(0xFFF8F6EF),
                                 borderRadius: BorderRadius.circular(12),
-                                border: Border.all(color: const Color(0xFFE5E1D6)),
+                                border:
+                                    Border.all(color: const Color(0xFFE5E1D6)),
                               ),
                               child: Column(
                                 children: [
                                   Text(
                                     'Add Question',
-                                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                      fontWeight: FontWeight.bold,
-                                      color: const Color(0xFF7B7F8A),
-                                    ),
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .titleMedium
+                                        ?.copyWith(
+                                          fontWeight: FontWeight.bold,
+                                          color: const Color(0xFF7B7F8A),
+                                        ),
                                   ),
                                   const SizedBox(height: 16),
                                   Wrap(
@@ -276,17 +306,20 @@ class _AddFormDialogState extends State<AddFormDialog> {
                                       _QuestionTypeButton(
                                         icon: Icons.text_fields,
                                         label: 'Text',
-                                        onTap: () => _addQuestion(QuestionType.text),
+                                        onTap: () =>
+                                            _addQuestion(QuestionType.text),
                                       ),
                                       _QuestionTypeButton(
                                         icon: Icons.attach_file,
                                         label: 'Attachment',
-                                        onTap: () => _addQuestion(QuestionType.attachment),
+                                        onTap: () => _addQuestion(
+                                            QuestionType.attachment),
                                       ),
                                       _QuestionTypeButton(
                                         icon: Icons.check_box,
                                         label: 'Checkbox',
-                                        onTap: () => _addQuestion(QuestionType.checkbox),
+                                        onTap: () =>
+                                            _addQuestion(QuestionType.checkbox),
                                       ),
                                     ],
                                   ),
@@ -295,31 +328,37 @@ class _AddFormDialogState extends State<AddFormDialog> {
                             ),
                             const SizedBox(height: 24),
                             Column(
-                              children:
-                                  _questions.asMap().entries.map((entry) {
-                                    final idx = entry.key;
-                                    final q = entry.value;
-                                    final key = _questionKeys.putIfAbsent(q.id, () => GlobalKey());
-                                    return Padding(
-                                      padding: const EdgeInsets.only(bottom: 16.0),
-                                      child: _QuestionBlock(
-                                        key: key,
-                                        data: q,
-                                        highlighted: q.id == _highlightedId,
-                                        highlightColor: _highlightColor,
-                                        onChanged: (data) => _updateQuestion(idx, data),
-                                        onRemove: () => _removeQuestion(idx),
-                                        onMoveUp: idx > 0 ? () => _moveQuestionUp(idx) : null,
-                                        onMoveDown: idx < _questions.length - 1 ? () => _moveQuestionDown(idx) : null,
-                                        onCopy: () => _copyQuestion(idx),
-                                      ),
-                                    );
-                                  }).toList(),
+                              children: _questions.asMap().entries.map((entry) {
+                                final idx = entry.key;
+                                final q = entry.value;
+                                final key = _questionKeys.putIfAbsent(
+                                    q.id, () => GlobalKey());
+                                return Padding(
+                                  padding: const EdgeInsets.only(bottom: 16.0),
+                                  child: _QuestionBlock(
+                                    key: key,
+                                    data: q,
+                                    highlighted: q.id == _highlightedId,
+                                    highlightColor: _highlightColor,
+                                    onChanged: (data) =>
+                                        _updateQuestion(idx, data),
+                                    onRemove: () => _removeQuestion(idx),
+                                    onMoveUp: idx > 0
+                                        ? () => _moveQuestionUp(idx)
+                                        : null,
+                                    onMoveDown: idx < _questions.length - 1
+                                        ? () => _moveQuestionDown(idx)
+                                        : null,
+                                    onCopy: () => _copyQuestion(idx),
+                                  ),
+                                );
+                              }).toList(),
                             ),
                             const SizedBox(height: 24),
                             ReferralQuestionBlock(
                               enabled: _referralEnabled,
-                              onToggle: (val) => setState(() => _referralEnabled = val),
+                              onToggle: (val) =>
+                                  setState(() => _referralEnabled = val),
                             ),
                           ],
                         ),
@@ -337,7 +376,8 @@ class _AddFormDialogState extends State<AddFormDialog> {
                         foregroundColor: Colors.white,
                         padding: const EdgeInsets.symmetric(vertical: 16),
                         textStyle: Theme.of(context).textTheme.titleMedium,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8)),
                       ),
                       onPressed: () {
                         _handleSubmitCreateForm(context);
@@ -355,7 +395,9 @@ class _AddFormDialogState extends State<AddFormDialog> {
   }
 
   Future<void> _handleSubmitCreateForm(BuildContext context) async {
-    var existTitle = _questions.where((q) => q.title == "How did you hear from us?").toList();
+    var existTitle = _questions
+        .where((q) => q.title == "How did you hear from us?")
+        .toList();
     if (_referralEnabled && existTitle.isEmpty) {
       _questions.add(
         QuestionData(
@@ -370,7 +412,8 @@ class _AddFormDialogState extends State<AddFormDialog> {
     }
 
     if (_formKey.currentState!.validate()) {
-      widget.onSubmit?.call(_formTitle, _formName, _formDescription, _questions);
+      widget.onSubmit
+          ?.call(_formTitle, _formName, _formDescription, _questions);
       Navigator.of(context).pop();
     }
   }
@@ -381,7 +424,8 @@ class _QuestionTypeButton extends StatelessWidget {
   final String label;
   final VoidCallback onTap;
 
-  const _QuestionTypeButton({required this.icon, required this.label, required this.onTap});
+  const _QuestionTypeButton(
+      {required this.icon, required this.label, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -400,7 +444,9 @@ class _QuestionTypeButton extends StatelessWidget {
           children: [
             Icon(icon, color: const Color(0xFF7B7F8A)),
             const SizedBox(width: 8),
-            Text(label, style: const TextStyle(fontWeight: FontWeight.w500, color: Color(0xFF7B7F8A))),
+            Text(label,
+                style: const TextStyle(
+                    fontWeight: FontWeight.w500, color: Color(0xFF7B7F8A))),
           ],
         ),
       ),
@@ -473,8 +519,8 @@ class _QuestionBlockState extends State<_QuestionBlock> {
                 widget.data.type == QuestionType.text
                     ? Icons.text_fields
                     : widget.data.type == QuestionType.attachment
-                    ? Icons.attach_file
-                    : Icons.check_box,
+                        ? Icons.attach_file
+                        : Icons.check_box,
                 color: const Color(0xFF7B7F8A),
               ),
               const SizedBox(width: 8),
@@ -482,20 +528,22 @@ class _QuestionBlockState extends State<_QuestionBlock> {
                 widget.data.type == QuestionType.text
                     ? 'Text'
                     : widget.data.type == QuestionType.attachment
-                    ? 'Attachment'
-                    : 'Checkbox',
+                        ? 'Attachment'
+                        : 'Checkbox',
                 style: Theme.of(context).textTheme.titleMedium,
               ),
               const Spacer(),
               if (widget.onMoveDown != null)
                 IconButton(
-                  icon: const Icon(Icons.arrow_downward, color: Color(0xFFB0B3BB)),
+                  icon: const Icon(Icons.arrow_downward,
+                      color: Color(0xFFB0B3BB)),
                   tooltip: 'Move Down',
                   onPressed: widget.onMoveDown,
                 ),
               if (widget.onMoveUp != null)
                 IconButton(
-                  icon: const Icon(Icons.arrow_upward, color: Color(0xFFB0B3BB)),
+                  icon:
+                      const Icon(Icons.arrow_upward, color: Color(0xFFB0B3BB)),
                   tooltip: 'Move Up',
                   onPressed: widget.onMoveUp,
                 ),
@@ -505,7 +553,10 @@ class _QuestionBlockState extends State<_QuestionBlock> {
                   tooltip: 'Copy',
                   onPressed: widget.onCopy,
                 ),
-              IconButton(icon: const Icon(Icons.delete_outline, color: Color(0xFF7B7F8A)), onPressed: widget.onRemove),
+              IconButton(
+                  icon: const Icon(Icons.delete_outline,
+                      color: Color(0xFF7B7F8A)),
+                  onPressed: widget.onRemove),
             ],
           ),
           const SizedBox(height: 12),
@@ -515,7 +566,9 @@ class _QuestionBlockState extends State<_QuestionBlock> {
               labelText: 'New question',
               border: OutlineInputBorder(
                 borderSide: BorderSide(
-                  color: widget.data.type == QuestionType.attachment ? Color(0xFFD1B06B) : Color(0xFF7B7F8A),
+                  color: widget.data.type == QuestionType.attachment
+                      ? Color(0xFFD1B06B)
+                      : Color(0xFF7B7F8A),
                 ),
               ),
             ),
@@ -524,12 +577,16 @@ class _QuestionBlockState extends State<_QuestionBlock> {
                 widget.data
                   ..title = v
                   ..required = _required
-                  ..options = widget.data.type == QuestionType.checkbox ? _options : null,
+                  ..options = widget.data.type == QuestionType.checkbox
+                      ? _options
+                      : null,
               );
             },
           ),
           const SizedBox(height: 8),
-          Text('Add description', style: TextStyle(color: Color(0xFF6B4F13), fontWeight: FontWeight.w600)),
+          Text('Add description',
+              style: TextStyle(
+                  color: Color(0xFF6B4F13), fontWeight: FontWeight.w600)),
           const SizedBox(height: 8),
           if (widget.data.type == QuestionType.checkbox)
             Column(
@@ -543,7 +600,9 @@ class _QuestionBlockState extends State<_QuestionBlock> {
                           padding: const EdgeInsets.only(top: 8.0),
                           child: TextFormField(
                             initialValue: entry.value,
-                            decoration: const InputDecoration(labelText: 'Option', border: OutlineInputBorder()),
+                            decoration: const InputDecoration(
+                                labelText: 'Option',
+                                border: OutlineInputBorder()),
                             onChanged: (v) {
                               setState(() {
                                 _options[idx] = v;
@@ -607,13 +666,17 @@ class _QuestionBlockState extends State<_QuestionBlock> {
                       widget.data
                         ..title = _titleController.text
                         ..required = _required
-                        ..options = widget.data.type == QuestionType.checkbox ? _options : null,
+                        ..options = widget.data.type == QuestionType.checkbox
+                            ? _options
+                            : null,
                     );
                   });
                 },
               ),
               const SizedBox(width: 8),
-              Text('Required', style: TextStyle(color: Color(0xFF7B7F8A), fontWeight: FontWeight.w600)),
+              Text('Required',
+                  style: TextStyle(
+                      color: Color(0xFF7B7F8A), fontWeight: FontWeight.w600)),
             ],
           ),
         ],

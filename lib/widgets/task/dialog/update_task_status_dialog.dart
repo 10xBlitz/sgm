@@ -35,15 +35,16 @@ class _UpdateTaskStatusDialogState extends State<UpdateTaskStatusDialog> {
 
   Future<void> _loadStatuses() async {
     try {
-      final statuses = await _statusService.getStatusByProjectID(widget.projectId);
+      final statuses =
+          await _statusService.getStatusByProjectID(widget.projectId);
       if (!mounted) return;
-      
+
       // Find the current status ID
       final currentStatus = statuses.firstWhere(
         (status) => status.status == widget.currentStatus,
         orElse: () => statuses.first,
       );
-      
+
       setState(() {
         _statuses = statuses;
         selectedStatusId = currentStatus.id;
@@ -62,13 +63,13 @@ class _UpdateTaskStatusDialogState extends State<UpdateTaskStatusDialog> {
     setState(() {
       _isLoading = true;
     });
-    
+
     try {
       await TaskService().updateTask(
         id: widget.taskId,
         status: selectedStatusId,
       );
-      
+
       if (!mounted) return;
       if (widget.onStatusUpdated != null) {
         await widget.onStatusUpdated!();
@@ -76,6 +77,8 @@ class _UpdateTaskStatusDialogState extends State<UpdateTaskStatusDialog> {
       setState(() {
         _isLoading = false;
       });
+
+      // if(!context) return;
       Navigator.of(context).pop();
     } catch (e) {
       setState(() {
@@ -103,7 +106,10 @@ class _UpdateTaskStatusDialogState extends State<UpdateTaskStatusDialog> {
                 Expanded(
                   child: Text(
                     'Update Status',
-                    style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+                    style: Theme.of(context)
+                        .textTheme
+                        .titleLarge
+                        ?.copyWith(fontWeight: FontWeight.bold),
                   ),
                 ),
                 IconButton(
@@ -133,10 +139,12 @@ class _UpdateTaskStatusDialogState extends State<UpdateTaskStatusDialog> {
                     borderRadius: BorderRadius.circular(4),
                   ),
                 ),
-                items: _statuses.map((status) => DropdownMenuItem(
-                  value: status.id,
-                  child: Text(status.status ?? 'Unknown Status'),
-                )).toList(),
+                items: _statuses
+                    .map((status) => DropdownMenuItem(
+                          value: status.id,
+                          child: Text(status.status ?? 'Unknown Status'),
+                        ))
+                    .toList(),
                 onChanged: (newStatusId) {
                   setState(() {
                     selectedStatusId = newStatusId;
@@ -152,7 +160,8 @@ class _UpdateTaskStatusDialogState extends State<UpdateTaskStatusDialog> {
                   foregroundColor: Colors.white,
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   textStyle: Theme.of(context).textTheme.titleMedium,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8)),
                 ),
                 onPressed: _updateStatus,
                 child: const Text('Update Status'),
@@ -163,4 +172,4 @@ class _UpdateTaskStatusDialogState extends State<UpdateTaskStatusDialog> {
       ),
     );
   }
-} 
+}
