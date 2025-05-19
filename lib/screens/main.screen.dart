@@ -207,63 +207,61 @@ class _MainScreenState extends State<MainScreen> {
     await showDialog(
       context: context,
       barrierDismissible: false,
-      builder:
-          (context) => AddTaskDialog(
-            projectId: '${widget.projectId}',
-            projectTitle:
-                '${ProjectService().getFromCache(widget.projectId!)?.title}',
-            onAddTask: (args) async {
-              debugPrint(
-                'Task added: ${args.title}, Assignee: ${args.assigneeId} ${args.assigneeId} -STTID ${args.statusId}',
-              );
-              final assigneeId = args.assigneeId;
-              final statusId = args.statusId;
-              final time = args.dueDate;
-              final title = args.title;
-              final description = args.description;
-              await TaskService()
-                  .createTask(
-                    title: title,
-                    project: widget.projectId,
-                    dateDue: time,
-                    assignee: assigneeId,
-                    status: statusId,
-                    description: description,
-                  )
-                  .then((value) async {
-                    // hide loading
-                    debugPrint("done");
-                    await ProjectService().getFromId(
-                      widget.projectId!,
-                      cached: true,
-                    );
-                    if (mounted) {
-                      setState(() {
-                        // Force rebuild of ProjectsListSubTab by recreating its key
-                        if (_projectsListSubTabKey.currentState != null) {
-                          (_projectsListSubTabKey.currentState
-                                  as ProjectsListSubTabState?)
-                              ?.reloadAPI();
-                        }
-                        if (_clinicsListSubTabKey.currentState != null) {
-                          (_clinicsListSubTabKey.currentState
-                                  as ClinicsListSubTabState?)
-                              ?.reloadAPI();
-                        }
-                        // check the current tab
-                      });
-                    }
-                  })
-                  .catchError((error) {
-                    // hide loading
-                    if (context.mounted) {
-                      ScaffoldMessenger.of(
-                        context,
-                      ).showSnackBar(SnackBar(content: Text('Error: $error')));
-                    }
-                  });
-            },
-          ),
+      builder: (context) => AddTaskDialog(
+        projectId: '${widget.projectId}',
+        projectTitle:
+            '${ProjectService().getFromCache(widget.projectId!)?.title}',
+        onAddTask: (args) async {
+          debugPrint(
+            'Task added: ${args.title}, Assignee: ${args.assigneeId} ${args.assigneeId} -STTID ${args.statusId}',
+          );
+          final assigneeId = args.assigneeId;
+          final statusId = args.statusId;
+          final time = args.dueDate;
+          final title = args.title;
+          final description = args.description;
+          await TaskService()
+              .createTask(
+            title: title,
+            project: widget.projectId,
+            dateDue: time,
+            assignee: assigneeId,
+            status: statusId,
+            description: description,
+          )
+              .then((value) async {
+            // hide loading
+            debugPrint("done");
+            await ProjectService().getFromId(
+              widget.projectId!,
+              cached: true,
+            );
+            if (mounted) {
+              setState(() {
+                // Force rebuild of ProjectsListSubTab by recreating its key
+                if (_projectsListSubTabKey.currentState != null) {
+                  (_projectsListSubTabKey.currentState
+                          as ProjectsListSubTabState?)
+                      ?.reloadAPI();
+                }
+                if (_clinicsListSubTabKey.currentState != null) {
+                  (_clinicsListSubTabKey.currentState
+                          as ClinicsListSubTabState?)
+                      ?.reloadAPI();
+                }
+                // check the current tab
+              });
+            }
+          }).catchError((error) {
+            // hide loading
+            if (context.mounted) {
+              ScaffoldMessenger.of(
+                context,
+              ).showSnackBar(SnackBar(content: Text('Error: $error')));
+            }
+          });
+        },
+      ),
     );
   }
 
@@ -272,72 +270,71 @@ class _MainScreenState extends State<MainScreen> {
     await showDialog(
       context: context,
       barrierDismissible: false,
-      builder:
-          (context) => AddFormDialog(
-            projectId: '${widget.projectId}',
-            onSubmit: (formTitle, formName, formDescription, questions) async {
-              debugPrint(
-                'Form added: $formName, Description: $formDescription',
+      builder: (context) => AddFormDialog(
+        projectId: '${widget.projectId}',
+        onSubmit: (formTitle, formName, formDescription, questions) async {
+          debugPrint(
+            'Form added: $formName, Description: $formDescription',
+          );
+          LoadingUtils.showLoading();
+          try {
+            var currentUserID = AuthService().currentUser?.id;
+
+            // Create the form
+            var newForm = await FormService().createForm(
+              linkedProject: widget.projectId,
+              name: formName,
+              description: formDescription,
+              createdBy: currentUserID,
+            );
+
+            debugPrint('Form created with ID: ${newForm?.id}');
+
+            // Add questions to the form
+            await Future.forEach(questions, (QuestionData question) async {
+              await FormQuestionService().createQuestion(
+                formId: '${newForm?.id}',
+                type: question.type,
+                question: question.title,
+                isRequired: question.required,
+                checkboxOptions: question.options ?? [],
               );
-              LoadingUtils.showLoading();
-              try {
-                var currentUserID = AuthService().currentUser?.id;
+            });
 
-                // Create the form
-                var newForm = await FormService().createForm(
-                  linkedProject: widget.projectId,
-                  name: formName,
-                  description: formDescription,
-                  createdBy: currentUserID,
-                );
+            LoadingUtils.dismissLoading();
+            LoadingUtils.showSuccess('Form created successfully!');
 
-                debugPrint('Form created with ID: ${newForm?.id}');
-
-                // Add questions to the form
-                await Future.forEach(questions, (QuestionData question) async {
-                  await FormQuestionService().createQuestion(
-                    formId: '${newForm?.id}',
-                    type: question.type,
-                    question: question.title,
-                    isRequired: question.required,
-                    checkboxOptions: question.options ?? [],
-                  );
-                });
-
-                LoadingUtils.dismissLoading();
-                LoadingUtils.showSuccess('Form created successfully!');
-
-                if (mounted) {
-                  setState(() {
-                    // Reload both API and forms
-                    if (_clinicsListSubTabKey.currentState != null) {
-                      (_clinicsListSubTabKey.currentState
-                              as ClinicsListSubTabState?)
-                          ?.reloadAPI();
-                      (_clinicsListSubTabKey.currentState
-                              as ClinicsListSubTabState?)
-                          ?.reloadForms();
-                    }
-                    if (_projectsListSubTabKey.currentState != null) {
-                      (_projectsListSubTabKey.currentState
-                              as ProjectsListSubTabState?)
-                          ?.reloadAPI();
-                      (_projectsListSubTabKey.currentState
-                              as ProjectsListSubTabState?)
-                          ?.reloadForms();
-                    }
-                  });
+            if (mounted) {
+              setState(() {
+                // Reload both API and forms
+                if (_clinicsListSubTabKey.currentState != null) {
+                  (_clinicsListSubTabKey.currentState
+                          as ClinicsListSubTabState?)
+                      ?.reloadAPI();
+                  (_clinicsListSubTabKey.currentState
+                          as ClinicsListSubTabState?)
+                      ?.reloadForms();
                 }
-              } catch (e) {
-                LoadingUtils.dismissLoading();
-                if (context.mounted) {
-                  ScaffoldMessenger.of(
-                    context,
-                  ).showSnackBar(SnackBar(content: Text('Error: $e')));
+                if (_projectsListSubTabKey.currentState != null) {
+                  (_projectsListSubTabKey.currentState
+                          as ProjectsListSubTabState?)
+                      ?.reloadAPI();
+                  (_projectsListSubTabKey.currentState
+                          as ProjectsListSubTabState?)
+                      ?.reloadForms();
                 }
-              }
-            },
-          ),
+              });
+            }
+          } catch (e) {
+            LoadingUtils.dismissLoading();
+            if (context.mounted) {
+              ScaffoldMessenger.of(
+                context,
+              ).showSnackBar(SnackBar(content: Text('Error: $e')));
+            }
+          }
+        },
+      ),
     );
   }
 
@@ -347,21 +344,24 @@ class _MainScreenState extends State<MainScreen> {
       ChatTab.tabTitle => ChatTab(),
       MyTaskTab.tabTitle => MyTaskTab(),
       ClinicsTab.tabTitle => ClinicsTab(
-        projectId: widget.projectId,
-        subTab: widget.subTab,
-        subTabKey: _clinicsListSubTabKey,
-      ),
+          projectId: widget.projectId,
+          subTab: widget.subTab,
+          subTabKey: _clinicsListSubTabKey,
+        ),
       ProjectsTab.tabTitle => ProjectsTab(
-        projectId: widget.projectId,
-        subTabKey: _projectsListSubTabKey,
-      ),
-      ProceduresTab.tabTitle => ProceduresTab(),
+          projectId: widget.projectId,
+          subTabKey: _projectsListSubTabKey,
+        ),
+      ProceduresTab.tabTitle => ProceduresTab(
+          subTab: widget.subTab,
+          // add add / edit tabs here
+        ),
       FormsTab.tabTitle => FormsTab(),
       UserManagementTab.tabTitle => UserManagementTab(),
       AnnouncementsTab.tabTitle => AnnouncementsTab(),
       _ => const Center(
-        child: Text('Default Screen', style: TextStyle(color: Colors.grey)),
-      ),
+          child: Text('Default Screen', style: TextStyle(color: Colors.grey)),
+        ),
     };
   }
 

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:sgm/row_row_row_generated/tables/procedure_with_category_clinic_area_names.row.dart';
+import 'package:sgm/screens/main.screen.dart';
 import 'package:sgm/services/procedure.service.dart';
 
 import 'package:sgm/widgets/procedures/procedure_filter.dart';
@@ -18,6 +20,24 @@ class ProceduresScreenState extends State<ProceduresScreen> {
   bool isLoading = true;
 
   List<ProcedureWithCategoryClinicAreaNamesRow> procedure = [];
+  List<String> selectedAreaIds = [];
+  List<String> selectedClinicIds = [];
+  List<String> selectedCategoryIds = [];
+
+  int currentPage = 1;
+  final int limit = 10;
+  bool isEndReached = false;
+
+  @override
+  void initState() {
+    super.initState();
+    loadProcedures();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
 
   void toggleShowFilter() {
     setState(() {
@@ -25,25 +45,42 @@ class ProceduresScreenState extends State<ProceduresScreen> {
     });
   }
 
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-
-    loadProcedures();
-  }
-
   Future<void> loadProcedures() async {
     setState(() {
       isLoading = true;
     });
 
-    final ProcedureService procedureService = ProcedureService();
-    final s = await procedureService.getProcedures(limit: 10);
+    final procedureService = ProcedureService();
+    final result = await procedureService.getProcedures(
+      offset: currentPage,
+      limit: limit,
+      areaIds: selectedAreaIds,
+      clinicIds: selectedClinicIds,
+      categoryIds: selectedCategoryIds,
+    );
+
     setState(() {
-      procedure = s;
+      procedure = result;
       isLoading = false;
     });
+  }
+
+  void goToNextPage() {
+    setState(() {
+      currentPage += 1;
+      isEndReached = false;
+    });
+    loadProcedures();
+  }
+
+  void goToPreviousPage() {
+    if (currentPage > 1) {
+      setState(() {
+        currentPage -= 1;
+        isEndReached = false;
+      });
+      loadProcedures();
+    }
   }
 
   @override
@@ -52,7 +89,6 @@ class ProceduresScreenState extends State<ProceduresScreen> {
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
-          spacing: 14,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
@@ -60,7 +96,13 @@ class ProceduresScreenState extends State<ProceduresScreen> {
               children: [
                 ElevatedButton(
                   onPressed: () {
-                    // TODO: Implement add procedure functionality
+                    context.push(
+                      MainScreen.routeName,
+                      extra: {
+                        'currentTab': 'Procedures',
+                        'subTab': 'Add',
+                      },
+                    );
                   },
                   child: const Text('Add Procedure'),
                 ),
@@ -73,7 +115,21 @@ class ProceduresScreenState extends State<ProceduresScreen> {
               ],
             ),
             if (showFilter)
-              const ProcedureFilter(), // Assuming ProcedureFilter has a const constructor
+              ProcedureFilter(
+                onFilterChanged: ({
+                  required List<String> areaIds,
+                  required List<String> clinicIds,
+                  required List<String> categoryIds,
+                }) {
+                  setState(() {
+                    selectedAreaIds = areaIds;
+                    selectedClinicIds = clinicIds;
+                    selectedCategoryIds = categoryIds;
+                    currentPage = 1;
+                  });
+                  loadProcedures();
+                },
+              ),
             Expanded(
               child: isLoading
                   ? const Center(child: CircularProgressIndicator())
@@ -81,7 +137,7 @@ class ProceduresScreenState extends State<ProceduresScreen> {
                       ? const Center(child: Text('No procedures found.'))
                       : ListView.builder(
                           itemCount: procedure.length,
-                          itemBuilder: (BuildContext context, int index) {
+                          itemBuilder: (context, index) {
                             final pro = procedure[index];
                             return ProcedureItem(
                               item: pro,
@@ -91,7 +147,26 @@ class ProceduresScreenState extends State<ProceduresScreen> {
                           },
                         ),
             ),
-            // add next page button
+            Padding(
+              padding: const EdgeInsets.only(top: 12),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  if (currentPage > 1) ...{
+                    ElevatedButton(
+                      onPressed: goToPreviousPage,
+                      child: const Text("Previous"),
+                    ),
+                  } else ...{
+                    SizedBox(),
+                  },
+                  ElevatedButton(
+                    onPressed: goToNextPage,
+                    child: const Text("Next"),
+                  ),
+                ],
+              ),
+            ),
           ],
         ),
       ),

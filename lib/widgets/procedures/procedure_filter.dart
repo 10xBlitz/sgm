@@ -3,7 +3,13 @@ import 'package:sgm/row_row_row_generated/tables/clinic_area_procedure_category_
 import 'package:sgm/services/procedure.service.dart';
 
 class ProcedureFilter extends StatefulWidget {
-  const ProcedureFilter({super.key});
+  const ProcedureFilter({super.key, required this.onFilterChanged});
+
+  final Function({
+    required List<String> areaIds,
+    required List<String> clinicIds,
+    required List<String> categoryIds,
+  }) onFilterChanged;
 
   @override
   State<ProcedureFilter> createState() => _ProcedureFilterState();
@@ -48,9 +54,8 @@ class _ProcedureFilterState extends State<ProcedureFilter> {
   // load clinics
   Future<void> loadClinics() async {
     try {
-      final entries =
-          await procedureService
-              .getClinicAreaProcedureCategoryDropdownEntries();
+      final entries = await procedureService
+          .getClinicAreaProcedureCategoryDropdownEntries();
       final uniqueClinics =
           <String, ClinicAreaProcedureCategoryDropdownEntriesRow>{};
 
@@ -69,12 +74,19 @@ class _ProcedureFilterState extends State<ProcedureFilter> {
     }
   }
 
+  void emitFilter() {
+    widget.onFilterChanged(
+      areaIds: selectedAreaId,
+      clinicIds: selectedClinicId,
+      categoryIds: selectedCategoryId,
+    );
+  }
+
   // load categories
   Future<void> loadCategories() async {
     try {
-      final entries =
-          await procedureService
-              .getClinicAreaProcedureCategoryDropdownEntries();
+      final entries = await procedureService
+          .getClinicAreaProcedureCategoryDropdownEntries();
       final uniqueCategories =
           <String, ClinicAreaProcedureCategoryDropdownEntriesRow>{};
 
@@ -96,9 +108,8 @@ class _ProcedureFilterState extends State<ProcedureFilter> {
 
   Future<void> loadClinicsForArea(List<String> areas) async {
     try {
-      final entries =
-          await procedureService
-              .getClinicAreaProcedureCategoryDropdownEntries();
+      final entries = await procedureService
+          .getClinicAreaProcedureCategoryDropdownEntries();
       final uniqueClinics =
           <String, ClinicAreaProcedureCategoryDropdownEntriesRow>{};
 
@@ -124,9 +135,8 @@ class _ProcedureFilterState extends State<ProcedureFilter> {
 
   Future<void> loadCategoriesForClinic(List<String>? clinicIds) async {
     try {
-      final entries =
-          await procedureService
-              .getClinicAreaProcedureCategoryDropdownEntries();
+      final entries = await procedureService
+          .getClinicAreaProcedureCategoryDropdownEntries();
       final uniqueCategories =
           <String, ClinicAreaProcedureCategoryDropdownEntriesRow>{};
 
@@ -162,6 +172,8 @@ class _ProcedureFilterState extends State<ProcedureFilter> {
     } else {
       loadClinics();
     }
+
+    emitFilter();
   }
 
   void onClinicSelected(String clinicId) {
@@ -177,6 +189,7 @@ class _ProcedureFilterState extends State<ProcedureFilter> {
     } else {
       loadCategories();
     }
+    emitFilter();
   }
 
   void onCategorySelected(String categoryId) {
@@ -187,6 +200,8 @@ class _ProcedureFilterState extends State<ProcedureFilter> {
         selectedCategoryId.add(categoryId);
       }
     });
+
+    emitFilter();
   }
 
   @override
@@ -220,7 +235,13 @@ class _ProcedureFilterState extends State<ProcedureFilter> {
                         Text(
                           selectedAreaId.isEmpty
                               ? 'Select...'
-                              : '${selectedAreaId.length} selected',
+                              : areas
+                                  .where(
+                                    (area) => selectedAreaId
+                                        .contains(area.clinicAreaId),
+                                  )
+                                  .map((area) => area.areaName)
+                                  .join(', '),
                           style: const TextStyle(color: Colors.black87),
                         ),
                         const Icon(
@@ -253,10 +274,20 @@ class _ProcedureFilterState extends State<ProcedureFilter> {
                     ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: const [
-                        Text(
-                          'Select...',
-                          style: TextStyle(color: Colors.black87),
+                      children: [
+                        Flexible(
+                          child: Text(
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            selectedClinicId.isEmpty
+                                ? 'Select...'
+                                : clinics
+                                    .where((clinic) => selectedClinicId
+                                        .contains(clinic.clinicId))
+                                    .map((clinic) => clinic.clinicName)
+                                    .join(', '),
+                            style: TextStyle(color: Colors.black87),
+                          ),
                         ),
                         Icon(Icons.arrow_drop_down, color: Colors.black54),
                       ],
@@ -289,7 +320,16 @@ class _ProcedureFilterState extends State<ProcedureFilter> {
                         Text(
                           selectedCategoryId.isEmpty
                               ? 'Select...'
-                              : '${selectedCategoryId.length} selected',
+                              : categories
+                                  .where(
+                                    (category) => selectedCategoryId
+                                        .contains(category.procedureCategoryId),
+                                  )
+                                  .map(
+                                    (category) =>
+                                        category.procedureCategoryName,
+                                  )
+                                  .join(', '),
                           style: const TextStyle(color: Colors.black87),
                         ),
                         const Icon(
@@ -320,21 +360,20 @@ class _ProcedureFilterState extends State<ProcedureFilter> {
                 width: double.maxFinite,
                 child: ListView(
                   shrinkWrap: true,
-                  children:
-                      clinics.map((clinic) {
-                        final isSelected = selectedClinicId.contains(
-                          clinic.clinicId,
-                        );
-                        return CheckboxListTile(
-                          title: Text(clinic.clinicName ?? ''),
-                          value: isSelected,
-                          onChanged: (bool? checked) {
-                            setState(() {
-                              onClinicSelected(clinic.clinicId!);
-                            });
-                          },
-                        );
-                      }).toList(),
+                  children: clinics.map((clinic) {
+                    final isSelected = selectedClinicId.contains(
+                      clinic.clinicId,
+                    );
+                    return CheckboxListTile(
+                      title: Text(clinic.clinicName ?? ''),
+                      value: isSelected,
+                      onChanged: (bool? checked) {
+                        setState(() {
+                          onClinicSelected(clinic.clinicId!);
+                        });
+                      },
+                    );
+                  }).toList(),
                 ),
               ),
               actions: [
@@ -355,17 +394,14 @@ class _ProcedureFilterState extends State<ProcedureFilter> {
       context: context,
       builder: (_) {
         String localSearch = '';
-
         return StatefulBuilder(
           builder: (context, setState) {
-            final filteredAreas =
-                areas.where((area) {
-                  return area.areaName?.toLowerCase().contains(
+            final filteredAreas = areas.where((area) {
+              return area.areaName?.toLowerCase().contains(
                         localSearch.toLowerCase(),
                       ) ??
-                      false;
-                }).toList();
-
+                  false;
+            }).toList();
             return AlertDialog(
               title: const Text('Select Areas'),
               content: Column(
@@ -396,27 +432,26 @@ class _ProcedureFilterState extends State<ProcedureFilter> {
                     width: double.maxFinite,
                     height: 300,
                     child: ListView(
-                      children:
-                          filteredAreas.map((area) {
-                            final isSelected = selectedAreaId.contains(
-                              area.clinicAreaId,
-                            );
-                            return CheckboxListTile(
-                              title: Text(area.areaName ?? ''),
-                              value: isSelected,
-                              onChanged: (bool? checked) {
-                                setState(() {
-                                  if (isSelected) {
-                                    selectedAreaId.remove(area.clinicAreaId);
-                                  } else {
-                                    selectedAreaId.add(area.clinicAreaId!);
-                                  }
-                                });
-                                // Also trigger clinic load
-                                loadClinicsForArea(selectedAreaId);
-                              },
-                            );
-                          }).toList(),
+                      children: filteredAreas.map((area) {
+                        final isSelected = selectedAreaId.contains(
+                          area.clinicAreaId,
+                        );
+                        return CheckboxListTile(
+                          title: Text(area.areaName ?? ''),
+                          value: isSelected,
+                          onChanged: (bool? checked) {
+                            setState(() {
+                              if (isSelected) {
+                                selectedAreaId.remove(area.clinicAreaId);
+                              } else {
+                                selectedAreaId.add(area.clinicAreaId!);
+                              }
+                            });
+                            // Also trigger clinic load
+                            loadClinicsForArea(selectedAreaId);
+                          },
+                        );
+                      }).toList(),
                     ),
                   ),
                 ],
@@ -442,13 +477,12 @@ class _ProcedureFilterState extends State<ProcedureFilter> {
 
         return StatefulBuilder(
           builder: (context, setState) {
-            final filteredCategories =
-                categories.where((category) {
-                  return category.procedureCategoryName?.toLowerCase().contains(
+            final filteredCategories = categories.where((category) {
+              return category.procedureCategoryName?.toLowerCase().contains(
                         localSearch.toLowerCase(),
                       ) ??
-                      false;
-                }).toList();
+                  false;
+            }).toList();
 
             return AlertDialog(
               title: const Text('Select Categories'),
@@ -456,56 +490,55 @@ class _ProcedureFilterState extends State<ProcedureFilter> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   // Search bar
-                  TextField(
-                    decoration: InputDecoration(
-                      hintText: 'Search...',
-                      contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 12,
-                        vertical: 8,
-                      ),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                    ),
-                    onChanged: (value) {
-                      setState(() {
-                        localSearch = value;
-                      });
-                    },
-                  ),
-                  const SizedBox(height: 12),
+                  // TextField(
+                  //   decoration: InputDecoration(
+                  //     hintText: 'Search...',
+                  //     contentPadding: const EdgeInsets.symmetric(
+                  //       horizontal: 12,
+                  //       vertical: 8,
+                  //     ),
+                  //     border: OutlineInputBorder(
+                  //       borderRadius: BorderRadius.circular(8),
+                  //     ),
+                  //   ),
+                  //   onChanged: (value) {
+                  //     setState(() {
+                  //       localSearch = value;
+                  //     });
+                  //   },
+                  // ),
+                  // const SizedBox(height: 12),
 
                   // Category list
                   SizedBox(
                     width: double.maxFinite,
                     height: 300,
                     child: ListView(
-                      children:
-                          filteredCategories.map((category) {
-                            final isSelected = selectedCategoryId.contains(
-                              category.procedureCategoryId,
-                            );
-                            return CheckboxListTile(
-                              title: Text(category.procedureCategoryName ?? ''),
-                              value: isSelected,
-                              onChanged: (bool? checked) {
-                                setState(() {
-                                  if (isSelected) {
-                                    selectedCategoryId.remove(
-                                      category.procedureCategoryId,
-                                    );
-                                  } else {
-                                    selectedCategoryId.add(
-                                      category.procedureCategoryId!,
-                                    );
-                                  }
-                                });
+                      children: filteredCategories.map((category) {
+                        final isSelected = selectedCategoryId.contains(
+                          category.procedureCategoryId,
+                        );
+                        return CheckboxListTile(
+                          title: Text(category.procedureCategoryName ?? ''),
+                          value: isSelected,
+                          onChanged: (bool? checked) {
+                            setState(() {
+                              if (isSelected) {
+                                selectedCategoryId.remove(
+                                  category.procedureCategoryId,
+                                );
+                              } else {
+                                selectedCategoryId.add(
+                                  category.procedureCategoryId!,
+                                );
+                              }
+                            });
 
-                                // Optionally trigger something on change
-                                // loadSomething(selectedCategoryId);
-                              },
-                            );
-                          }).toList(),
+                            // Optionally trigger something on change
+                            // loadSomething(selectedCategoryId);
+                          },
+                        );
+                      }).toList(),
                     ),
                   ),
                 ],

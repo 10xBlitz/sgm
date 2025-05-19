@@ -36,10 +36,10 @@ class ProcedureService {
 
   /// Cache for clinic area procedure category dropdown entries
   final Map<String, List<ClinicAreaProcedureCategoryDropdownEntriesRow>>
-  _dropdownEntriesCache = {};
+      _dropdownEntriesCache = {};
 
   final Map<String, List<ProcedureWithCategoryClinicAreaNamesRow>>
-  _proceduresViewCache = {};
+      _proceduresViewCache = {};
 
   /// Creates a new procedure in the database.
   Future<ProcedureRow?> createProcedure({
@@ -64,12 +64,11 @@ class ProcedureService {
         if (explanation != null) ProcedureRow.field.explanation: explanation,
       };
 
-      final response =
-          await _supabase
-              .from(ProcedureRow.table)
-              .insert(data)
-              .select()
-              .single();
+      final response = await _supabase
+          .from(ProcedureRow.table)
+          .insert(data)
+          .select()
+          .single();
 
       final procedure = ProcedureRow.fromJson(response);
       _cache[procedure.id] = procedure;
@@ -94,12 +93,11 @@ class ProcedureService {
     }
 
     try {
-      final response =
-          await _supabase
-              .from(ProcedureRow.table)
-              .select()
-              .eq(ProcedureRow.field.id, id)
-              .single();
+      final response = await _supabase
+          .from(ProcedureRow.table)
+          .select()
+          .eq(ProcedureRow.field.id, id)
+          .single();
 
       final procedure = ProcedureRow.fromJson(response);
       _cache[id] = procedure;
@@ -118,12 +116,11 @@ class ProcedureService {
           .select()
           .order(ProcedureRow.field.createdAt, ascending: false);
 
-      final procedures =
-          response.map<ProcedureRow>((data) {
-            final procedure = ProcedureRow.fromJson(data);
-            _cache[procedure.id] = procedure;
-            return procedure;
-          }).toList();
+      final procedures = response.map<ProcedureRow>((data) {
+        final procedure = ProcedureRow.fromJson(data);
+        _cache[procedure.id] = procedure;
+        return procedure;
+      }).toList();
 
       return procedures;
     } catch (error) {
@@ -149,12 +146,11 @@ class ProcedureService {
           .eq(ProcedureRow.field.category, categoryId)
           .order(ProcedureRow.field.createdAt, ascending: false);
 
-      final procedures =
-          response.map<ProcedureRow>((data) {
-            final procedure = ProcedureRow.fromJson(data);
-            _cache[procedure.id] = procedure;
-            return procedure;
-          }).toList();
+      final procedures = response.map<ProcedureRow>((data) {
+        final procedure = ProcedureRow.fromJson(data);
+        _cache[procedure.id] = procedure;
+        return procedure;
+      }).toList();
 
       _categoryCache[categoryId] = procedures;
       return procedures;
@@ -181,8 +177,8 @@ class ProcedureService {
 
       final procedures =
           response.map<ProcedureWithCategoryClinicAreaNamesRow>((data) {
-            return ProcedureWithCategoryClinicAreaNamesRow.fromJson(data);
-          }).toList();
+        return ProcedureWithCategoryClinicAreaNamesRow.fromJson(data);
+      }).toList();
 
       return procedures;
     } catch (error) {
@@ -193,7 +189,8 @@ class ProcedureService {
 
   /// Gets procedures by clinic ID and category ID using the procedure_with_category_clinic_area_names view.
   Future<List<ProcedureWithCategoryClinicAreaNamesRow>>
-  getProceduresByClinicAndCategory(String clinicId, String categoryId) async {
+      getProceduresByClinicAndCategory(
+          String clinicId, String categoryId) async {
     try {
       final response = await _supabase
           .from(ProcedureWithCategoryClinicAreaNamesRow.table)
@@ -210,8 +207,8 @@ class ProcedureService {
 
       final procedures =
           response.map<ProcedureWithCategoryClinicAreaNamesRow>((data) {
-            return ProcedureWithCategoryClinicAreaNamesRow.fromJson(data);
-          }).toList();
+        return ProcedureWithCategoryClinicAreaNamesRow.fromJson(data);
+      }).toList();
 
       return procedures;
     } catch (error) {
@@ -251,13 +248,12 @@ class ProcedureService {
         return existingProcedure;
       }
 
-      final response =
-          await _supabase
-              .from(ProcedureRow.table)
-              .update(data)
-              .eq(ProcedureRow.field.id, id)
-              .select()
-              .single();
+      final response = await _supabase
+          .from(ProcedureRow.table)
+          .update(data)
+          .eq(ProcedureRow.field.id, id)
+          .select()
+          .single();
 
       final procedure = ProcedureRow.fromJson(response);
       _cache[id] = procedure;
@@ -308,12 +304,11 @@ class ProcedureService {
           )
           .order(ProcedureRow.field.createdAt, ascending: false);
 
-      final procedures =
-          response.map<ProcedureRow>((data) {
-            final procedure = ProcedureRow.fromJson(data);
-            _cache[procedure.id] = procedure;
-            return procedure;
-          }).toList();
+      final procedures = response.map<ProcedureRow>((data) {
+        final procedure = ProcedureRow.fromJson(data);
+        _cache[procedure.id] = procedure;
+        return procedure;
+      }).toList();
 
       return procedures;
     } catch (error) {
@@ -337,12 +332,11 @@ class ProcedureService {
         ProcedureCategoryRow.field.createdAt: now.toIso8601String(),
       };
 
-      final response =
-          await _supabase
-              .from(ProcedureCategoryRow.table)
-              .insert(data)
-              .select()
-              .single();
+      final response = await _supabase
+          .from(ProcedureCategoryRow.table)
+          .insert(data)
+          .select()
+          .single();
 
       final category = ProcedureCategoryRow.fromJson(response);
       _categoriesCache[category.id] = category;
@@ -370,12 +364,11 @@ class ProcedureService {
     }
 
     try {
-      final response =
-          await _supabase
-              .from(ProcedureCategoryRow.table)
-              .select()
-              .eq(ProcedureCategoryRow.field.id, id)
-              .single();
+      final response = await _supabase
+          .from(ProcedureCategoryRow.table)
+          .select()
+          .eq(ProcedureCategoryRow.field.id, id)
+          .single();
 
       final category = ProcedureCategoryRow.fromJson(response);
       _categoriesCache[id] = category;
@@ -403,12 +396,11 @@ class ProcedureService {
           .eq(ProcedureCategoryRow.field.clinic, clinicId)
           .order(ProcedureCategoryRow.field.name);
 
-      final categories =
-          response.map<ProcedureCategoryRow>((data) {
-            final category = ProcedureCategoryRow.fromJson(data);
-            _categoriesCache[category.id] = category;
-            return category;
-          }).toList();
+      final categories = response.map<ProcedureCategoryRow>((data) {
+        final category = ProcedureCategoryRow.fromJson(data);
+        _categoriesCache[category.id] = category;
+        return category;
+      }).toList();
 
       _clinicCategoriesCache[clinicId] = categories;
       return categories;
@@ -437,13 +429,12 @@ class ProcedureService {
         return existingCategory;
       }
 
-      final response =
-          await _supabase
-              .from(ProcedureCategoryRow.table)
-              .update(data)
-              .eq(ProcedureCategoryRow.field.id, id)
-              .select()
-              .single();
+      final response = await _supabase
+          .from(ProcedureCategoryRow.table)
+          .update(data)
+          .eq(ProcedureCategoryRow.field.id, id)
+          .select()
+          .single();
 
       final category = ProcedureCategoryRow.fromJson(response);
       _categoriesCache[id] = category;
@@ -499,7 +490,8 @@ class ProcedureService {
 
   /// Gets clinic area procedure category dropdown entries with caching support.
   Future<List<ClinicAreaProcedureCategoryDropdownEntriesRow>>
-  getClinicAreaProcedureCategoryDropdownEntries({bool cached = true}) async {
+      getClinicAreaProcedureCategoryDropdownEntries(
+          {bool cached = true}) async {
     // Return from cache if available and allowed
     const cacheKey = 'all_dropdown_entries';
     if (cached && _dropdownEntriesCache.containsKey(cacheKey)) {
@@ -507,15 +499,14 @@ class ProcedureService {
     }
 
     try {
-      final response =
-          await _supabase
-              .from(ClinicAreaProcedureCategoryDropdownEntriesRow.table)
-              .select();
+      final response = await _supabase
+          .from(ClinicAreaProcedureCategoryDropdownEntriesRow.table)
+          .select();
 
       final entries =
           response.map<ClinicAreaProcedureCategoryDropdownEntriesRow>((data) {
-            return ClinicAreaProcedureCategoryDropdownEntriesRow.fromJson(data);
-          }).toList();
+        return ClinicAreaProcedureCategoryDropdownEntriesRow.fromJson(data);
+      }).toList();
 
       // Cache the results
       _dropdownEntriesCache[cacheKey] = entries;
@@ -530,7 +521,7 @@ class ProcedureService {
 
   /// Gets unique clinic areas for dropdown menus.
   Future<List<ClinicAreaProcedureCategoryDropdownEntriesRow>>
-  getUniqueClinicAreas({bool cached = true}) async {
+      getUniqueClinicAreas({bool cached = true}) async {
     const cacheKey = 'unique_clinic_areas';
     if (cached && _dropdownEntriesCache.containsKey(cacheKey)) {
       return _dropdownEntriesCache[cacheKey]!;
@@ -563,7 +554,7 @@ class ProcedureService {
 
   /// Gets procedure categories by clinic area ID.
   Future<List<ClinicAreaProcedureCategoryDropdownEntriesRow>>
-  getProcedureCategoriesByArea(String areaId, {bool cached = true}) async {
+      getProcedureCategoriesByArea(String areaId, {bool cached = true}) async {
     final cacheKey = 'area_categories_$areaId';
     if (cached && _dropdownEntriesCache.containsKey(cacheKey)) {
       return _dropdownEntriesCache[cacheKey]!;
@@ -580,8 +571,8 @@ class ProcedureService {
 
       final categories =
           response.map<ClinicAreaProcedureCategoryDropdownEntriesRow>((data) {
-            return ClinicAreaProcedureCategoryDropdownEntriesRow.fromJson(data);
-          }).toList();
+        return ClinicAreaProcedureCategoryDropdownEntriesRow.fromJson(data);
+      }).toList();
 
       _dropdownEntriesCache[cacheKey] = categories;
       return categories;
@@ -612,10 +603,9 @@ class ProcedureService {
     }
 
     try {
-      PostgrestFilterBuilder<PostgrestList> procedureQuery =
-          _supabase
-              .from(ProcedureWithCategoryClinicAreaNamesRow.table)
-              .select();
+      PostgrestFilterBuilder<PostgrestList> procedureQuery = _supabase
+          .from(ProcedureWithCategoryClinicAreaNamesRow.table)
+          .select();
 
       if (clinicIds != null && clinicIds.isNotEmpty) {
         procedureQuery = procedureQuery.inFilter(
@@ -662,10 +652,9 @@ class ProcedureService {
             ascending: false,
           );
 
-      final List<ProcedureWithCategoryClinicAreaNamesRow> result =
-          queryResult
-              .map((e) => ProcedureWithCategoryClinicAreaNamesRow.fromJson(e))
-              .toList();
+      final List<ProcedureWithCategoryClinicAreaNamesRow> result = queryResult
+          .map((e) => ProcedureWithCategoryClinicAreaNamesRow.fromJson(e))
+          .toList();
 
       // Cache the result
       _proceduresViewCache[cacheKey] = result;
@@ -674,6 +663,33 @@ class ProcedureService {
     } catch (error) {
       debugPrint('Error fetching procedures from view: $error');
       return [];
+    }
+  }
+
+  // create a function that get the procedure by id and cache
+  Future<ProcedureWithCategoryClinicAreaNamesRow?> getProcedureById(
+    String id, {
+    bool cached = true,
+  }) async {
+    final cacheKey = 'procedure_$id';
+    if (cached && _proceduresViewCache.containsKey(cacheKey)) {
+      return _proceduresViewCache[cacheKey]!.first;
+    }
+
+    try {
+      final response = await _supabase
+          .from(ProcedureWithCategoryClinicAreaNamesRow.table)
+          .select()
+          .eq(ProcedureWithCategoryClinicAreaNamesRow.field.id, id)
+          .single();
+
+      final procedure =
+          ProcedureWithCategoryClinicAreaNamesRow.fromJson(response);
+      _proceduresViewCache[cacheKey] = [procedure];
+      return procedure;
+    } catch (error) {
+      debugPrint('Error fetching procedure by ID: $error');
+      return null;
     }
   }
 
