@@ -1,6 +1,5 @@
 import 'package:sgm/row_row_row_generated/tables/project_task_status.row.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:flutter/foundation.dart';
 
 class ProjectTaskStatusService {
   // Singleton instance

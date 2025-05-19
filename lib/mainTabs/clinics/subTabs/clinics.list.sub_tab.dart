@@ -5,13 +5,20 @@ import 'package:sgm/row_row_row_generated/tables/project.row.dart';
 import 'package:sgm/row_row_row_generated/tables/task.row.dart';
 import 'package:sgm/row_row_row_generated/tables/user.row.dart';
 import 'package:sgm/row_row_row_generated/tables/project_task_status.row.dart';
+import 'package:sgm/screens/form/form_screen.dart';
 import 'package:sgm/services/form.service.dart';
 import 'package:sgm/services/project.service.dart';
 import 'package:sgm/services/task.service.dart';
 import 'package:sgm/services/user.service.dart';
 import 'package:sgm/services/project_task_status.service.dart';
+import 'package:sgm/widgets/item/item_form.dart';
 import 'package:sgm/widgets/paginated_data.dart';
 import 'package:sgm/widgets/task/taskview/task.view.dart';
+
+abstract class ClinicsListSubTabState extends State<ClinicsListSubTab> {
+  Future<void> reloadAPI();
+  Future<void> reloadForms();
+}
 
 class ClinicsListSubTab extends StatefulWidget {
   static const String title = 'List';
@@ -22,7 +29,7 @@ class ClinicsListSubTab extends StatefulWidget {
   State<ClinicsListSubTab> createState() => _ClinicsListSubTabState();
 }
 
-class _ClinicsListSubTabState extends State<ClinicsListSubTab> {
+class _ClinicsListSubTabState extends ClinicsListSubTabState {
   ProjectRow? project;
   List<FormRow> _forms = [];
   bool _isLoadingForms = true;
@@ -158,7 +165,13 @@ class _ClinicsListSubTabState extends State<ClinicsListSubTab> {
                         padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
                         child: Text('Forms', style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
                       ),
-                      ..._forms.map((form) => _formItem(theme, form)),
+                      ..._forms.map((form) =>
+                          ItemForm(theme: theme, form: form, onTap: () {
+                            Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+                              return FormScreen(formId: form.id,
+                              );
+                            },),);
+                          },),),
                       const Divider(height: 1),
                     ],
                   ),
@@ -324,7 +337,7 @@ class _ClinicsListSubTabState extends State<ClinicsListSubTab> {
             return Text('Error: ${snapshot.error}');
           }
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const CircularProgressIndicator();
+            return const LinearProgressIndicator();
           }
           final statuses = snapshot.data ?? [];
           if(statuses.isEmpty) {
@@ -368,23 +381,33 @@ class _ClinicsListSubTabState extends State<ClinicsListSubTab> {
     );
   }
 
-  Widget _formItem(ThemeData theme, FormRow form) {
-    return Container(
-      padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
-      decoration: BoxDecoration(border: Border(bottom: BorderSide(color: theme.colorScheme.outlineVariant))),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Icon(Icons.description, color: theme.colorScheme.primary),
-          const SizedBox(width: 8),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(form.name ?? 'Untitled Form', style: theme.textTheme.titleMedium),
-                Text('${form.description}'),]
-          ),
-        ],
-      ),
-    );
+  @override
+  Future<void> reloadAPI() async {
+    debugPrint("Reloading API for clinics");
+    if (!mounted) return;
+
+    try {
+      final value = await ProjectService().getFromId(widget.projectId);
+      if (!mounted) return;
+
+      setState(() {
+        project = value;
+      });
+
+      // Refresh the task list
+      final paginatedState = _paginatedDataKey.currentState;
+      if (paginatedState != null) {
+        await paginatedState.refresh();
+      }
+    } catch (e) {
+      debugPrint("Error reloading API: $e");
+    }
+  }
+
+  @override
+  Future<void> reloadForms() async {
+    if (!mounted) return;
+    setState(() => _isLoadingForms = true);
+    await _loadForms();
   }
 }
