@@ -294,9 +294,10 @@ class _FormScreenState extends State<FormScreen> {
     _debugPrintAnswers();
 
     // Upload all files and get their URLs
-    final uploadedFileUrls = await _uploadAttachment();
 
     try {
+      LoadingUtils.showLoading();
+      final uploadedFileUrls = await _uploadAttachment();
       // Get or create new status
       final status = await ProjectTaskStatusService().getOrCreateNewStatus(widget.projectId);
 
@@ -333,10 +334,16 @@ class _FormScreenState extends State<FormScreen> {
           MyLogger.d('Created response: ${question.question} -- ${data.toString()} ${created?.id}');
         }
       }
+      LoadingUtils.dismissLoading();
+      LoadingUtils.showSuccess('Form submitted successfully!');
+      // go back
+      if (mounted) {
+        Navigator.of(context).pop();
+      }
     } catch (e) {
       MyLogger.d('Error creating task: $e');
-      if (context.mounted) {
-        showError('An error occurred. Please try again.');
+      if (mounted) {
+        LoadingUtils.showSnackBar(context: context, message: 'Error creating task: $e');
       }
       return;
     } finally {

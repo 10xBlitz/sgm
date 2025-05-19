@@ -173,7 +173,9 @@ class _ClinicsListSubTabState extends ClinicsListSubTabState {
                               return FormScreen(formId: form.id,
                                 projectId: widget.projectId,
                               );
-                            },),);
+                            },),).then((context) async {
+                              await reloadForms();
+                            });
                           },),),
                       const Divider(height: 1),
                     ],
