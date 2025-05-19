@@ -6,6 +6,7 @@ import 'package:sgm/mainTabs/clinics.tab.dart';
 import 'package:sgm/mainTabs/dashboard.tab.dart';
 import 'package:sgm/mainTabs/forms.tab.dart';
 import 'package:sgm/mainTabs/my_task.tab.dart';
+import 'package:sgm/mainTabs/procedures.tab.dart';
 import 'package:sgm/mainTabs/projects/projects.tab.dart';
 import 'package:sgm/mainTabs/user_management.tab.dart';
 import 'package:sgm/screens/auth/login.screen.dart';
@@ -75,7 +76,7 @@ class _SideNavState extends State<SideNav> {
                           UserAvatar(
                             imageUrl:
                                 authService.currentUserProfile?.profileImage ??
-                                '',
+                                    '',
                           ),
                           SizedBox(width: 8),
                         ],
@@ -95,9 +96,10 @@ class _SideNavState extends State<SideNav> {
                 Text(
                   authService.currentUserProfile?.name ?? 'No Name',
                   style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                    color: Theme.of(context).colorScheme.onSecondaryContainer,
-                    fontWeight: FontWeight.w900,
-                  ),
+                        color:
+                            Theme.of(context).colorScheme.onSecondaryContainer,
+                        fontWeight: FontWeight.w900,
+                      ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -105,8 +107,8 @@ class _SideNavState extends State<SideNav> {
                 Text(
                   authService.currentUserProfile?.email ?? 'No Email',
                   style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                    fontWeight: FontWeight.w400,
-                  ),
+                        fontWeight: FontWeight.w400,
+                      ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -114,10 +116,11 @@ class _SideNavState extends State<SideNav> {
                 Text(
                   authService.currentUserProfile?.phoneNumber ?? 'No Phone',
                   style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                    fontStyle: FontStyle.italic,
-                    fontWeight: FontWeight.w900,
-                    color: Theme.of(context).colorScheme.onSecondaryContainer,
-                  ),
+                        fontStyle: FontStyle.italic,
+                        fontWeight: FontWeight.w900,
+                        color:
+                            Theme.of(context).colorScheme.onSecondaryContainer,
+                      ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -168,6 +171,11 @@ class _SideNavState extends State<SideNav> {
               SideNavButton(
                 onTapNav: widget.onTapTab,
                 title: ProjectsTab.tabTitle,
+                selectedNav: widget.selectedTab,
+              ),
+              SideNavButton(
+                onTapNav: widget.onTapTab,
+                title: ProceduresTab.tabTitle,
                 selectedNav: widget.selectedTab,
               ),
               SideNavButton(
@@ -228,10 +236,9 @@ class SideNavButton extends StatelessWidget {
       },
       child: Container(
         decoration: BoxDecoration(
-          color:
-              isSelected
-                  ? theme.colorScheme.primary
-                  : theme.colorScheme.secondaryContainer,
+          color: isSelected
+              ? theme.colorScheme.primary
+              : theme.colorScheme.secondaryContainer,
         ),
         child: Padding(
           padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 16.0),
@@ -243,10 +250,9 @@ class SideNavButton extends StatelessWidget {
                 width: 32,
                 child: Icon(
                   Icons.dashboard,
-                  color:
-                      isSelected
-                          ? Colors.white
-                          : theme.colorScheme.onSurfaceVariant,
+                  color: isSelected
+                      ? Colors.white
+                      : theme.colorScheme.onSurfaceVariant,
                   size: 24,
                 ),
               ),
@@ -254,13 +260,12 @@ class SideNavButton extends StatelessWidget {
               Text(
                 title,
                 style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                  color:
-                      isSelected
+                      color: isSelected
                           ? Colors.white
                           : theme.colorScheme.onSurfaceVariant,
-                  fontWeight: FontWeight.w800,
-                  fontSize: 20,
-                ),
+                      fontWeight: FontWeight.w800,
+                      fontSize: 20,
+                    ),
               ),
             ],
           ),
