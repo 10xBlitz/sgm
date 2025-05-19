@@ -90,6 +90,25 @@ class UserService {
     }
   }
 
+  Future<UserRow?> getById(String id, {bool cached = true}) async {
+    if (cached && _cache.containsKey(id)) {
+      return _cache[id];
+    }
+    try {
+      final response =
+      await _supabase
+          .from(UserRow.table)
+          .select()
+          .eq(UserRow.field.id, id)
+          .single();
+      final user = UserRow.fromJson(response);
+      _cache[id] = user;
+      return user;
+    } catch (error) {
+      debugPrint('Error fetching user by ID: $error');
+      return null;
+    }
+  }
   /// Clears the cache
   void clearCache() {
     _cache.clear();
