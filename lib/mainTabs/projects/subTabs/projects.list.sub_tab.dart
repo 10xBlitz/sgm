@@ -468,13 +468,9 @@ class _ProjectsListSubTabState extends ProjectsListSubTabState {
           const SizedBox(width: 8),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                form.name ?? 'Untitled Form',
-                style: theme.textTheme.titleMedium,
-              ),
-              Text('${form.description}'),
-            ],
+              children: [
+                Text(form.name ?? 'Untitled Form', style: theme.textTheme.titleMedium),
+                Text('${form.description}'),],
           ),
         ],
       ),

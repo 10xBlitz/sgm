@@ -78,8 +78,7 @@ class _UpdateTaskStatusDialogState extends State<UpdateTaskStatusDialog> {
       setState(() {
         _isLoading = false;
       });
-
-      // if(!context) return;
+      if(!mounted) return;
       Navigator.of(context).pop();
     } catch (e) {
       setState(() {
@@ -139,15 +138,10 @@ class _UpdateTaskStatusDialogState extends State<UpdateTaskStatusDialog> {
                     borderRadius: BorderRadius.circular(4),
                   ),
                 ),
-                items:
-                    _statuses
-                        .map(
-                          (status) => DropdownMenuItem(
-                            value: status.id,
-                            child: Text(status.status ?? 'Unknown Status'),
-                          ),
-                        )
-                        .toList(),
+                items: _statuses.map((status) => DropdownMenuItem(
+                  value: status.id,
+                  child: Text(status.status ?? 'Unknown Status'),
+                ),).toList(),
                 onChanged: (newStatusId) {
                   setState(() {
                     selectedStatusId = newStatusId;

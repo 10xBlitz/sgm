@@ -59,33 +59,30 @@ class _AddTaskDialogState extends State<AddTaskDialog> {
 
   final QuillController _controller = () {
     return QuillController.basic(
-      config: QuillControllerConfig(
-        clipboardConfig: QuillClipboardConfig(
-          enableExternalRichPaste: true,
-          onImagePaste: (imageBytes) async {
-            if (kIsWeb) {
-              // Dart IO is unsupported on the web.
-              return null;
-            }
-            // Save the image somewhere and return the image URL that will be
-            // stored in the Quill Delta JSON (the document).
-            final newFileName =
-                'image-file-${DateTime.now().toIso8601String()}.png';
-            final newPath = path.join(
-              io.Directory.systemTemp.path,
-              newFileName,
-            );
-            final file = await io.File(
-              newPath,
-            ).writeAsBytes(imageBytes, flush: true);
-            return file.path;
-          },
-        ),
-      ),
-    );
+        config: QuillControllerConfig(
+          clipboardConfig: QuillClipboardConfig(
+            enableExternalRichPaste: true,
+            onImagePaste: (imageBytes) async {
+              if (kIsWeb) {
+                // Dart IO is unsupported on the web.
+                return null;
+              }
+              // Save the image somewhere and return the image URL that will be
+              // stored in the Quill Delta JSON (the document).
+              final newFileName =
+                  'image-file-${DateTime.now().toIso8601String()}.png';
+              final newPath = path.join(
+                io.Directory.systemTemp.path,
+                newFileName,
+              );
+              final file = await io.File(
+                newPath,
+              ).writeAsBytes(imageBytes, flush: true);
+              return file.path;
+            },
+          ),
+        ),);
   }();
-  final FocusNode editorFocusNode = FocusNode();
-  final ScrollController editorScrollController = ScrollController();
 
   @override
   void initState() {
@@ -128,7 +125,7 @@ class _AddTaskDialogState extends State<AddTaskDialog> {
       lastDate: DateTime.now().add(const Duration(days: 365)),
     );
     if (picked != null) {
-      if (!context.mounted) return;
+      if(!context.mounted) return;
       final TimeOfDay? time = await showTimePicker(
         context: context,
         initialTime: TimeOfDay.now(),

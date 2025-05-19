@@ -114,7 +114,6 @@ class _ProcedureAddDialogState extends State<ProcedureAddDialog> {
               if (!snapshot.hasData || snapshot.data == null) {
                 return Text('Appointment not found');
               }
-              // final appointment = snapshot.data;
               return Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Form(

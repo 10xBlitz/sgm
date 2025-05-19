@@ -12,8 +12,9 @@ import 'package:sgm/mainTabs/user_management.tab.dart';
 import 'package:sgm/screens/auth/login.screen.dart';
 import 'package:sgm/screens/auth/user_profile.update.screen.dart';
 import 'package:sgm/services/auth.service.dart';
-import 'package:sgm/widgets/button/side_nav_butotn.dart';
 import 'package:sgm/widgets/user_avatar.dart';
+
+import 'button/side_nav_button.dart';
 
 class SideNav extends StatefulWidget {
   const SideNav({super.key, required this.selectedTab, required this.onTapTab});

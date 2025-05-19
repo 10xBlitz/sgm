@@ -4,6 +4,7 @@ import 'package:sgm/row_row_row_generated/tables/task.row.dart';
 import 'package:sgm/row_row_row_generated/tables/user.row.dart';
 import 'package:sgm/services/project.service.dart';
 import 'package:sgm/services/user.service.dart';
+import 'package:sgm/utils/loading_utils.dart';
 import 'package:sgm/widgets/task/tabs/appointment_details.task.view.tab.dart';
 
 import '../../../repository/task_repository.dart';
@@ -37,14 +38,16 @@ class _TaskViewState extends State<TaskView> {
     if (widget.task.form == null) {
       return;
     }
-    var answers = await TaskRepository().getAnswersForTask(
-      formId: widget.task.form!,
-      taskId: widget.task.id,
-    );
-    if (mounted) {
-      setState(() {
-        _answers = answers;
-      });
+    try {
+      LoadingUtils.showLoading();
+      var answers = await TaskRepository().getAnswersForTask(formId: widget.task.form!, taskId: widget.task.id);
+      if (mounted) {
+        setState(() {
+          _answers = answers;
+        });
+      }
+    } finally {
+      LoadingUtils.dismissLoading();
     }
   }
 
