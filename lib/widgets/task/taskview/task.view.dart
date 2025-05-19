@@ -36,14 +36,19 @@ class _TaskViewState extends State<TaskView> {
   }
 
   _loadAnswers() async {
-    if(widget.task.form == null) {
+    if (widget.task.form == null) {
       return;
     }
-    var answers = await TaskRepository().getAnswersForTask(formId: widget.task.form!, taskId: widget.task.id);
-    if (mounted) {
-      setState(() {
-        _answers = answers;
-      });
+    try {
+      LoadingUtils.showLoading();
+      var answers = await TaskRepository().getAnswersForTask(formId: widget.task.form!, taskId: widget.task.id);
+      if (mounted) {
+        setState(() {
+          _answers = answers;
+        });
+      }
+    } finally {
+      LoadingUtils.dismissLoading();
     }
   }
 

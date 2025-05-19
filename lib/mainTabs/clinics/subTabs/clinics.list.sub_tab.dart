@@ -11,6 +11,7 @@ import 'package:sgm/services/project.service.dart';
 import 'package:sgm/services/task.service.dart';
 import 'package:sgm/services/user.service.dart';
 import 'package:sgm/services/project_task_status.service.dart';
+import 'package:sgm/utils/my_logger.dart';
 import 'package:sgm/widgets/item/item_form.dart';
 import 'package:sgm/widgets/paginated_data.dart';
 import 'package:sgm/widgets/task/taskview/task.view.dart';
@@ -167,8 +168,10 @@ class _ClinicsListSubTabState extends ClinicsListSubTabState {
                       ),
                       ..._forms.map((form) =>
                           ItemForm(theme: theme, form: form, onTap: () {
+                            MyLogger.d('Form tapped: ${widget.projectId}');
                             Navigator.of(context).push(MaterialPageRoute(builder: (context) {
                               return FormScreen(formId: form.id,
+                                projectId: widget.projectId,
                               );
                             },),);
                           },),),
