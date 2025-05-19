@@ -78,8 +78,7 @@ class _UpdateTaskStatusDialogState extends State<UpdateTaskStatusDialog> {
       setState(() {
         _isLoading = false;
       });
-
-      // if(!context) return;
+      if (!mounted) return;
       Navigator.of(context).pop();
     } catch (e) {
       setState(() {

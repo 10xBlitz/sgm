@@ -3,6 +3,7 @@ import 'package:sgm/row_row_row_generated/tables/procedure_with_category_clinic_
 import 'package:sgm/services/procedure.service.dart';
 
 import 'package:sgm/widgets/procedures/procedure_filter.dart';
+import 'package:sgm/widgets/procedures/procedure_item.dart';
 
 class ProceduresScreen extends StatefulWidget {
   static const routeName = "/procedures";
@@ -48,17 +49,19 @@ class ProceduresScreenState extends State<ProceduresScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Procedures')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
+          spacing: 14,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    // TODO: Implement add procedure functionality
+                  },
                   child: const Text('Add Procedure'),
                 ),
                 IconButton.filled(
@@ -69,11 +72,26 @@ class ProceduresScreenState extends State<ProceduresScreen> {
                 ),
               ],
             ),
-            if (showFilter) ProcedureFilter(),
-            const SizedBox(height: 16),
-            ...procedure.map((procedure) {
-              return Text('${procedure.categoryName}');
-            }),
+            if (showFilter)
+              const ProcedureFilter(), // Assuming ProcedureFilter has a const constructor
+            Expanded(
+              child: isLoading
+                  ? const Center(child: CircularProgressIndicator())
+                  : procedure.isEmpty
+                      ? const Center(child: Text('No procedures found.'))
+                      : ListView.builder(
+                          itemCount: procedure.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            final pro = procedure[index];
+                            return ProcedureItem(
+                              item: pro,
+                              onTap: () {},
+                              theme: Theme.of(context),
+                            );
+                          },
+                        ),
+            ),
+            // add next page button
           ],
         ),
       ),

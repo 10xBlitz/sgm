@@ -84,8 +84,6 @@ class _AddTaskDialogState extends State<AddTaskDialog> {
       ),
     );
   }();
-  final FocusNode editorFocusNode = FocusNode();
-  final ScrollController editorScrollController = ScrollController();
 
   @override
   void initState() {
