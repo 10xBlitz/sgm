@@ -3,7 +3,7 @@ import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sgm/mainTabs/announcements.tab.dart';
 import 'package:sgm/mainTabs/chat.tab.dart';
-import 'package:sgm/mainTabs/clinics.tab.dart';
+import 'package:sgm/mainTabs/clinics/clinics.tab.dart';
 import 'package:sgm/mainTabs/dashboard.tab.dart';
 import 'package:sgm/mainTabs/forms.tab.dart';
 import 'package:sgm/mainTabs/my_task.tab.dart';
@@ -20,6 +20,7 @@ import 'package:sgm/utils/loading_utils.dart';
 import 'package:sgm/widgets/form/dialog/add_form_dialog.dart';
 import 'package:sgm/widgets/side_nav.dart';
 
+import '../mainTabs/clinics/subTabs/clinics.list.sub_tab.dart';
 import '../widgets/task/dialog/add_task_dialog.dart';
 
 class MainScreen extends StatefulWidget {
@@ -45,6 +46,7 @@ class _MainScreenState extends State<MainScreen> {
   String get selectedTab => widget.currentTab;
   String? get selectedSubTab => widget.subTab;
   final _projectsListSubTabKey = GlobalKey();
+  final _clinicsListSubTabKey = GlobalKey();
   final _key = GlobalKey<ExpandableFabState>();
 
   @override
@@ -237,13 +239,19 @@ class _MainScreenState extends State<MainScreen> {
                   if (mounted) {
                     setState(() {
                       // Force rebuild of ProjectsListSubTab by recreating its key
-                      (_projectsListSubTabKey.currentState as ProjectsListSubTabState?)?.reloadAPI();
+                      if (_projectsListSubTabKey.currentState != null) {
+                        (_projectsListSubTabKey.currentState as ProjectsListSubTabState?)?.reloadAPI();
+                      }
+                      if (_clinicsListSubTabKey.currentState != null) {
+                        (_clinicsListSubTabKey.currentState as ClinicsListSubTabState?)?.reloadAPI();
+                      }
+                      // check the current tab
                     });
                   }
                 },
               ).catchError((error) {
                 // hide loading
-                if (mounted) {
+                if (context.mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                       content: Text('Error: $error'),
@@ -297,8 +305,14 @@ class _MainScreenState extends State<MainScreen> {
                 if (mounted) {
                   setState(() {
                     // Reload both API and forms
-                    (_projectsListSubTabKey.currentState as ProjectsListSubTabState?)?.reloadAPI();
-                    (_projectsListSubTabKey.currentState as ProjectsListSubTabState?)?.reloadForms();
+                    if(_clinicsListSubTabKey.currentState != null) {
+                      (_clinicsListSubTabKey.currentState as ClinicsListSubTabState?)?.reloadAPI();
+                      (_clinicsListSubTabKey.currentState as ClinicsListSubTabState?)?.reloadForms();
+                    }
+                    if(_projectsListSubTabKey.currentState != null) {
+                      (_projectsListSubTabKey.currentState as ProjectsListSubTabState?)?.reloadAPI();
+                      (_projectsListSubTabKey.currentState as ProjectsListSubTabState?)?.reloadForms();
+                    }
                   });
                 }
               } catch (e) {
@@ -321,7 +335,11 @@ class _MainScreenState extends State<MainScreen> {
       DashboardTab.tabTitle => DashboardTab(),
       ChatTab.tabTitle => ChatTab(),
       MyTaskTab.tabTitle => MyTaskTab(),
-      ClinicsTab.tabTitle => ClinicsTab(),
+      ClinicsTab.tabTitle => ClinicsTab(
+          projectId: widget.projectId,
+          subTab: widget.subTab,
+          subTabKey: _clinicsListSubTabKey,
+        ),
       ProjectsTab.tabTitle => ProjectsTab(
           projectId: widget.projectId,
           subTabKey: _projectsListSubTabKey,
@@ -337,7 +355,8 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   bool _isProjectDetailTabs(){
-    return widget.projectId != null && widget.currentTab == ProjectsTab.tabTitle;
+    return widget.projectId != null && widget.currentTab == ProjectsTab.tabTitle
+        || (widget.projectId != null && widget.currentTab == ClinicsTab.tabTitle);
   }
 
 }
