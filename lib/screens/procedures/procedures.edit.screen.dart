@@ -7,10 +7,7 @@ class ProceduresEditScreen extends StatefulWidget {
   static const routeName = "/procedures/edit";
   final String procedureId;
 
-  const ProceduresEditScreen({
-    super.key,
-    required this.procedureId,
-  });
+  const ProceduresEditScreen({super.key, required this.procedureId});
 
   @override
   State<ProceduresEditScreen> createState() => _ProceduresEditScreenState();
@@ -57,35 +54,33 @@ class _ProceduresEditScreenState extends State<ProceduresEditScreen> {
     try {
       final result = await procedureService.getFromId(widget.procedureId);
 
+      debugPrint('${result?.id}');
       if (result != null) {
-        setState(() async {
-          procedure = await getProcedureWithDetails(result.id);
+        procedure = await getProcedureWithDetails(result.id);
 
-          // Populate form fields
-          titleController.text = procedure?.titleEng ?? '';
-          descriptionController.text = procedure?.description ?? '';
-          explanationController.text = procedure?.explanation ?? '';
-          totalPriceController.text =
-              procedure?.totalPrice?.toString() ?? '0.00';
-          commissionController.text =
-              procedure?.commission?.toString() ?? '0.00';
-          selectedCategory = procedure?.category;
+        // Populate form fields
+        titleController.text = procedure?.titleEng ?? '';
+        descriptionController.text = procedure?.description ?? '';
+        explanationController.text = procedure?.explanation ?? '';
+        totalPriceController.text = procedure?.totalPrice?.toString() ?? '0.00';
+        commissionController.text = procedure?.commission?.toString() ?? '0.00';
+        selectedCategory = procedure?.category;
 
-          isLoading = false;
-        });
+        isLoading = false;
 
         await loadCategories();
+
+        setState(() {});
       } else {
         Navigator.pop(context);
-
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Procedure not found')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('Procedure not found')));
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error loading procedure: $e')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Error loading procedure: $e')));
       setState(() {
         isLoading = false;
       });
@@ -107,8 +102,9 @@ class _ProceduresEditScreenState extends State<ProceduresEditScreen> {
     if (procedure?.clinicId == null) return;
 
     try {
-      final entries = await procedureService
-          .getClinicAreaProcedureCategoryDropdownEntries();
+      final entries =
+          await procedureService
+              .getClinicAreaProcedureCategoryDropdownEntries();
       final uniqueCategories =
           <String, ClinicAreaProcedureCategoryDropdownEntriesRow>{};
 
@@ -134,7 +130,7 @@ class _ProceduresEditScreenState extends State<ProceduresEditScreen> {
     });
 
     try {
-      final result = await procedureService.updateProcedure(
+      await procedureService.updateProcedure(
         id: widget.procedureId,
         titleEng: titleController.text,
         description: descriptionController.text,
@@ -144,16 +140,21 @@ class _ProceduresEditScreenState extends State<ProceduresEditScreen> {
         category: selectedCategory ?? procedure?.category,
       );
 
-      if (result != null) {
+      final proUpdate = await procedureService.getProcedureById(
+        widget.procedureId,
+      );
+
+      if (proUpdate != null) {
         setState(() {
           isEditing = false;
-          procedure = result as ProcedureWithCategoryClinicAreaNamesRow?;
+          procedure = proUpdate;
           isLoading = false;
         });
 
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Procedure updated successfully')),
         );
+        Navigator.of(context).pop(true);
       } else {
         setState(() {
           isLoading = false;
@@ -168,9 +169,9 @@ class _ProceduresEditScreenState extends State<ProceduresEditScreen> {
         isLoading = false;
       });
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error updating procedure: $e')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Error updating procedure: $e')));
     }
   }
 
@@ -210,22 +211,21 @@ class _ProceduresEditScreenState extends State<ProceduresEditScreen> {
             ),
         ],
       ),
-      body: isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: SingleChildScrollView(
-                      child: buildFormContent(),
+      body:
+          isLoading
+              ? const Center(child: CircularProgressIndicator())
+              : Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: SingleChildScrollView(child: buildFormContent()),
                     ),
-                  ),
-                  if (isEditing) buildActionButton(),
-                ],
+                    if (isEditing) buildActionButton(),
+                  ],
+                ),
               ),
-            ),
     );
   }
 
@@ -315,10 +315,7 @@ class _ProceduresEditScreenState extends State<ProceduresEditScreen> {
       children: [
         Text(
           label,
-          style: const TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-          ),
+          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 8),
         TextField(
@@ -339,27 +336,18 @@ class _ProceduresEditScreenState extends State<ProceduresEditScreen> {
     );
   }
 
-  Widget buildInfoField({
-    required String label,
-    required String value,
-  }) {
+  Widget buildInfoField({required String label, required String value}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           label,
-          style: const TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-          ),
+          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 8),
         Container(
           width: double.infinity,
-          padding: const EdgeInsets.symmetric(
-            horizontal: 16,
-            vertical: 12,
-          ),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           decoration: BoxDecoration(
             border: Border.all(color: Colors.grey.shade300),
             borderRadius: BorderRadius.circular(4),
@@ -376,10 +364,7 @@ class _ProceduresEditScreenState extends State<ProceduresEditScreen> {
       children: [
         const Text(
           'Category',
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-          ),
+          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 8),
         Container(
@@ -399,13 +384,18 @@ class _ProceduresEditScreenState extends State<ProceduresEditScreen> {
                   vertical: 12,
                 ),
               ),
-              items: categories
-                  .map((category) => DropdownMenuItem(
-                        value: category.procedureCategoryId,
-                        child: Text(category.procedureCategoryName ??
-                            'Unknown Category'),
-                      ))
-                  .toList(),
+              items:
+                  categories
+                      .map(
+                        (category) => DropdownMenuItem(
+                          value: category.procedureCategoryId,
+                          child: Text(
+                            category.procedureCategoryName ??
+                                'Unknown Category',
+                          ),
+                        ),
+                      )
+                      .toList(),
               onChanged: (value) {
                 setState(() {
                   selectedCategory = value;

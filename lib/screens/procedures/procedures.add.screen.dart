@@ -54,8 +54,9 @@ class _ProceduresAddScreenState extends State<ProceduresAddScreen> {
         isLoading = true;
       });
 
-      final entries = await procedureService
-          .getClinicAreaProcedureCategoryDropdownEntries();
+      final entries =
+          await procedureService
+              .getClinicAreaProcedureCategoryDropdownEntries();
       final uniqueClinics =
           <String, ClinicAreaProcedureCategoryDropdownEntriesRow>{};
 
@@ -84,8 +85,9 @@ class _ProceduresAddScreenState extends State<ProceduresAddScreen> {
         isLoading = true;
       });
 
-      final entries = await procedureService
-          .getClinicAreaProcedureCategoryDropdownEntries();
+      final entries =
+          await procedureService
+              .getClinicAreaProcedureCategoryDropdownEntries();
       final uniqueCategories =
           <String, ClinicAreaProcedureCategoryDropdownEntriesRow>{};
 
@@ -142,7 +144,7 @@ class _ProceduresAddScreenState extends State<ProceduresAddScreen> {
       if (result != null) {
         showSnackBar('Procedure created successfully');
         debugPrint('Created procedure: ${result.id} $result ');
-        context.pop();
+        Navigator.of(context).pop(true);
       } else {
         showSnackBar('Failed to create procedure');
       }
@@ -156,9 +158,9 @@ class _ProceduresAddScreenState extends State<ProceduresAddScreen> {
   }
 
   void showSnackBar(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message)),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(message)));
   }
 
   @override
@@ -166,13 +168,13 @@ class _ProceduresAddScreenState extends State<ProceduresAddScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Procedure'),
-        actions: [
-          IconButton(
-            onPressed: () => context.pop(),
-            icon: const Icon(Icons.close),
-          ),
-        ],
-        automaticallyImplyLeading: false,
+        // actions: [
+        //   IconButton(
+        //     onPressed: () => context.pop(),
+        //     icon: const Icon(Icons.close),
+        //   ),
+        // ],
+        // automaticallyImplyLeading: false,
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -221,12 +223,15 @@ class _ProceduresAddScreenState extends State<ProceduresAddScreen> {
                 label: 'Clinic',
                 isLoading: isLoading,
                 value: selectedClinic,
-                items: clinics
-                    .map((clinic) => DropdownMenuItem(
-                          value: clinic.clinicId,
-                          child: Text(clinic.clinicName ?? 'Unknown Clinic'),
-                        ))
-                    .toList(),
+                items:
+                    clinics
+                        .map(
+                          (clinic) => DropdownMenuItem(
+                            value: clinic.clinicId,
+                            child: Text(clinic.clinicName ?? 'Unknown Clinic'),
+                          ),
+                        )
+                        .toList(),
                 onChanged: (value) {
                   setState(() {
                     selectedClinic = value;
@@ -238,10 +243,7 @@ class _ProceduresAddScreenState extends State<ProceduresAddScreen> {
                 },
               ),
               const SizedBox(height: 16),
-              const Text(
-                'Category',
-                style: TextStyle(fontSize: 16),
-              ),
+              const Text('Category', style: TextStyle(fontSize: 16)),
               const Text(
                 'If no category is selected, it will create a new category.',
                 style: TextStyle(fontSize: 12, color: Colors.grey),
@@ -252,17 +254,18 @@ class _ProceduresAddScreenState extends State<ProceduresAddScreen> {
                   label: 'Category',
                   isLoading: isLoading,
                   value: selectedCategory,
-                  items: categories
-                      .map(
-                        (category) => DropdownMenuItem(
-                          value: category.procedureCategoryId,
-                          child: Text(
-                            category.procedureCategoryName ??
-                                'Unknown Category',
-                          ),
-                        ),
-                      )
-                      .toList(),
+                  items:
+                      categories
+                          .map(
+                            (category) => DropdownMenuItem(
+                              value: category.procedureCategoryId,
+                              child: Text(
+                                category.procedureCategoryName ??
+                                    'Unknown Category',
+                              ),
+                            ),
+                          )
+                          .toList(),
                   onChanged: (value) {
                     setState(() {
                       selectedCategory = value;
@@ -312,11 +315,7 @@ class _ProceduresAddScreenState extends State<ProceduresAddScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (showLabel)
-          Text(
-            label,
-            style: const TextStyle(fontSize: 16),
-          ),
+        if (showLabel) Text(label, style: const TextStyle(fontSize: 16)),
         if (showLabel) const SizedBox(height: 8),
         TextField(
           controller: controller,
@@ -346,11 +345,7 @@ class _ProceduresAddScreenState extends State<ProceduresAddScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (showLabel)
-          Text(
-            label,
-            style: const TextStyle(fontSize: 16),
-          ),
+        if (showLabel) Text(label, style: const TextStyle(fontSize: 16)),
         if (showLabel) const SizedBox(height: 8),
         Container(
           decoration: BoxDecoration(
