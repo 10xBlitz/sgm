@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:sgm/row_row_row_generated/tables/procedure_with_category_clinic_area_names.row.dart';
-import 'package:sgm/screens/main.screen.dart';
 import 'package:sgm/screens/procedures/procedures.add.screen.dart';
 import 'package:sgm/screens/procedures/procedures.edit.screen.dart';
 import 'package:sgm/services/procedure.service.dart';
@@ -162,7 +160,11 @@ class ProceduresScreenState extends State<ProceduresScreen> {
                               debugPrint('resisasdadasd, $result');
                               // If we got back with a result, reload procedures
                               if (result == true) {
-                                loadProcedures();
+                                // Reset to first page when editing to ensure consistent view
+                                setState(() {
+                                  currentPage = 1;
+                                });
+                                loadProcedures(); // This will reload with fresh data
                               }
                             },
                             theme: Theme.of(context),

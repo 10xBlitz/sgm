@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:sgm/screens/procedures/procedures.add.screen.dart';
-import 'package:sgm/screens/procedures/procedures.edit.screen.dart';
 import 'package:sgm/screens/procedures/procedures.screen.dart';
 
 class ProceduresTab extends StatefulWidget {

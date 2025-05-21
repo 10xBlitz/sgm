@@ -9,7 +9,8 @@ class ProcedureFilter extends StatefulWidget {
     required List<String> areaIds,
     required List<String> clinicIds,
     required List<String> categoryIds,
-  }) onFilterChanged;
+  })
+  onFilterChanged;
 
   @override
   State<ProcedureFilter> createState() => _ProcedureFilterState();
@@ -54,8 +55,9 @@ class _ProcedureFilterState extends State<ProcedureFilter> {
   // load clinics
   Future<void> loadClinics() async {
     try {
-      final entries = await procedureService
-          .getClinicAreaProcedureCategoryDropdownEntries();
+      final entries =
+          await procedureService
+              .getClinicAreaProcedureCategoryDropdownEntries();
       final uniqueClinics =
           <String, ClinicAreaProcedureCategoryDropdownEntriesRow>{};
 
@@ -85,8 +87,9 @@ class _ProcedureFilterState extends State<ProcedureFilter> {
   // load categories
   Future<void> loadCategories() async {
     try {
-      final entries = await procedureService
-          .getClinicAreaProcedureCategoryDropdownEntries();
+      final entries =
+          await procedureService
+              .getClinicAreaProcedureCategoryDropdownEntries();
       final uniqueCategories =
           <String, ClinicAreaProcedureCategoryDropdownEntriesRow>{};
 
@@ -108,8 +111,9 @@ class _ProcedureFilterState extends State<ProcedureFilter> {
 
   Future<void> loadClinicsForArea(List<String> areas) async {
     try {
-      final entries = await procedureService
-          .getClinicAreaProcedureCategoryDropdownEntries();
+      final entries =
+          await procedureService
+              .getClinicAreaProcedureCategoryDropdownEntries();
       final uniqueClinics =
           <String, ClinicAreaProcedureCategoryDropdownEntriesRow>{};
 
@@ -135,8 +139,9 @@ class _ProcedureFilterState extends State<ProcedureFilter> {
 
   Future<void> loadCategoriesForClinic(List<String>? clinicIds) async {
     try {
-      final entries = await procedureService
-          .getClinicAreaProcedureCategoryDropdownEntries();
+      final entries =
+          await procedureService
+              .getClinicAreaProcedureCategoryDropdownEntries();
       final uniqueCategories =
           <String, ClinicAreaProcedureCategoryDropdownEntriesRow>{};
 
@@ -237,8 +242,9 @@ class _ProcedureFilterState extends State<ProcedureFilter> {
                               ? 'Select...'
                               : areas
                                   .where(
-                                    (area) => selectedAreaId
-                                        .contains(area.clinicAreaId),
+                                    (area) => selectedAreaId.contains(
+                                      area.clinicAreaId,
+                                    ),
                                   )
                                   .map((area) => area.areaName)
                                   .join(', '),
@@ -282,8 +288,11 @@ class _ProcedureFilterState extends State<ProcedureFilter> {
                             selectedClinicId.isEmpty
                                 ? 'Select...'
                                 : clinics
-                                    .where((clinic) => selectedClinicId
-                                        .contains(clinic.clinicId))
+                                    .where(
+                                      (clinic) => selectedClinicId.contains(
+                                        clinic.clinicId,
+                                      ),
+                                    )
                                     .map((clinic) => clinic.clinicName)
                                     .join(', '),
                             style: TextStyle(color: Colors.black87),
@@ -322,8 +331,9 @@ class _ProcedureFilterState extends State<ProcedureFilter> {
                               ? 'Select...'
                               : categories
                                   .where(
-                                    (category) => selectedCategoryId
-                                        .contains(category.procedureCategoryId),
+                                    (category) => selectedCategoryId.contains(
+                                      category.procedureCategoryId,
+                                    ),
                                   )
                                   .map(
                                     (category) =>
@@ -360,20 +370,21 @@ class _ProcedureFilterState extends State<ProcedureFilter> {
                 width: double.maxFinite,
                 child: ListView(
                   shrinkWrap: true,
-                  children: clinics.map((clinic) {
-                    final isSelected = selectedClinicId.contains(
-                      clinic.clinicId,
-                    );
-                    return CheckboxListTile(
-                      title: Text(clinic.clinicName ?? ''),
-                      value: isSelected,
-                      onChanged: (bool? checked) {
-                        setState(() {
-                          onClinicSelected(clinic.clinicId!);
-                        });
-                      },
-                    );
-                  }).toList(),
+                  children:
+                      clinics.map((clinic) {
+                        final isSelected = selectedClinicId.contains(
+                          clinic.clinicId,
+                        );
+                        return CheckboxListTile(
+                          title: Text(clinic.clinicName ?? ''),
+                          value: isSelected,
+                          onChanged: (bool? checked) {
+                            setState(() {
+                              onClinicSelected(clinic.clinicId!);
+                            });
+                          },
+                        );
+                      }).toList(),
                 ),
               ),
               actions: [
@@ -396,12 +407,13 @@ class _ProcedureFilterState extends State<ProcedureFilter> {
         String localSearch = '';
         return StatefulBuilder(
           builder: (context, setState) {
-            final filteredAreas = areas.where((area) {
-              return area.areaName?.toLowerCase().contains(
+            final filteredAreas =
+                areas.where((area) {
+                  return area.areaName?.toLowerCase().contains(
                         localSearch.toLowerCase(),
                       ) ??
-                  false;
-            }).toList();
+                      false;
+                }).toList();
             return AlertDialog(
               title: const Text('Select Areas'),
               content: Column(
@@ -432,26 +444,27 @@ class _ProcedureFilterState extends State<ProcedureFilter> {
                     width: double.maxFinite,
                     height: 300,
                     child: ListView(
-                      children: filteredAreas.map((area) {
-                        final isSelected = selectedAreaId.contains(
-                          area.clinicAreaId,
-                        );
-                        return CheckboxListTile(
-                          title: Text(area.areaName ?? ''),
-                          value: isSelected,
-                          onChanged: (bool? checked) {
-                            setState(() {
-                              if (isSelected) {
-                                selectedAreaId.remove(area.clinicAreaId);
-                              } else {
-                                selectedAreaId.add(area.clinicAreaId!);
-                              }
-                            });
-                            // Also trigger clinic load
-                            loadClinicsForArea(selectedAreaId);
-                          },
-                        );
-                      }).toList(),
+                      children:
+                          filteredAreas.map((area) {
+                            final isSelected = selectedAreaId.contains(
+                              area.clinicAreaId,
+                            );
+                            return CheckboxListTile(
+                              title: Text(area.areaName ?? ''),
+                              value: isSelected,
+                              onChanged: (bool? checked) {
+                                setState(() {
+                                  if (isSelected) {
+                                    selectedAreaId.remove(area.clinicAreaId);
+                                  } else {
+                                    selectedAreaId.add(area.clinicAreaId!);
+                                  }
+                                });
+                                // Also trigger clinic load
+                                loadClinicsForArea(selectedAreaId);
+                              },
+                            );
+                          }).toList(),
                     ),
                   ),
                 ],
@@ -477,12 +490,13 @@ class _ProcedureFilterState extends State<ProcedureFilter> {
 
         return StatefulBuilder(
           builder: (context, setState) {
-            final filteredCategories = categories.where((category) {
-              return category.procedureCategoryName?.toLowerCase().contains(
+            final filteredCategories =
+                categories.where((category) {
+                  return category.procedureCategoryName?.toLowerCase().contains(
                         localSearch.toLowerCase(),
                       ) ??
-                  false;
-            }).toList();
+                      false;
+                }).toList();
 
             return AlertDialog(
               title: const Text('Select Categories'),
@@ -514,31 +528,32 @@ class _ProcedureFilterState extends State<ProcedureFilter> {
                     width: double.maxFinite,
                     height: 300,
                     child: ListView(
-                      children: filteredCategories.map((category) {
-                        final isSelected = selectedCategoryId.contains(
-                          category.procedureCategoryId,
-                        );
-                        return CheckboxListTile(
-                          title: Text(category.procedureCategoryName ?? ''),
-                          value: isSelected,
-                          onChanged: (bool? checked) {
-                            setState(() {
-                              if (isSelected) {
-                                selectedCategoryId.remove(
-                                  category.procedureCategoryId,
-                                );
-                              } else {
-                                selectedCategoryId.add(
-                                  category.procedureCategoryId!,
-                                );
-                              }
-                            });
+                      children:
+                          filteredCategories.map((category) {
+                            final isSelected = selectedCategoryId.contains(
+                              category.procedureCategoryId,
+                            );
+                            return CheckboxListTile(
+                              title: Text(category.procedureCategoryName ?? ''),
+                              value: isSelected,
+                              onChanged: (bool? checked) {
+                                setState(() {
+                                  if (isSelected) {
+                                    selectedCategoryId.remove(
+                                      category.procedureCategoryId,
+                                    );
+                                  } else {
+                                    selectedCategoryId.add(
+                                      category.procedureCategoryId!,
+                                    );
+                                  }
+                                });
 
-                            // Optionally trigger something on change
-                            // loadSomething(selectedCategoryId);
-                          },
-                        );
-                      }).toList(),
+                                // Optionally trigger something on change
+                                // loadSomething(selectedCategoryId);
+                              },
+                            );
+                          }).toList(),
                     ),
                   ),
                 ],
