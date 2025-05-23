@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sgm/screens/user/user.management.screen.dart';
 
 class UserManagementTab extends StatelessWidget {
   static const String tabTitle = 'User Management';
@@ -6,6 +7,6 @@ class UserManagementTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(child: Text(tabTitle, style: TextStyle(fontSize: 24)));
+    return UserManagementScreen();
   }
 }

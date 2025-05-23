@@ -115,7 +115,7 @@ class ProceduresScreenState extends State<ProceduresScreen> {
                 IconButton.filled(
                   onPressed: toggleShowFilter,
                   icon: Icon(
-                    showFilter ? Icons.arrow_drop_up : Icons.arrow_drop_down,
+                    showFilter ? Icons.arrow_drop_down : Icons.arrow_drop_up,
                   ),
                 ),
               ],
