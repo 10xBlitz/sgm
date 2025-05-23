@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:sgm/row_row_row_generated/tables/project.row.dart';
 import 'package:sgm/services/project.service.dart';
+import 'package:sgm/utils/enum/project_view_type.dart';
 import 'package:sgm/widgets/form_list_view/form_list_view.dart';
 import 'package:sgm/widgets/task_list_view/task_list_view.dart';
+import 'package:sgm/widgets/switch_view/switch_project_view_button.dart';
+import 'package:sgm/widgets/calendar_view/calendar_view.dart';
 
 abstract class ClinicsListSubTabState extends State<ClinicsListSubTab> {
   Future<void> reloadAPI();
@@ -23,10 +26,17 @@ class _ClinicsListSubTabState extends ClinicsListSubTabState {
   ProjectRow? project;
   final _taskListKey = GlobalKey<TaskListViewState>();
   final _formListKey = GlobalKey<FormListViewState>();
+  ProjectViewType _currentView = ProjectViewType.list;
 
   @override
   void initState() {
     super.initState();
+  }
+
+  void _handleViewChanged(ProjectViewType newView) {
+    setState(() {
+      _currentView = newView;
+    });
   }
 
   @override
@@ -45,55 +55,70 @@ class _ClinicsListSubTabState extends ClinicsListSubTabState {
           Container(
             padding: const EdgeInsets.all(16.0),
             color: theme.colorScheme.surfaceContainerHigh,
-            child: Column(
+            child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  project!.title ?? 'Untitled Clinic',
-                  style: theme.textTheme.headlineSmall?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                if (project!.description != null) ...[
-                  const SizedBox(height: 8),
-                  Text(
-                    project!.description!,
-                    style: theme.textTheme.bodyMedium,
-                  ),
-                ],
-                const SizedBox(height: 8),
-                Row(
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 8.0,
-                        vertical: 4.0,
-                      ),
-                      decoration: BoxDecoration(
-                        color: theme.colorScheme.primaryContainer,
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Text(
-                        project!.status ?? 'No Status',
-                        style: theme.textTheme.labelSmall?.copyWith(
-                          color: theme.colorScheme.onPrimaryContainer,
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        project!.title ?? 'Untitled Clinic',
+                        style: theme.textTheme.headlineSmall?.copyWith(
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
-                    ),
-                    const SizedBox(width: 8),
-                    Icon(
-                      Icons.calendar_today,
-                      size: 12,
-                      color: theme.colorScheme.outline,
-                    ),
-                    const SizedBox(width: 4),
-                    Text(
-                      DateFormat('yyyy-MM-dd').format(project!.createdAt),
-                      style: theme.textTheme.labelSmall?.copyWith(
-                        color: theme.colorScheme.outline,
+                      if (project!.description != null) ...[
+                        const SizedBox(height: 8),
+                        Text(
+                          project!.description!,
+                          style: theme.textTheme.bodyMedium,
+                        ),
+                      ],
+                      const SizedBox(height: 8),
+                      Row(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 8.0,
+                              vertical: 4.0,
+                            ),
+                            decoration: BoxDecoration(
+                              color: theme.colorScheme.primaryContainer,
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Text(
+                              project!.status ?? 'No Status',
+                              style: theme.textTheme.labelSmall?.copyWith(
+                                color: theme.colorScheme.onPrimaryContainer,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          Icon(
+                            Icons.calendar_today,
+                            size: 12,
+                            color: theme.colorScheme.outline,
+                          ),
+                          const SizedBox(width: 4),
+                          Text(
+                            DateFormat('yyyy-MM-dd').format(project!.createdAt),
+                            style: theme.textTheme.labelSmall?.copyWith(
+                              color: theme.colorScheme.outline,
+                            ),
+                          ),
+                        ],
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
+                ),
+                // Change View button
+                SwitchProjectViewButton(
+                  currentView: _currentView,
+                  onViewChanged: _handleViewChanged,
+                  showDetailsView: false,
+                  showBoardView: false,
+                  showAssignedUsersView: false,
                 ),
               ],
             ),
@@ -101,34 +126,36 @@ class _ClinicsListSubTabState extends ClinicsListSubTabState {
 
         // Combined scrollable content
         Expanded(
-          child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                // Forms section
-                FormListView(
-                  key: _formListKey,
-                  projectId: widget.projectId,
-                  onFormUpdated: reloadForms,
-                ),
+          child: _currentView == ProjectViewType.calendar
+              ? CalendarView(projectId: widget.projectId) // Pass projectId to calendar view
+              : SingleChildScrollView( // Default to list view
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      // Forms section
+                      FormListView(
+                        key: _formListKey,
+                        projectId: widget.projectId,
+                        onFormUpdated: reloadForms,
+                      ),
 
-                // List section header
-                Container(
-                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
-                  width: double.infinity,
-                  color: theme.colorScheme.surfaceContainerHigh,
-                  child: const Text("List by Creation Date"),
-                ),
-                const Divider(height: 1),
+                      // List section header
+                      Container(
+                        padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+                        width: double.infinity,
+                        color: theme.colorScheme.surfaceContainerHigh,
+                        child: const Text("List by Creation Date"),
+                      ),
+                      const Divider(height: 1),
 
-                // Tasks section
-                TaskListView(
-                  key: _taskListKey,
-                  projectId: widget.projectId,
+                      // Tasks section
+                      TaskListView(
+                        key: _taskListKey,
+                        projectId: widget.projectId,
+                      ),
+                    ],
+                  ),
                 ),
-              ],
-            ),
-          ),
         ),
       ],
     );

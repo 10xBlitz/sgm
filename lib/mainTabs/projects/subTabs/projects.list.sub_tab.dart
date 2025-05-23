@@ -13,6 +13,9 @@ import 'package:sgm/widgets/task/taskview/task.view.dart';
 import 'package:sgm/widgets/task/dialog/update_task_status_dialog.dart';
 import 'package:sgm/widgets/form_list_view/form_list_view.dart';
 import 'package:sgm/widgets/task_list_view/task_list_view.dart';
+import 'package:sgm/widgets/switch_view/switch_project_view_button.dart';
+import 'package:sgm/utils/enum/project_view_type.dart';
+import 'package:sgm/widgets/calendar_view/calendar_view.dart';
 
 class ProjectsListSubTab extends StatefulWidget {
   static const String title = 'List';
@@ -35,6 +38,7 @@ class _ProjectsListSubTabState extends ProjectsListSubTabState {
   final _userService = UserService();
   final _statusService = ProjectTaskStatusService();
   Map<String, ProjectTaskStatusRow> _statusCache = {};
+  ProjectViewType _currentView = ProjectViewType.list;
 
   @override
   void initState() {
@@ -70,6 +74,12 @@ class _ProjectsListSubTabState extends ProjectsListSubTabState {
       debugPrint('Error loading caches: $e');
       if (mounted) {}
     }
+  }
+
+  void _handleViewChanged(ProjectViewType newView) {
+    setState(() {
+      _currentView = newView;
+    });
   }
 
   @override
@@ -119,36 +129,78 @@ class _ProjectsListSubTabState extends ProjectsListSubTabState {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        // Combined scrollable content
-        Expanded(
-          child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
+        // Project header with Change View button
+        if (project != null)
+          Container(
+            padding: const EdgeInsets.all(16.0),
+            color: theme.colorScheme.surfaceContainerHigh,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Forms section
-                FormListView(
-                  key: _formListKey,
-                  projectId: widget.projectId,
-                  onFormUpdated: reloadForms,
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        project!.title ?? 'Untitled Project',
+                        style: theme.textTheme.headlineSmall?.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      if (project!.description != null) ...[
+                        const SizedBox(height: 8),
+                        Text(
+                          project!.description!,
+                          style: theme.textTheme.bodyMedium,
+                        ),
+                      ],
+                    ],
+                  ),
                 ),
-
-                // List section header
-                Container(
-                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
-                  width: double.infinity,
-                  color: theme.colorScheme.surfaceContainerHigh,
-                  child: const Text("List by Creation Date"),
-                ),
-                const Divider(height: 1),
-
-                // Tasks section with standard TaskListView
-                TaskListView(
-                  key: _taskListKey,
-                  projectId: widget.projectId,
+                // Change View button
+                SwitchProjectViewButton(
+                  currentView: _currentView,
+                  onViewChanged: _handleViewChanged,
+                  showDetailsView: false,
+                  showBoardView: false,
+                  showAssignedUsersView: false,
                 ),
               ],
             ),
           ),
+
+        // Combined scrollable content
+        Expanded(
+          child: _currentView == ProjectViewType.calendar
+              ? CalendarView(projectId: widget.projectId) // Pass projectId to calendar view
+              : SingleChildScrollView( // Default to list view
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      // Forms section
+                      FormListView(
+                        key: _formListKey,
+                        projectId: widget.projectId,
+                        onFormUpdated: reloadForms,
+                      ),
+
+                      // List section header
+                      Container(
+                        padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+                        width: double.infinity,
+                        color: theme.colorScheme.surfaceContainerHigh,
+                        child: const Text("List by Creation Date"),
+                      ),
+                      const Divider(height: 1),
+
+                      // Tasks section with standard TaskListView
+                      TaskListView(
+                        key: _taskListKey,
+                        projectId: widget.projectId,
+                      ),
+                    ],
+                  ),
+                ),
         ),
       ],
     );

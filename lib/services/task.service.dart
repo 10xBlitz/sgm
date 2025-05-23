@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:sgm/row_row_row_generated/tables/task.row.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:intl/intl.dart';
 
 /// Service class for handling task-related operations with Supabase.
 class TaskService {
@@ -342,6 +343,144 @@ class TaskService {
     } catch (error) {
       debugPrint('Error getting task count by status: $error');
       return {};
+    }
+  }
+
+  /// Gets tasks grouped by month for the calendar view.
+  /// 
+  /// Returns a map with keys in the format 'yyyy-MM' and values as lists of tasks.
+  Future<Map<String, List<TaskRow>>> getTasksByMonth(
+    String projectId, {
+    DateTime? startDate,
+    DateTime? endDate,
+  }) async {
+    try {
+      // Set default dates if not provided
+      final start = startDate ?? DateTime.now().subtract(const Duration(days: 180));
+      final end = endDate ?? DateTime.now().add(const Duration(days: 180));
+      
+      // Format dates for the query
+      final startStr = start.toIso8601String();
+      final endStr = end.toIso8601String();
+      
+      debugPrint('DEBUG/API: Getting tasks by month for project $projectId, date range: ${DateFormat('yyyy-MM-dd').format(start)} to ${DateFormat('yyyy-MM-dd').format(end)}');
+      
+      var query = _supabase
+          .from('task')
+          .select()
+          .eq(TaskRow.field.project, projectId)
+          .not(TaskRow.field.dateDue, 'is', null);
+      
+      // Add date range filter
+      query = query.gte(TaskRow.field.dateDue, startStr);
+      query = query.lte(TaskRow.field.dateDue, endStr);
+      
+      final response = await query.order(TaskRow.field.dateDue);
+      
+      debugPrint('DEBUG/API: Raw response contains ${response.length} task records');
+      
+      // Track task IDs for debugging
+      final Set<String> taskIds = {};
+      final Map<String, int> taskIdCounts = {};
+      
+      // Group tasks by month
+      final Map<String, List<TaskRow>> tasksByMonth = {};
+      
+      for (final data in response) {
+        final task = TaskRow.fromJson(data);
+        
+        // Count task IDs for duplication detection
+        taskIdCounts[task.id] = (taskIdCounts[task.id] ?? 0) + 1;
+        taskIds.add(task.id);
+        
+        if (task.dateDue != null) {
+          // Create key in format 'yyyy-MM'
+          final monthKey = '${task.dateDue!.year}-${task.dateDue!.month.toString().padLeft(2, '0')}';
+          
+          if (!tasksByMonth.containsKey(monthKey)) {
+            tasksByMonth[monthKey] = [];
+          }
+          
+          tasksByMonth[monthKey]!.add(task);
+          _cache[task.id] = task;
+        }
+      }
+      
+      // Log detailed duplication info
+      final List<String> duplicateIds = taskIdCounts.entries
+          .where((entry) => entry.value > 1)
+          .map((entry) => entry.key)
+          .toList();
+      
+      debugPrint('DEBUG/API: Found ${taskIds.length} unique task IDs out of ${response.length} total tasks');
+      debugPrint('DEBUG/API: ${duplicateIds.length} task IDs appear multiple times in the API response');
+      
+      for (var id in duplicateIds) {
+        debugPrint('DEBUG/API: Task ID $id appears ${taskIdCounts[id]} times in the API response');
+      }
+      
+      return tasksByMonth;
+    } catch (error) {
+      debugPrint('Error getting tasks by month: $error');
+      return {};
+    }
+  }
+
+  /// Gets tasks for a specific day.
+  ///
+  /// This method queries tasks that have a due date on the specified day.
+  /// It uses a more precise date range filter to ensure only tasks for the exact day are returned.
+  Future<List<TaskRow>> getTasksByDay(
+    String projectId, 
+    DateTime date,
+  ) async {
+    try {
+      debugPrint('Fetching tasks for day: ${DateFormat('yyyy-MM-dd').format(date)}');
+
+      // Normalize the date to the start of the day
+      final startOfDay = DateTime(date.year, date.month, date.day);
+      final startOfDayStr = startOfDay.toIso8601String();
+      
+      // Calculate end of day (23:59:59.999)
+      final endOfDay = DateTime(date.year, date.month, date.day, 23, 59, 59, 999);
+      final endOfDayStr = endOfDay.toIso8601String();
+      
+      debugPrint('Date range: $startOfDayStr to $endOfDayStr');
+      
+      // Query tasks with due dates on this specific day
+      final response = await _supabase
+          .from('task')
+          .select()
+          .eq(TaskRow.field.project, projectId)
+          .not(TaskRow.field.dateDue, 'is', null)
+          .gte(TaskRow.field.dateDue, startOfDayStr)
+          .lte(TaskRow.field.dateDue, endOfDayStr)
+          .order(TaskRow.field.dateDue);
+      
+      debugPrint('Found ${response.length} raw task records for this day');
+      
+      // Use a map to deduplicate tasks by ID
+      final Map<String, TaskRow> uniqueTasks = {};
+      
+      // Convert response to TaskRow objects and deduplicate
+      for (final data in response) {
+        final task = TaskRow.fromJson(data);
+        uniqueTasks[task.id] = task;
+        _cache[task.id] = task;
+      }
+      
+      final tasks = uniqueTasks.values.toList();
+      debugPrint('After deduplication: ${tasks.length} unique tasks');
+      
+      // Also add the day to the diagnostics
+      for (final task in tasks) {
+        debugPrint('Task ${task.id}: ${task.title}, Due: ${DateFormat('yyyy-MM-dd HH:mm').format(task.dateDue!)}');
+      }
+      
+      return tasks;
+    } catch (error) {
+      debugPrint('Error getting tasks by day: $error');
+      return [];
     }
   }
 

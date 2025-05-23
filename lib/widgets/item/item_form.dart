@@ -30,15 +30,18 @@ class ItemForm extends StatelessWidget {
           children: [
             Icon(Icons.description, color: theme.colorScheme.primary),
             const SizedBox(width: 8),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  form.name ?? 'Untitled Form',
-                  style: theme.textTheme.titleMedium,
-                ),
-                Text('${form.description}'),
-              ],
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    form.name ?? 'Untitled Form',
+                    style: theme.textTheme.titleMedium,
+
+                  ),
+                  Text('${form.description}'),
+                ],
+              ),
             ),
           ],
         ),
