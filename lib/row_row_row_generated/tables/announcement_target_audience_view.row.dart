@@ -40,18 +40,41 @@ class AnnouncementTargetAudienceViewRow {
     this.taggedUserNames,
   });
 
-  factory AnnouncementTargetAudienceViewRow.fromJson(Map<String, dynamic> json) {
+  factory AnnouncementTargetAudienceViewRow.fromJson(
+    Map<String, dynamic> json,
+  ) {
     return AnnouncementTargetAudienceViewRow(
       announcementId: json[field.announcementId],
       announcementTitle: json[field.announcementTitle],
       announcementContent: json[field.announcementContent],
-      announcementCreatedAt: json[field.announcementCreatedAt] == null ? null : DateTime.tryParse(json[field.announcementCreatedAt] ?? ''),
-      taggedGroupIds: json[field.taggedGroupIds] == null ? null : List<String>.from(json[field.taggedGroupIds]),
-      taggedGroupNames: json[field.taggedGroupNames] == null ? null : List<String>.from(json[field.taggedGroupNames]),
-      taggedRoleIds: json[field.taggedRoleIds] == null ? null : List<String>.from(json[field.taggedRoleIds]),
-      taggedRoleNames: json[field.taggedRoleNames] == null ? null : List<String>.from(json[field.taggedRoleNames]),
-      taggedUserIds: json[field.taggedUserIds] == null ? null : List<String>.from(json[field.taggedUserIds]),
-      taggedUserNames: json[field.taggedUserNames] == null ? null : List<String>.from(json[field.taggedUserNames]),
+      announcementCreatedAt:
+          json[field.announcementCreatedAt] == null
+              ? null
+              : DateTime.tryParse(json[field.announcementCreatedAt] ?? ''),
+      taggedGroupIds:
+          json[field.taggedGroupIds] == null
+              ? null
+              : List<String>.from(json[field.taggedGroupIds]),
+      taggedGroupNames:
+          json[field.taggedGroupNames] == null
+              ? null
+              : List<String>.from(json[field.taggedGroupNames]),
+      taggedRoleIds:
+          json[field.taggedRoleIds] == null
+              ? null
+              : List<String>.from(json[field.taggedRoleIds]),
+      taggedRoleNames:
+          json[field.taggedRoleNames] == null
+              ? null
+              : List<String>.from(json[field.taggedRoleNames]),
+      taggedUserIds:
+          json[field.taggedUserIds] == null
+              ? null
+              : List<String>.from(json[field.taggedUserIds]),
+      taggedUserNames:
+          json[field.taggedUserNames] == null
+              ? null
+              : List<String>.from(json[field.taggedUserNames]),
     );
   }
   Map<String, dynamic> toJson() {
@@ -85,7 +108,8 @@ class AnnouncementTargetAudienceViewRow {
       announcementId: announcementId ?? this.announcementId,
       announcementTitle: announcementTitle ?? this.announcementTitle,
       announcementContent: announcementContent ?? this.announcementContent,
-      announcementCreatedAt: announcementCreatedAt ?? this.announcementCreatedAt,
+      announcementCreatedAt:
+          announcementCreatedAt ?? this.announcementCreatedAt,
       taggedGroupIds: taggedGroupIds ?? this.taggedGroupIds,
       taggedGroupNames: taggedGroupNames ?? this.taggedGroupNames,
       taggedRoleIds: taggedRoleIds ?? this.taggedRoleIds,

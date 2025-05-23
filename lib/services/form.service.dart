@@ -42,7 +42,8 @@ class FormService {
         FormRow.field.previewImage: previewImage,
       };
 
-      final response = await _supabase.from(FormRow.table).insert(data).select().single();
+      final response =
+          await _supabase.from(FormRow.table).insert(data).select().single();
       return FormRow.fromJson(response);
     } catch (error) {
       debugPrint('Error creating form: $error');
@@ -79,4 +80,4 @@ class FormService {
       return null;
     }
   }
-} 
+}

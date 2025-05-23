@@ -61,25 +61,64 @@ class TaskAppointmentProcedureSummaryCsvRow {
     this.procedureSpecificExpense,
   });
 
-  factory TaskAppointmentProcedureSummaryCsvRow.fromJson(Map<String, dynamic> json) {
+  factory TaskAppointmentProcedureSummaryCsvRow.fromJson(
+    Map<String, dynamic> json,
+  ) {
     return TaskAppointmentProcedureSummaryCsvRow(
       taskId: json[field.taskId],
       appointmentId: json[field.appointmentId],
       customerName: json[field.customerName],
-      scheduledDateTimeKst: json[field.scheduledDateTimeKst] == null ? null : DateTime.tryParse(json[field.scheduledDateTimeKst] ?? ''),
-      generalDeposit: json[field.generalDeposit] == null ? null : (json[field.generalDeposit] as num?)?.toDouble(),
-      generalDiscountRate: json[field.generalDiscountRate] == null ? null : (json[field.generalDiscountRate] as num?)?.toDouble(),
-      generalDiscountAmount: json[field.generalDiscountAmount] == null ? null : (json[field.generalDiscountAmount] as num?)?.toDouble(),
-      generalRefund: json[field.generalRefund] == null ? null : (json[field.generalRefund] as num?)?.toDouble(),
+      scheduledDateTimeKst:
+          json[field.scheduledDateTimeKst] == null
+              ? null
+              : DateTime.tryParse(json[field.scheduledDateTimeKst] ?? ''),
+      generalDeposit:
+          json[field.generalDeposit] == null
+              ? null
+              : (json[field.generalDeposit] as num?)?.toDouble(),
+      generalDiscountRate:
+          json[field.generalDiscountRate] == null
+              ? null
+              : (json[field.generalDiscountRate] as num?)?.toDouble(),
+      generalDiscountAmount:
+          json[field.generalDiscountAmount] == null
+              ? null
+              : (json[field.generalDiscountAmount] as num?)?.toDouble(),
+      generalRefund:
+          json[field.generalRefund] == null
+              ? null
+              : (json[field.generalRefund] as num?)?.toDouble(),
       procedureId: json[field.procedureId],
       procedureName: json[field.procedureName],
-      offeredProcedurePrice: json[field.offeredProcedurePrice] == null ? null : (json[field.offeredProcedurePrice] as num?)?.toDouble(),
-      finalProcedurePrice: json[field.finalProcedurePrice] == null ? null : (json[field.finalProcedurePrice] as num?)?.toDouble(),
-      finalCommission: json[field.finalCommission] == null ? null : (json[field.finalCommission] as num?)?.toDouble(),
-      procedureSpecificDiscountRate: json[field.procedureSpecificDiscountRate] == null ? null : (json[field.procedureSpecificDiscountRate] as num?)?.toDouble(),
-      procedureSpecificDiscountAmount: json[field.procedureSpecificDiscountAmount] == null ? null : (json[field.procedureSpecificDiscountAmount] as num?)?.toDouble(),
-      procedureSpecificRefundAmount: json[field.procedureSpecificRefundAmount] == null ? null : (json[field.procedureSpecificRefundAmount] as num?)?.toDouble(),
-      procedureSpecificExpense: json[field.procedureSpecificExpense] == null ? null : (json[field.procedureSpecificExpense] as num?)?.toDouble(),
+      offeredProcedurePrice:
+          json[field.offeredProcedurePrice] == null
+              ? null
+              : (json[field.offeredProcedurePrice] as num?)?.toDouble(),
+      finalProcedurePrice:
+          json[field.finalProcedurePrice] == null
+              ? null
+              : (json[field.finalProcedurePrice] as num?)?.toDouble(),
+      finalCommission:
+          json[field.finalCommission] == null
+              ? null
+              : (json[field.finalCommission] as num?)?.toDouble(),
+      procedureSpecificDiscountRate:
+          json[field.procedureSpecificDiscountRate] == null
+              ? null
+              : (json[field.procedureSpecificDiscountRate] as num?)?.toDouble(),
+      procedureSpecificDiscountAmount:
+          json[field.procedureSpecificDiscountAmount] == null
+              ? null
+              : (json[field.procedureSpecificDiscountAmount] as num?)
+                  ?.toDouble(),
+      procedureSpecificRefundAmount:
+          json[field.procedureSpecificRefundAmount] == null
+              ? null
+              : (json[field.procedureSpecificRefundAmount] as num?)?.toDouble(),
+      procedureSpecificExpense:
+          json[field.procedureSpecificExpense] == null
+              ? null
+              : (json[field.procedureSpecificExpense] as num?)?.toDouble(),
     );
   }
   Map<String, dynamic> toJson() {
@@ -130,17 +169,24 @@ class TaskAppointmentProcedureSummaryCsvRow {
       scheduledDateTimeKst: scheduledDateTimeKst ?? this.scheduledDateTimeKst,
       generalDeposit: generalDeposit ?? this.generalDeposit,
       generalDiscountRate: generalDiscountRate ?? this.generalDiscountRate,
-      generalDiscountAmount: generalDiscountAmount ?? this.generalDiscountAmount,
+      generalDiscountAmount:
+          generalDiscountAmount ?? this.generalDiscountAmount,
       generalRefund: generalRefund ?? this.generalRefund,
       procedureId: procedureId ?? this.procedureId,
       procedureName: procedureName ?? this.procedureName,
-      offeredProcedurePrice: offeredProcedurePrice ?? this.offeredProcedurePrice,
+      offeredProcedurePrice:
+          offeredProcedurePrice ?? this.offeredProcedurePrice,
       finalProcedurePrice: finalProcedurePrice ?? this.finalProcedurePrice,
       finalCommission: finalCommission ?? this.finalCommission,
-      procedureSpecificDiscountRate: procedureSpecificDiscountRate ?? this.procedureSpecificDiscountRate,
-      procedureSpecificDiscountAmount: procedureSpecificDiscountAmount ?? this.procedureSpecificDiscountAmount,
-      procedureSpecificRefundAmount: procedureSpecificRefundAmount ?? this.procedureSpecificRefundAmount,
-      procedureSpecificExpense: procedureSpecificExpense ?? this.procedureSpecificExpense,
+      procedureSpecificDiscountRate:
+          procedureSpecificDiscountRate ?? this.procedureSpecificDiscountRate,
+      procedureSpecificDiscountAmount:
+          procedureSpecificDiscountAmount ??
+          this.procedureSpecificDiscountAmount,
+      procedureSpecificRefundAmount:
+          procedureSpecificRefundAmount ?? this.procedureSpecificRefundAmount,
+      procedureSpecificExpense:
+          procedureSpecificExpense ?? this.procedureSpecificExpense,
     );
   }
 }

@@ -66,18 +66,50 @@ class AnnouncementWithTargetNamesRow {
       title: json[field.title],
       content: json[field.content],
       createdBy: json[field.createdBy],
-      createdAt: json[field.createdAt] == null ? null : DateTime.tryParse(json[field.createdAt] ?? ''),
-      deletedAt: json[field.deletedAt] == null ? null : DateTime.tryParse(json[field.deletedAt] ?? ''),
+      createdAt:
+          json[field.createdAt] == null
+              ? null
+              : DateTime.tryParse(json[field.createdAt] ?? ''),
+      deletedAt:
+          json[field.deletedAt] == null
+              ? null
+              : DateTime.tryParse(json[field.deletedAt] ?? ''),
       personal: json[field.personal],
-      routeData: json[field.routeData] == null ? null : (json[field.routeData] is String ? jsonDecode(json[field.routeData]) : Map.from(json[field.routeData])),
+      routeData:
+          json[field.routeData] == null
+              ? null
+              : (json[field.routeData] is String
+                  ? jsonDecode(json[field.routeData])
+                  : Map.from(json[field.routeData])),
       creatorName: json[field.creatorName],
-      roleIds: json[field.roleIds] == null ? null : List<String>.from(json[field.roleIds]),
-      roleNames: json[field.roleNames] == null ? null : List<String>.from(json[field.roleNames]),
-      userIds: json[field.userIds] == null ? null : List<String>.from(json[field.userIds]),
-      userNames: json[field.userNames] == null ? null : List<String>.from(json[field.userNames]),
-      groupIds: json[field.groupIds] == null ? null : List<String>.from(json[field.groupIds]),
-      groupNames: json[field.groupNames] == null ? null : List<String>.from(json[field.groupNames]),
-      allTargetIds: json[field.allTargetIds] == null ? null : List<String>.from(json[field.allTargetIds]),
+      roleIds:
+          json[field.roleIds] == null
+              ? null
+              : List<String>.from(json[field.roleIds]),
+      roleNames:
+          json[field.roleNames] == null
+              ? null
+              : List<String>.from(json[field.roleNames]),
+      userIds:
+          json[field.userIds] == null
+              ? null
+              : List<String>.from(json[field.userIds]),
+      userNames:
+          json[field.userNames] == null
+              ? null
+              : List<String>.from(json[field.userNames]),
+      groupIds:
+          json[field.groupIds] == null
+              ? null
+              : List<String>.from(json[field.groupIds]),
+      groupNames:
+          json[field.groupNames] == null
+              ? null
+              : List<String>.from(json[field.groupNames]),
+      allTargetIds:
+          json[field.allTargetIds] == null
+              ? null
+              : List<String>.from(json[field.allTargetIds]),
     );
   }
   Map<String, dynamic> toJson() {

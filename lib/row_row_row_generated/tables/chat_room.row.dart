@@ -48,14 +48,20 @@ class ChatRoomRow {
       id: json[field.id] as String,
       name: json[field.name],
       createdBy: json[field.createdBy],
-      lastMessageAt: json[field.lastMessageAt] == null ? null : DateTime.tryParse(json[field.lastMessageAt] ?? ''),
+      lastMessageAt:
+          json[field.lastMessageAt] == null
+              ? null
+              : DateTime.tryParse(json[field.lastMessageAt] ?? ''),
       isActive: json[field.isActive],
       createdAt: DateTime.parse(json[field.createdAt]),
       lastMessage: json[field.lastMessage],
       photo: json[field.photo],
       projectClinicRel: json[field.projectClinicRel],
       isApproved: json[field.isApproved],
-      singleChatFor: json[field.singleChatFor] == null ? null : List<String>.from(json[field.singleChatFor]),
+      singleChatFor:
+          json[field.singleChatFor] == null
+              ? null
+              : List<String>.from(json[field.singleChatFor]),
     );
   }
   Map<String, dynamic> toJson() {

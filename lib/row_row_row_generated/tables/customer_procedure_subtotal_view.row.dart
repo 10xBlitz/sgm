@@ -3,30 +3,24 @@
 class CustomerProcedureSubtotalViewRow {
   static const table = 'customer_procedure_subtotal_view';
 
-  static const field = (
-    taskId: 'task_id',
-    subtotal: 'subtotal',
-  );
+  static const field = (taskId: 'task_id', subtotal: 'subtotal');
 
   final String? taskId;
   final double? subtotal;
 
-  const CustomerProcedureSubtotalViewRow({
-    this.taskId,
-    this.subtotal,
-  });
+  const CustomerProcedureSubtotalViewRow({this.taskId, this.subtotal});
 
   factory CustomerProcedureSubtotalViewRow.fromJson(Map<String, dynamic> json) {
     return CustomerProcedureSubtotalViewRow(
       taskId: json[field.taskId],
-      subtotal: json[field.subtotal] == null ? null : (json[field.subtotal] as num?)?.toDouble(),
+      subtotal:
+          json[field.subtotal] == null
+              ? null
+              : (json[field.subtotal] as num?)?.toDouble(),
     );
   }
   Map<String, dynamic> toJson() {
-    return {
-      field.taskId: taskId,
-      field.subtotal: subtotal,
-    };
+    return {field.taskId: taskId, field.subtotal: subtotal};
   }
 
   CustomerProcedureSubtotalViewRow copyWith({

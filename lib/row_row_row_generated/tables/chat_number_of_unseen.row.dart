@@ -26,8 +26,14 @@ class ChatNumberOfUnseenRow {
     return ChatNumberOfUnseenRow(
       chatRoomId: json[field.chatRoomId],
       memberId: json[field.memberId],
-      lastSeenAt: json[field.lastSeenAt] == null ? null : DateTime.tryParse(json[field.lastSeenAt] ?? ''),
-      numberOfUnseenMessages: json[field.numberOfUnseenMessages] == null ? null : (json[field.numberOfUnseenMessages] as num?)?.toInt(),
+      lastSeenAt:
+          json[field.lastSeenAt] == null
+              ? null
+              : DateTime.tryParse(json[field.lastSeenAt] ?? ''),
+      numberOfUnseenMessages:
+          json[field.numberOfUnseenMessages] == null
+              ? null
+              : (json[field.numberOfUnseenMessages] as num?)?.toInt(),
     );
   }
   Map<String, dynamic> toJson() {
@@ -49,7 +55,8 @@ class ChatNumberOfUnseenRow {
       chatRoomId: chatRoomId ?? this.chatRoomId,
       memberId: memberId ?? this.memberId,
       lastSeenAt: lastSeenAt ?? this.lastSeenAt,
-      numberOfUnseenMessages: numberOfUnseenMessages ?? this.numberOfUnseenMessages,
+      numberOfUnseenMessages:
+          numberOfUnseenMessages ?? this.numberOfUnseenMessages,
     );
   }
 }

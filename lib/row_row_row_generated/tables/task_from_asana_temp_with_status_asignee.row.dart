@@ -61,23 +61,40 @@ class TaskFromAsanaTempWithStatusAsigneeRow {
     this.assignee,
   });
 
-  factory TaskFromAsanaTempWithStatusAsigneeRow.fromJson(Map<String, dynamic> json) {
+  factory TaskFromAsanaTempWithStatusAsigneeRow.fromJson(
+    Map<String, dynamic> json,
+  ) {
     return TaskFromAsanaTempWithStatusAsigneeRow(
       id: json[field.id],
       gid: json[field.gid],
       name: json[field.name],
       projectId: json[field.projectId],
-      createdAt: json[field.createdAt] == null ? null : DateTime.tryParse(json[field.createdAt] ?? ''),
+      createdAt:
+          json[field.createdAt] == null
+              ? null
+              : DateTime.tryParse(json[field.createdAt] ?? ''),
       assigneeGid: json[field.assigneeGid],
       assigneeName: json[field.assigneeName],
-      followersGid: json[field.followersGid] == null ? null : List<String>.from(json[field.followersGid]),
+      followersGid:
+          json[field.followersGid] == null
+              ? null
+              : List<String>.from(json[field.followersGid]),
       sectionGid: json[field.sectionGid],
       sectionName: json[field.sectionName],
-      dueAt: json[field.dueAt] == null ? null : DateTime.tryParse(json[field.dueAt] ?? ''),
+      dueAt:
+          json[field.dueAt] == null
+              ? null
+              : DateTime.tryParse(json[field.dueAt] ?? ''),
       notes: json[field.notes],
-      modifiedAt: json[field.modifiedAt] == null ? null : DateTime.tryParse(json[field.modifiedAt] ?? ''),
+      modifiedAt:
+          json[field.modifiedAt] == null
+              ? null
+              : DateTime.tryParse(json[field.modifiedAt] ?? ''),
       parentGid: json[field.parentGid],
-      completedAt: json[field.completedAt] == null ? null : DateTime.tryParse(json[field.completedAt] ?? ''),
+      completedAt:
+          json[field.completedAt] == null
+              ? null
+              : DateTime.tryParse(json[field.completedAt] ?? ''),
       statusId: json[field.statusId],
       assignee: json[field.assignee],
     );

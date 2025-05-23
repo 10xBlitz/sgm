@@ -24,9 +24,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp.router(
       routerConfig: router,
       theme: MaterialTheme.createThemeData(context),
-      localizationsDelegates: const [
-        FlutterQuillLocalizations.delegate,
-      ],
+      localizationsDelegates: const [FlutterQuillLocalizations.delegate],
       builder: (EasyLoading.init()),
     );
   }

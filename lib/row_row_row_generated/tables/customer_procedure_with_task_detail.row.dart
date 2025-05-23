@@ -70,24 +70,47 @@ class CustomerProcedureWithTaskDetailRow {
     this.description,
   });
 
-  factory CustomerProcedureWithTaskDetailRow.fromJson(Map<String, dynamic> json) {
+  factory CustomerProcedureWithTaskDetailRow.fromJson(
+    Map<String, dynamic> json,
+  ) {
     return CustomerProcedureWithTaskDetailRow(
       customerProcedureId: json[field.customerProcedureId],
       taskId: json[field.taskId],
       treatmentClinic: json[field.treatmentClinic],
-      procedureCommission: json[field.procedureCommission] == null ? null : (json[field.procedureCommission] as num?)?.toDouble(),
-      totalPrice: json[field.totalPrice] == null ? null : (json[field.totalPrice] as num?)?.toDouble(),
-      customerProcedureCreatedAt: json[field.customerProcedureCreatedAt] == null ? null : DateTime.tryParse(json[field.customerProcedureCreatedAt] ?? ''),
+      procedureCommission:
+          json[field.procedureCommission] == null
+              ? null
+              : (json[field.procedureCommission] as num?)?.toDouble(),
+      totalPrice:
+          json[field.totalPrice] == null
+              ? null
+              : (json[field.totalPrice] as num?)?.toDouble(),
+      customerProcedureCreatedAt:
+          json[field.customerProcedureCreatedAt] == null
+              ? null
+              : DateTime.tryParse(json[field.customerProcedureCreatedAt] ?? ''),
       procedure: json[field.procedure],
-      dueDate: json[field.dueDate] == null ? null : DateTime.tryParse(json[field.dueDate] ?? ''),
-      datePaid: json[field.datePaid] == null ? null : DateTime.tryParse(json[field.datePaid] ?? ''),
+      dueDate:
+          json[field.dueDate] == null
+              ? null
+              : DateTime.tryParse(json[field.dueDate] ?? ''),
+      datePaid:
+          json[field.datePaid] == null
+              ? null
+              : DateTime.tryParse(json[field.datePaid] ?? ''),
       project: json[field.project],
-      taskCreatedAt: json[field.taskCreatedAt] == null ? null : DateTime.tryParse(json[field.taskCreatedAt] ?? ''),
+      taskCreatedAt:
+          json[field.taskCreatedAt] == null
+              ? null
+              : DateTime.tryParse(json[field.taskCreatedAt] ?? ''),
       createdBy: json[field.createdBy],
       customerName: json[field.customerName],
       assignee: json[field.assignee],
       customerNationality: json[field.customerNationality],
-      customerBirthday: json[field.customerBirthday] == null ? null : DateTime.tryParse(json[field.customerBirthday] ?? ''),
+      customerBirthday:
+          json[field.customerBirthday] == null
+              ? null
+              : DateTime.tryParse(json[field.customerBirthday] ?? ''),
       customerCountryResidence: json[field.customerCountryResidence],
       customerPhone: json[field.customerPhone],
       customerGender: json[field.customerGender],
@@ -101,7 +124,8 @@ class CustomerProcedureWithTaskDetailRow {
       field.treatmentClinic: treatmentClinic,
       field.procedureCommission: procedureCommission,
       field.totalPrice: totalPrice,
-      field.customerProcedureCreatedAt: customerProcedureCreatedAt?.toIso8601String(),
+      field.customerProcedureCreatedAt:
+          customerProcedureCreatedAt?.toIso8601String(),
       field.procedure: procedure,
       field.dueDate: dueDate?.toIso8601String(),
       field.datePaid: datePaid?.toIso8601String(),
@@ -147,7 +171,8 @@ class CustomerProcedureWithTaskDetailRow {
       treatmentClinic: treatmentClinic ?? this.treatmentClinic,
       procedureCommission: procedureCommission ?? this.procedureCommission,
       totalPrice: totalPrice ?? this.totalPrice,
-      customerProcedureCreatedAt: customerProcedureCreatedAt ?? this.customerProcedureCreatedAt,
+      customerProcedureCreatedAt:
+          customerProcedureCreatedAt ?? this.customerProcedureCreatedAt,
       procedure: procedure ?? this.procedure,
       dueDate: dueDate ?? this.dueDate,
       datePaid: datePaid ?? this.datePaid,
@@ -158,7 +183,8 @@ class CustomerProcedureWithTaskDetailRow {
       assignee: assignee ?? this.assignee,
       customerNationality: customerNationality ?? this.customerNationality,
       customerBirthday: customerBirthday ?? this.customerBirthday,
-      customerCountryResidence: customerCountryResidence ?? this.customerCountryResidence,
+      customerCountryResidence:
+          customerCountryResidence ?? this.customerCountryResidence,
       customerPhone: customerPhone ?? this.customerPhone,
       customerGender: customerGender ?? this.customerGender,
       description: description ?? this.description,

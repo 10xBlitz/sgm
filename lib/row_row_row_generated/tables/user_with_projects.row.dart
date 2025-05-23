@@ -73,23 +73,49 @@ class UserWithProjectsRow {
     return UserWithProjectsRow(
       id: json[field.id],
       name: json[field.name],
-      createdAt: json[field.createdAt] == null ? null : DateTime.tryParse(json[field.createdAt] ?? ''),
+      createdAt:
+          json[field.createdAt] == null
+              ? null
+              : DateTime.tryParse(json[field.createdAt] ?? ''),
       role: json[field.role],
       email: json[field.email],
       activated: json[field.activated],
       phoneNumber: json[field.phoneNumber],
-      acceptedAt: json[field.acceptedAt] == null ? null : DateTime.tryParse(json[field.acceptedAt] ?? ''),
-      rejectedAt: json[field.rejectedAt] == null ? null : DateTime.tryParse(json[field.rejectedAt] ?? ''),
+      acceptedAt:
+          json[field.acceptedAt] == null
+              ? null
+              : DateTime.tryParse(json[field.acceptedAt] ?? ''),
+      rejectedAt:
+          json[field.rejectedAt] == null
+              ? null
+              : DateTime.tryParse(json[field.rejectedAt] ?? ''),
       profileImage: json[field.profileImage],
       details: json[field.details],
       isBanned: json[field.isBanned],
       asanaGid: json[field.asanaGid],
-      acceptedTermsAt: json[field.acceptedTermsAt] == null ? null : DateTime.tryParse(json[field.acceptedTermsAt] ?? ''),
-      emailConfirmedAt: json[field.emailConfirmedAt] == null ? null : DateTime.tryParse(json[field.emailConfirmedAt] ?? ''),
+      acceptedTermsAt:
+          json[field.acceptedTermsAt] == null
+              ? null
+              : DateTime.tryParse(json[field.acceptedTermsAt] ?? ''),
+      emailConfirmedAt:
+          json[field.emailConfirmedAt] == null
+              ? null
+              : DateTime.tryParse(json[field.emailConfirmedAt] ?? ''),
       emailConfirmationCode: json[field.emailConfirmationCode],
-      projects: json[field.projects] == null ? null : (json[field.projects] is String ? jsonDecode(json[field.projects]) : Map.from(json[field.projects])),
-      projectIds: json[field.projectIds] == null ? null : List<String>.from(json[field.projectIds]),
-      projectNames: json[field.projectNames] == null ? null : List<String>.from(json[field.projectNames]),
+      projects:
+          json[field.projects] == null
+              ? null
+              : (json[field.projects] is String
+                  ? jsonDecode(json[field.projects])
+                  : Map.from(json[field.projects])),
+      projectIds:
+          json[field.projectIds] == null
+              ? null
+              : List<String>.from(json[field.projectIds]),
+      projectNames:
+          json[field.projectNames] == null
+              ? null
+              : List<String>.from(json[field.projectNames]),
     );
   }
   Map<String, dynamic> toJson() {
@@ -153,7 +179,8 @@ class UserWithProjectsRow {
       asanaGid: asanaGid ?? this.asanaGid,
       acceptedTermsAt: acceptedTermsAt ?? this.acceptedTermsAt,
       emailConfirmedAt: emailConfirmedAt ?? this.emailConfirmedAt,
-      emailConfirmationCode: emailConfirmationCode ?? this.emailConfirmationCode,
+      emailConfirmationCode:
+          emailConfirmationCode ?? this.emailConfirmationCode,
       projects: projects ?? this.projects,
       projectIds: projectIds ?? this.projectIds,
       projectNames: projectNames ?? this.projectNames,

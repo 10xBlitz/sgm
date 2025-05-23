@@ -19,13 +19,18 @@ class UserTaskCountsRow {
   factory UserTaskCountsRow.fromJson(Map<String, dynamic> json) {
     return UserTaskCountsRow(
       userId: json[field.userId],
-      numberOfTasksSubtasksAppointments: json[field.numberOfTasksSubtasksAppointments] == null ? null : (json[field.numberOfTasksSubtasksAppointments] as num?)?.toInt(),
+      numberOfTasksSubtasksAppointments:
+          json[field.numberOfTasksSubtasksAppointments] == null
+              ? null
+              : (json[field.numberOfTasksSubtasksAppointments] as num?)
+                  ?.toInt(),
     );
   }
   Map<String, dynamic> toJson() {
     return {
       field.userId: userId,
-      field.numberOfTasksSubtasksAppointments: numberOfTasksSubtasksAppointments,
+      field.numberOfTasksSubtasksAppointments:
+          numberOfTasksSubtasksAppointments,
     };
   }
 
@@ -35,7 +40,9 @@ class UserTaskCountsRow {
   }) {
     return UserTaskCountsRow(
       userId: userId ?? this.userId,
-      numberOfTasksSubtasksAppointments: numberOfTasksSubtasksAppointments ?? this.numberOfTasksSubtasksAppointments,
+      numberOfTasksSubtasksAppointments:
+          numberOfTasksSubtasksAppointments ??
+          this.numberOfTasksSubtasksAppointments,
     );
   }
 }

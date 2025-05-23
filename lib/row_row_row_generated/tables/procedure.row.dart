@@ -43,8 +43,14 @@ class ProcedureRow {
       titleEng: json[field.titleEng],
       titleKor: json[field.titleKor],
       createdAt: DateTime.parse(json[field.createdAt]),
-      commission: json[field.commission] == null ? null : (json[field.commission] as num?)?.toDouble(),
-      totalPrice: json[field.totalPrice] == null ? null : (json[field.totalPrice] as num?)?.toDouble(),
+      commission:
+          json[field.commission] == null
+              ? null
+              : (json[field.commission] as num?)?.toDouble(),
+      totalPrice:
+          json[field.totalPrice] == null
+              ? null
+              : (json[field.totalPrice] as num?)?.toDouble(),
       category: json[field.category],
       description: json[field.description],
       explanation: json[field.explanation],

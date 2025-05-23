@@ -40,10 +40,16 @@ class GroupRow {
       title: json[field.title],
       description: json[field.description],
       createdAt: DateTime.parse(json[field.createdAt]),
-      updatedAt: json[field.updatedAt] == null ? null : DateTime.tryParse(json[field.updatedAt] ?? ''),
+      updatedAt:
+          json[field.updatedAt] == null
+              ? null
+              : DateTime.tryParse(json[field.updatedAt] ?? ''),
       project: json[field.project],
       createdBy: json[field.createdBy],
-      deletedAt: json[field.deletedAt] == null ? null : DateTime.tryParse(json[field.deletedAt] ?? ''),
+      deletedAt:
+          json[field.deletedAt] == null
+              ? null
+              : DateTime.tryParse(json[field.deletedAt] ?? ''),
     );
   }
   Map<String, dynamic> toJson() {

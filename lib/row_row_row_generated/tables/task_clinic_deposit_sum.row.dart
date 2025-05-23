@@ -13,17 +13,16 @@ class TaskClinicDepositSumRow {
   final String? clinic;
   final double? depositSum;
 
-  const TaskClinicDepositSumRow({
-    this.taskId,
-    this.clinic,
-    this.depositSum,
-  });
+  const TaskClinicDepositSumRow({this.taskId, this.clinic, this.depositSum});
 
   factory TaskClinicDepositSumRow.fromJson(Map<String, dynamic> json) {
     return TaskClinicDepositSumRow(
       taskId: json[field.taskId],
       clinic: json[field.clinic],
-      depositSum: json[field.depositSum] == null ? null : (json[field.depositSum] as num?)?.toDouble(),
+      depositSum:
+          json[field.depositSum] == null
+              ? null
+              : (json[field.depositSum] as num?)?.toDouble(),
     );
   }
   Map<String, dynamic> toJson() {

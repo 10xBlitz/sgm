@@ -3,36 +3,27 @@
 class NumberOfTasksPerProjectRow {
   static const table = 'number_of_tasks_per_project';
 
-  static const field = (
-    projectId: 'project_id',
-    totalTasks: 'total_tasks',
-  );
+  static const field = (projectId: 'project_id', totalTasks: 'total_tasks');
 
   final String? projectId;
   final int? totalTasks;
 
-  const NumberOfTasksPerProjectRow({
-    this.projectId,
-    this.totalTasks,
-  });
+  const NumberOfTasksPerProjectRow({this.projectId, this.totalTasks});
 
   factory NumberOfTasksPerProjectRow.fromJson(Map<String, dynamic> json) {
     return NumberOfTasksPerProjectRow(
       projectId: json[field.projectId],
-      totalTasks: json[field.totalTasks] == null ? null : (json[field.totalTasks] as num?)?.toInt(),
+      totalTasks:
+          json[field.totalTasks] == null
+              ? null
+              : (json[field.totalTasks] as num?)?.toInt(),
     );
   }
   Map<String, dynamic> toJson() {
-    return {
-      field.projectId: projectId,
-      field.totalTasks: totalTasks,
-    };
+    return {field.projectId: projectId, field.totalTasks: totalTasks};
   }
 
-  NumberOfTasksPerProjectRow copyWith({
-    String? projectId,
-    int? totalTasks,
-  }) {
+  NumberOfTasksPerProjectRow copyWith({String? projectId, int? totalTasks}) {
     return NumberOfTasksPerProjectRow(
       projectId: projectId ?? this.projectId,
       totalTasks: totalTasks ?? this.totalTasks,

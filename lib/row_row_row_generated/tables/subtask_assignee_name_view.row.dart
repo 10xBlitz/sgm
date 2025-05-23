@@ -37,7 +37,10 @@ class SubtaskAssigneeNameViewRow {
   factory SubtaskAssigneeNameViewRow.fromJson(Map<String, dynamic> json) {
     return SubtaskAssigneeNameViewRow(
       id: json[field.id],
-      createdAt: json[field.createdAt] == null ? null : DateTime.tryParse(json[field.createdAt] ?? ''),
+      createdAt:
+          json[field.createdAt] == null
+              ? null
+              : DateTime.tryParse(json[field.createdAt] ?? ''),
       assignee: json[field.assignee],
       assignedBy: json[field.assignedBy],
       subtask: json[field.subtask],

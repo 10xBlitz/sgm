@@ -88,22 +88,34 @@ class TaskRow {
       customerName: json[field.customerName],
       assignee: json[field.assignee],
       customerNationality: json[field.customerNationality],
-      customerBirthday: json[field.customerBirthday] == null ? null : DateTime.tryParse(json[field.customerBirthday] ?? ''),
+      customerBirthday:
+          json[field.customerBirthday] == null
+              ? null
+              : DateTime.tryParse(json[field.customerBirthday] ?? ''),
       customerCountryResidence: json[field.customerCountryResidence],
       customerPhone: json[field.customerPhone],
       customerGender: json[field.customerGender],
       status: json[field.status],
       description: json[field.description],
-      dateDue: json[field.dateDue] == null ? null : DateTime.tryParse(json[field.dateDue] ?? ''),
+      dateDue:
+          json[field.dateDue] == null
+              ? null
+              : DateTime.tryParse(json[field.dateDue] ?? ''),
       form: json[field.form],
       title: json[field.title],
       asanaGid: json[field.asanaGid],
       sysCreatedAt: DateTime.parse(json[field.sysCreatedAt]),
       rawDescription: json[field.rawDescription],
-      formProcessedOn: json[field.formProcessedOn] == null ? null : DateTime.tryParse(json[field.formProcessedOn] ?? ''),
+      formProcessedOn:
+          json[field.formProcessedOn] == null
+              ? null
+              : DateTime.tryParse(json[field.formProcessedOn] ?? ''),
       attachmentProcessed: json[field.attachmentProcessed] as bool,
       lastStatusUpdate: DateTime.parse(json[field.lastStatusUpdate]),
-      subtaskProcessedOn: json[field.subtaskProcessedOn] == null ? null : DateTime.tryParse(json[field.subtaskProcessedOn] ?? ''),
+      subtaskProcessedOn:
+          json[field.subtaskProcessedOn] == null
+              ? null
+              : DateTime.tryParse(json[field.subtaskProcessedOn] ?? ''),
     );
   }
   Map<String, dynamic> toJson() {
@@ -168,7 +180,8 @@ class TaskRow {
       assignee: assignee ?? this.assignee,
       customerNationality: customerNationality ?? this.customerNationality,
       customerBirthday: customerBirthday ?? this.customerBirthday,
-      customerCountryResidence: customerCountryResidence ?? this.customerCountryResidence,
+      customerCountryResidence:
+          customerCountryResidence ?? this.customerCountryResidence,
       customerPhone: customerPhone ?? this.customerPhone,
       customerGender: customerGender ?? this.customerGender,
       status: status ?? this.status,

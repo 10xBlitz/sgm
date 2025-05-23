@@ -42,12 +42,24 @@ class CustomerProcedureRow {
       id: json[field.id] as String,
       task: json[field.task],
       clinic: json[field.clinic],
-      procedureCommission: json[field.procedureCommission] == null ? null : (json[field.procedureCommission] as num?)?.toDouble(),
-      totalPrice: json[field.totalPrice] == null ? null : (json[field.totalPrice] as num?)?.toDouble(),
+      procedureCommission:
+          json[field.procedureCommission] == null
+              ? null
+              : (json[field.procedureCommission] as num?)?.toDouble(),
+      totalPrice:
+          json[field.totalPrice] == null
+              ? null
+              : (json[field.totalPrice] as num?)?.toDouble(),
       createdAt: DateTime.parse(json[field.createdAt]),
       procedure: json[field.procedure] as String,
-      dueDate: json[field.dueDate] == null ? null : DateTime.tryParse(json[field.dueDate] ?? ''),
-      datePaid: json[field.datePaid] == null ? null : DateTime.tryParse(json[field.datePaid] ?? ''),
+      dueDate:
+          json[field.dueDate] == null
+              ? null
+              : DateTime.tryParse(json[field.dueDate] ?? ''),
+      datePaid:
+          json[field.datePaid] == null
+              ? null
+              : DateTime.tryParse(json[field.datePaid] ?? ''),
     );
   }
   Map<String, dynamic> toJson() {

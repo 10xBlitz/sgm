@@ -34,7 +34,10 @@ class CountryRow {
       name: json[field.name] as String,
       nicename: json[field.nicename] as String,
       iso3: json[field.iso3],
-      numcode: json[field.numcode] == null ? null : (json[field.numcode] as num?)?.toInt(),
+      numcode:
+          json[field.numcode] == null
+              ? null
+              : (json[field.numcode] as num?)?.toInt(),
       phonecode: (json[field.phonecode] as num).toInt(),
     );
   }

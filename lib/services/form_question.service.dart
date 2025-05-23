@@ -34,7 +34,12 @@ class FormQuestionService {
         FormQuestionRow.field.order: order,
         FormQuestionRow.field.checkboxOptions: checkboxOptions,
       };
-      final response = await _supabase.from(FormQuestionRow.table).insert(data).select().single();
+      final response =
+          await _supabase
+              .from(FormQuestionRow.table)
+              .insert(data)
+              .select()
+              .single();
       return FormQuestionRow.fromJson(response);
     } catch (error) {
       debugPrint('Error creating form question: $error');
@@ -48,24 +53,45 @@ class FormQuestionService {
     required List<Map<String, dynamic>> questions,
   }) async {
     final now = DateTime.now();
-    final data = questions.map((q) {
-      return {
-        FormQuestionRow.field.form: formId,
-        FormQuestionRow.field.question: q['question'],
-        FormQuestionRow.field.description: q['description'],
-        FormQuestionRow.field.type: _questionTypeToString(q['type']),
-        FormQuestionRow.field.isRequired: q['isRequired'] ?? false,
-        FormQuestionRow.field.createdAt: now.toIso8601String(),
-        FormQuestionRow.field.updatedAt: now.toIso8601String(),
-        FormQuestionRow.field.order: q['order'],
-        FormQuestionRow.field.checkboxOptions: q['checkboxOptions'],
-      };
-    }).toList();
+    final data =
+        questions.map((q) {
+          return {
+            FormQuestionRow.field.form: formId,
+            FormQuestionRow.field.question: q['question'],
+            FormQuestionRow.field.description: q['description'],
+            FormQuestionRow.field.type: _questionTypeToString(q['type']),
+            FormQuestionRow.field.isRequired: q['isRequired'] ?? false,
+            FormQuestionRow.field.createdAt: now.toIso8601String(),
+            FormQuestionRow.field.updatedAt: now.toIso8601String(),
+            FormQuestionRow.field.order: q['order'],
+            FormQuestionRow.field.checkboxOptions: q['checkboxOptions'],
+          };
+        }).toList();
     try {
-      final response = await _supabase.from(FormQuestionRow.table).insert(data).select();
-      return (response as List).map((e) => FormQuestionRow.fromJson(e)).toList();
+      final response =
+          await _supabase.from(FormQuestionRow.table).insert(data).select();
+      return (response as List)
+          .map((e) => FormQuestionRow.fromJson(e))
+          .toList();
     } catch (error) {
       debugPrint('Error creating form questions: $error');
+      return [];
+    }
+  }
+
+  // Fetches all questions for a given form ID.
+  Future<List<FormQuestionRow>> fetchQuestionsByForm(String formId) async {
+    try {
+      final response = await _supabase
+          .from(FormQuestionRow.table)
+          .select()
+          .eq(FormQuestionRow.field.form, formId)
+          .order(FormQuestionRow.field.order);
+      return (response as List)
+          .map((e) => FormQuestionRow.fromJson(e))
+          .toList();
+    } catch (error) {
+      debugPrint('Error fetching questions: $error');
       return [];
     }
   }
@@ -80,4 +106,4 @@ class FormQuestionService {
         return 'attachment';
     }
   }
-} 
+}

@@ -59,17 +59,34 @@ class ProjectWithMembersRow {
       id: json[field.id],
       title: json[field.title],
       createdBy: json[field.createdBy],
-      createdAt: json[field.createdAt] == null ? null : DateTime.tryParse(json[field.createdAt] ?? ''),
+      createdAt:
+          json[field.createdAt] == null
+              ? null
+              : DateTime.tryParse(json[field.createdAt] ?? ''),
       status: json[field.status],
       isClinic: json[field.isClinic],
       description: json[field.description],
       canChooseOtherClinic: json[field.canChooseOtherClinic],
       asanaProjectGid: json[field.asanaProjectGid],
-      pinOrder: json[field.pinOrder] == null ? null : DateTime.tryParse(json[field.pinOrder] ?? ''),
+      pinOrder:
+          json[field.pinOrder] == null
+              ? null
+              : DateTime.tryParse(json[field.pinOrder] ?? ''),
       area: json[field.area],
-      numberOfMembers: json[field.numberOfMembers] == null ? null : (json[field.numberOfMembers] as num?)?.toInt(),
-      memberIds: json[field.memberIds] == null ? null : List<String>.from(json[field.memberIds]),
-      members: json[field.members] == null ? null : (json[field.members] is String ? jsonDecode(json[field.members]) : Map.from(json[field.members])),
+      numberOfMembers:
+          json[field.numberOfMembers] == null
+              ? null
+              : (json[field.numberOfMembers] as num?)?.toInt(),
+      memberIds:
+          json[field.memberIds] == null
+              ? null
+              : List<String>.from(json[field.memberIds]),
+      members:
+          json[field.members] == null
+              ? null
+              : (json[field.members] is String
+                  ? jsonDecode(json[field.members])
+                  : Map.from(json[field.members])),
     );
   }
   Map<String, dynamic> toJson() {

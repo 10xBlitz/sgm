@@ -43,9 +43,17 @@ class AnnouncementRow {
       content: json[field.content],
       createdBy: json[field.createdBy],
       createdAt: DateTime.parse(json[field.createdAt]),
-      deletedAt: json[field.deletedAt] == null ? null : DateTime.tryParse(json[field.deletedAt] ?? ''),
+      deletedAt:
+          json[field.deletedAt] == null
+              ? null
+              : DateTime.tryParse(json[field.deletedAt] ?? ''),
       personal: json[field.personal] as bool,
-      routeData: json[field.routeData] == null ? null : (json[field.routeData] is String ? jsonDecode(json[field.routeData]) : Map.from(json[field.routeData])),
+      routeData:
+          json[field.routeData] == null
+              ? null
+              : (json[field.routeData] is String
+                  ? jsonDecode(json[field.routeData])
+                  : Map.from(json[field.routeData])),
     );
   }
   Map<String, dynamic> toJson() {

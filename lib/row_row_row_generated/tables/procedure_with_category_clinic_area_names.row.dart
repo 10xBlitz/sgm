@@ -52,14 +52,25 @@ class ProcedureWithCategoryClinicAreaNamesRow {
     this.clinicAreaName,
   });
 
-  factory ProcedureWithCategoryClinicAreaNamesRow.fromJson(Map<String, dynamic> json) {
+  factory ProcedureWithCategoryClinicAreaNamesRow.fromJson(
+    Map<String, dynamic> json,
+  ) {
     return ProcedureWithCategoryClinicAreaNamesRow(
       id: json[field.id],
       titleEng: json[field.titleEng],
       titleKor: json[field.titleKor],
-      createdAt: json[field.createdAt] == null ? null : DateTime.tryParse(json[field.createdAt] ?? ''),
-      commission: json[field.commission] == null ? null : (json[field.commission] as num?)?.toDouble(),
-      totalPrice: json[field.totalPrice] == null ? null : (json[field.totalPrice] as num?)?.toDouble(),
+      createdAt:
+          json[field.createdAt] == null
+              ? null
+              : DateTime.tryParse(json[field.createdAt] ?? ''),
+      commission:
+          json[field.commission] == null
+              ? null
+              : (json[field.commission] as num?)?.toDouble(),
+      totalPrice:
+          json[field.totalPrice] == null
+              ? null
+              : (json[field.totalPrice] as num?)?.toDouble(),
       category: json[field.category],
       categoryName: json[field.categoryName],
       description: json[field.description],

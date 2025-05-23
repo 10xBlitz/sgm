@@ -32,8 +32,14 @@ class TaskClinicDiscountRow {
     return TaskClinicDiscountRow(
       id: json[field.id] as String,
       createdAt: DateTime.parse(json[field.createdAt]),
-      rate: json[field.rate] == null ? null : (json[field.rate] as num?)?.toDouble(),
-      amount: json[field.amount] == null ? null : (json[field.amount] as num?)?.toDouble(),
+      rate:
+          json[field.rate] == null
+              ? null
+              : (json[field.rate] as num?)?.toDouble(),
+      amount:
+          json[field.amount] == null
+              ? null
+              : (json[field.amount] as num?)?.toDouble(),
       clinic: json[field.clinic],
       task: json[field.task],
     );

@@ -13,17 +13,16 @@ class UserBanDataRow {
   final bool? isBanned;
   final DateTime? bannedUntil;
 
-  const UserBanDataRow({
-    this.id,
-    this.isBanned,
-    this.bannedUntil,
-  });
+  const UserBanDataRow({this.id, this.isBanned, this.bannedUntil});
 
   factory UserBanDataRow.fromJson(Map<String, dynamic> json) {
     return UserBanDataRow(
       id: json[field.id],
       isBanned: json[field.isBanned],
-      bannedUntil: json[field.bannedUntil] == null ? null : DateTime.tryParse(json[field.bannedUntil] ?? ''),
+      bannedUntil:
+          json[field.bannedUntil] == null
+              ? null
+              : DateTime.tryParse(json[field.bannedUntil] ?? ''),
     );
   }
   Map<String, dynamic> toJson() {
@@ -34,11 +33,7 @@ class UserBanDataRow {
     };
   }
 
-  UserBanDataRow copyWith({
-    String? id,
-    bool? isBanned,
-    DateTime? bannedUntil,
-  }) {
+  UserBanDataRow copyWith({String? id, bool? isBanned, DateTime? bannedUntil}) {
     return UserBanDataRow(
       id: id ?? this.id,
       isBanned: isBanned ?? this.isBanned,

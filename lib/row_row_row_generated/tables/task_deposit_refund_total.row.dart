@@ -22,8 +22,14 @@ class TaskDepositRefundTotalRow {
   factory TaskDepositRefundTotalRow.fromJson(Map<String, dynamic> json) {
     return TaskDepositRefundTotalRow(
       taskId: json[field.taskId],
-      totalDeposit: json[field.totalDeposit] == null ? null : (json[field.totalDeposit] as num?)?.toDouble(),
-      totalRefund: json[field.totalRefund] == null ? null : (json[field.totalRefund] as num?)?.toDouble(),
+      totalDeposit:
+          json[field.totalDeposit] == null
+              ? null
+              : (json[field.totalDeposit] as num?)?.toDouble(),
+      totalRefund:
+          json[field.totalRefund] == null
+              ? null
+              : (json[field.totalRefund] as num?)?.toDouble(),
     );
   }
   Map<String, dynamic> toJson() {

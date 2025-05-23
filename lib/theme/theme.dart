@@ -434,10 +434,19 @@ class MaterialTheme {
         ),
       ),
     ),
+    elevatedButtonTheme: ElevatedButtonThemeData(
+      style: ElevatedButton.styleFrom(
+        backgroundColor: colorScheme.primary,
+        foregroundColor: colorScheme.onPrimary,
+        textStyle: TextStyle(fontWeight: FontWeight.w900),
+        // shape: RoundedRectangleBorder(
+        //   borderRadius: BorderRadius.circular(8.0),
+        // ),
+      ),
+    ),
     dropdownMenuTheme: DropdownMenuThemeData(
       inputDecorationTheme: InputDecorationTheme(border: OutlineInputBorder()),
     ),
-
     inputDecorationTheme: InputDecorationTheme(
       labelStyle: textTheme.labelLarge,
       floatingLabelStyle: textTheme.labelLarge?.copyWith(
@@ -454,20 +463,17 @@ class MaterialTheme {
           colorScheme.secondaryContainer,
         ),
         foregroundColor: WidgetStateProperty.all(colorScheme.onSurface),
-
         textStyle: WidgetStateProperty.all(
           textTheme.labelMedium?.copyWith(fontWeight: FontWeight.w800),
         ),
         shape: WidgetStateProperty.all(
           RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12.0),
-
             side: BorderSide(color: colorScheme.outline, width: 1.5),
           ),
         ),
       ),
     ),
-
     textButtonTheme: TextButtonThemeData(
       style: TextButton.styleFrom(
         textStyle: textTheme.labelLarge?.copyWith(

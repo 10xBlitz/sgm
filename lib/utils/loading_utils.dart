@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 class LoadingUtils {
@@ -15,5 +16,17 @@ class LoadingUtils {
 
   static showSuccess(String message) {
     EasyLoading.showSuccess(message);
+  }
+
+  static showSnackBar({
+    required BuildContext context,
+    required String message,
+  }) {
+    if (!context.mounted) {
+      return;
+    }
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(message)));
   }
 }

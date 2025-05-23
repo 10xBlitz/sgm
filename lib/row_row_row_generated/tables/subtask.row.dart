@@ -45,13 +45,22 @@ class SubtaskRow {
       id: json[field.id] as String,
       name: json[field.name],
       description: json[field.description],
-      dueDate: json[field.dueDate] == null ? null : DateTime.tryParse(json[field.dueDate] ?? ''),
+      dueDate:
+          json[field.dueDate] == null
+              ? null
+              : DateTime.tryParse(json[field.dueDate] ?? ''),
       createdAt: DateTime.parse(json[field.createdAt]),
       task: json[field.task],
       gid: json[field.gid],
       rawDescription: json[field.rawDescription],
-      asanaAttachmentProcessedOn: json[field.asanaAttachmentProcessedOn] == null ? null : DateTime.tryParse(json[field.asanaAttachmentProcessedOn] ?? ''),
-      completedAt: json[field.completedAt] == null ? null : DateTime.tryParse(json[field.completedAt] ?? ''),
+      asanaAttachmentProcessedOn:
+          json[field.asanaAttachmentProcessedOn] == null
+              ? null
+              : DateTime.tryParse(json[field.asanaAttachmentProcessedOn] ?? ''),
+      completedAt:
+          json[field.completedAt] == null
+              ? null
+              : DateTime.tryParse(json[field.completedAt] ?? ''),
     );
   }
   Map<String, dynamic> toJson() {
@@ -64,7 +73,8 @@ class SubtaskRow {
       field.task: task,
       field.gid: gid,
       field.rawDescription: rawDescription,
-      field.asanaAttachmentProcessedOn: asanaAttachmentProcessedOn?.toIso8601String(),
+      field.asanaAttachmentProcessedOn:
+          asanaAttachmentProcessedOn?.toIso8601String(),
       field.completedAt: completedAt?.toIso8601String(),
     };
   }
@@ -90,7 +100,8 @@ class SubtaskRow {
       task: task ?? this.task,
       gid: gid ?? this.gid,
       rawDescription: rawDescription ?? this.rawDescription,
-      asanaAttachmentProcessedOn: asanaAttachmentProcessedOn ?? this.asanaAttachmentProcessedOn,
+      asanaAttachmentProcessedOn:
+          asanaAttachmentProcessedOn ?? this.asanaAttachmentProcessedOn,
       completedAt: completedAt ?? this.completedAt,
     );
   }

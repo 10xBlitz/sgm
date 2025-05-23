@@ -48,9 +48,15 @@ class ChatRoomMessageRow {
       sentBy: json[field.sentBy],
       chatRoom: json[field.chatRoom],
       createdAt: DateTime.parse(json[field.createdAt]),
-      updatedAt: json[field.updatedAt] == null ? null : DateTime.tryParse(json[field.updatedAt] ?? ''),
+      updatedAt:
+          json[field.updatedAt] == null
+              ? null
+              : DateTime.tryParse(json[field.updatedAt] ?? ''),
       image: json[field.image],
-      deletedAt: json[field.deletedAt] == null ? null : DateTime.tryParse(json[field.deletedAt] ?? ''),
+      deletedAt:
+          json[field.deletedAt] == null
+              ? null
+              : DateTime.tryParse(json[field.deletedAt] ?? ''),
       deletedBy: json[field.deletedBy],
     );
   }
