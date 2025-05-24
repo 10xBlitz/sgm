@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:sgm/services/procedure.service.dart';
 import 'package:sgm/row_row_row_generated/tables/clinic_area_procedure_category_dropdown_entries.row.dart';
+import 'package:sgm/widgets/procedures/procedure_dropdown_field.dart';
+import 'package:sgm/widgets/procedures/procedure_form_field.dart';
 
 class ProceduresAddScreen extends StatefulWidget {
   static const routeName = "/procedures/add";
@@ -54,8 +55,9 @@ class _ProceduresAddScreenState extends State<ProceduresAddScreen> {
         isLoading = true;
       });
 
-      final entries = await procedureService
-          .getClinicAreaProcedureCategoryDropdownEntries();
+      final entries =
+          await procedureService
+              .getClinicAreaProcedureCategoryDropdownEntries();
       final uniqueClinics =
           <String, ClinicAreaProcedureCategoryDropdownEntriesRow>{};
 
@@ -84,8 +86,9 @@ class _ProceduresAddScreenState extends State<ProceduresAddScreen> {
         isLoading = true;
       });
 
-      final entries = await procedureService
-          .getClinicAreaProcedureCategoryDropdownEntries();
+      final entries =
+          await procedureService
+              .getClinicAreaProcedureCategoryDropdownEntries();
       final uniqueCategories =
           <String, ClinicAreaProcedureCategoryDropdownEntriesRow>{};
 
@@ -140,9 +143,11 @@ class _ProceduresAddScreenState extends State<ProceduresAddScreen> {
       });
 
       if (result != null) {
+        procedureService.clearCache();
         showSnackBar('Procedure created successfully');
         debugPrint('Created procedure: ${result.id} $result ');
-        context.pop();
+        if (!mounted) return;
+        Navigator.of(context).pop(true);
       } else {
         showSnackBar('Failed to create procedure');
       }
@@ -156,9 +161,9 @@ class _ProceduresAddScreenState extends State<ProceduresAddScreen> {
   }
 
   void showSnackBar(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message)),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(message)));
   }
 
   @override
@@ -166,13 +171,13 @@ class _ProceduresAddScreenState extends State<ProceduresAddScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Procedure'),
-        actions: [
-          IconButton(
-            onPressed: () => context.pop(),
-            icon: const Icon(Icons.close),
-          ),
-        ],
-        automaticallyImplyLeading: false,
+        // actions: [
+        //   IconButton(
+        //     onPressed: () => context.pop(),
+        //     icon: const Icon(Icons.close),
+        //   ),
+        // ],
+        // automaticallyImplyLeading: false,
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -180,53 +185,56 @@ class _ProceduresAddScreenState extends State<ProceduresAddScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              buildFormField(
+              ProcedureFormField(
                 label: 'English Procedure Name',
                 hintText: 'Enter English Procedure Name...',
                 controller: englishNameController,
               ),
-              buildFormField(
+              ProcedureFormField(
                 label: 'Korean Procedure Name',
                 hintText: 'Enter Korean Procedure Name...',
                 controller: koreanNameController,
               ),
               const SizedBox(height: 16),
-              buildFormField(
+              ProcedureFormField(
                 label: 'Description',
                 hintText: 'Enter Description...',
                 controller: descriptionController,
               ),
               const SizedBox(height: 16),
-              buildFormField(
+              ProcedureFormField(
                 label: 'Explanation',
                 hintText: 'Enter Explanation...',
                 controller: explanationController,
               ),
               const SizedBox(height: 16),
-              buildFormField(
+              ProcedureFormField(
                 label: 'Total Price',
                 hintText: '0.00',
                 controller: totalPriceController,
                 keyboardType: TextInputType.number,
               ),
               const SizedBox(height: 16),
-              buildFormField(
+              ProcedureFormField(
                 label: 'Commission',
                 hintText: '0.00',
                 controller: commissionController,
                 keyboardType: TextInputType.number,
               ),
               const SizedBox(height: 16),
-              buildDropdownField(
+              ProcedureDropdownField(
                 label: 'Clinic',
                 isLoading: isLoading,
                 value: selectedClinic,
-                items: clinics
-                    .map((clinic) => DropdownMenuItem(
-                          value: clinic.clinicId,
-                          child: Text(clinic.clinicName ?? 'Unknown Clinic'),
-                        ))
-                    .toList(),
+                items:
+                    clinics
+                        .map(
+                          (clinic) => DropdownMenuItem(
+                            value: clinic.clinicId,
+                            child: Text(clinic.clinicName ?? 'Unknown Clinic'),
+                          ),
+                        )
+                        .toList(),
                 onChanged: (value) {
                   setState(() {
                     selectedClinic = value;
@@ -238,31 +246,29 @@ class _ProceduresAddScreenState extends State<ProceduresAddScreen> {
                 },
               ),
               const SizedBox(height: 16),
-              const Text(
-                'Category',
-                style: TextStyle(fontSize: 16),
-              ),
+              const Text('Category', style: TextStyle(fontSize: 16)),
               const Text(
                 'If no category is selected, it will create a new category.',
                 style: TextStyle(fontSize: 12, color: Colors.grey),
               ),
               const SizedBox(height: 8),
               if (categories.isNotEmpty)
-                buildDropdownField(
+                ProcedureDropdownField(
                   label: 'Category',
                   isLoading: isLoading,
                   value: selectedCategory,
-                  items: categories
-                      .map(
-                        (category) => DropdownMenuItem(
-                          value: category.procedureCategoryId,
-                          child: Text(
-                            category.procedureCategoryName ??
-                                'Unknown Category',
-                          ),
-                        ),
-                      )
-                      .toList(),
+                  items:
+                      categories
+                          .map(
+                            (category) => DropdownMenuItem(
+                              value: category.procedureCategoryId,
+                              child: Text(
+                                category.procedureCategoryName ??
+                                    'Unknown Category',
+                              ),
+                            ),
+                          )
+                          .toList(),
                   onChanged: (value) {
                     setState(() {
                       selectedCategory = value;
@@ -270,7 +276,7 @@ class _ProceduresAddScreenState extends State<ProceduresAddScreen> {
                   },
                 )
               else
-                buildFormField(
+                ProcedureFormField(
                   label: '',
                   showLabel: false,
                   hintText: 'Enter Category Name',
@@ -298,84 +304,6 @@ class _ProceduresAddScreenState extends State<ProceduresAddScreen> {
           ),
         ),
       ),
-    );
-  }
-
-  Widget buildFormField({
-    required String label,
-    required String hintText,
-    required TextEditingController controller,
-    TextInputType keyboardType = TextInputType.text,
-    int maxLines = 1,
-    bool showLabel = true,
-  }) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        if (showLabel)
-          Text(
-            label,
-            style: const TextStyle(fontSize: 16),
-          ),
-        if (showLabel) const SizedBox(height: 8),
-        TextField(
-          controller: controller,
-          decoration: InputDecoration(
-            hintText: hintText,
-            border: const OutlineInputBorder(),
-            contentPadding: const EdgeInsets.symmetric(
-              horizontal: 16,
-              vertical: 12,
-            ),
-          ),
-          keyboardType: keyboardType,
-          maxLines: maxLines,
-        ),
-      ],
-    );
-  }
-
-  Widget buildDropdownField({
-    required String label,
-    required bool isLoading,
-    required String? value,
-    required List<DropdownMenuItem<String>> items,
-    required ValueChanged<String?> onChanged,
-    bool showLabel = true,
-  }) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        if (showLabel)
-          Text(
-            label,
-            style: const TextStyle(fontSize: 16),
-          ),
-        if (showLabel) const SizedBox(height: 8),
-        Container(
-          decoration: BoxDecoration(
-            border: Border.all(color: Colors.grey.shade300),
-            borderRadius: BorderRadius.circular(4),
-          ),
-          child: ButtonTheme(
-            alignedDropdown: true,
-            child: DropdownButtonFormField<String>(
-              value: value,
-              hint: const Text('Select...'),
-              decoration: const InputDecoration(
-                border: InputBorder.none,
-                contentPadding: EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 12,
-                ),
-              ),
-              items: items,
-              onChanged: isLoading ? null : onChanged,
-              isExpanded: true,
-            ),
-          ),
-        ),
-      ],
     );
   }
 }

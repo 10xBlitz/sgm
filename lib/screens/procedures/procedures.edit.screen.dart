@@ -2,15 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:sgm/row_row_row_generated/tables/procedure_with_category_clinic_area_names.row.dart';
 import 'package:sgm/row_row_row_generated/tables/clinic_area_procedure_category_dropdown_entries.row.dart';
 import 'package:sgm/services/procedure.service.dart';
+import 'package:sgm/widgets/procedures/procedure_delete_button_dialog.dart';
+import 'package:sgm/widgets/procedures/procedure_form_field.dart';
+import 'package:sgm/widgets/procedures/procedure_info_field.dart';
 
 class ProceduresEditScreen extends StatefulWidget {
   static const routeName = "/procedures/edit";
   final String procedureId;
 
-  const ProceduresEditScreen({
-    super.key,
-    required this.procedureId,
-  });
+  const ProceduresEditScreen({super.key, required this.procedureId});
 
   @override
   State<ProceduresEditScreen> createState() => _ProceduresEditScreenState();
@@ -57,35 +57,36 @@ class _ProceduresEditScreenState extends State<ProceduresEditScreen> {
     try {
       final result = await procedureService.getFromId(widget.procedureId);
 
+      if (!mounted) return; // Check before using context/setState
+      debugPrint('${result?.id}');
       if (result != null) {
-        setState(() async {
-          procedure = await getProcedureWithDetails(result.id);
+        procedure = await getProcedureWithDetails(result.id);
 
-          // Populate form fields
-          titleController.text = procedure?.titleEng ?? '';
-          descriptionController.text = procedure?.description ?? '';
-          explanationController.text = procedure?.explanation ?? '';
-          totalPriceController.text =
-              procedure?.totalPrice?.toString() ?? '0.00';
-          commissionController.text =
-              procedure?.commission?.toString() ?? '0.00';
-          selectedCategory = procedure?.category;
+        // Populate form fields
+        titleController.text = procedure?.titleEng ?? '';
+        descriptionController.text = procedure?.description ?? '';
+        explanationController.text = procedure?.explanation ?? '';
+        totalPriceController.text = procedure?.totalPrice?.toString() ?? '0.00';
+        commissionController.text = procedure?.commission?.toString() ?? '0.00';
+        selectedCategory = procedure?.category;
 
-          isLoading = false;
-        });
+        isLoading = false;
 
         await loadCategories();
-      } else {
-        Navigator.pop(context);
 
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Procedure not found')),
-        );
+        setState(() {});
+      } else {
+        if (!context.mounted) return;
+        Navigator.pop(context);
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('Procedure not found')));
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error loading procedure: $e')),
-      );
+      if (!mounted) return; // Check before using context/setState
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Error loading procedure: $e')));
       setState(() {
         isLoading = false;
       });
@@ -107,8 +108,9 @@ class _ProceduresEditScreenState extends State<ProceduresEditScreen> {
     if (procedure?.clinicId == null) return;
 
     try {
-      final entries = await procedureService
-          .getClinicAreaProcedureCategoryDropdownEntries();
+      final entries =
+          await procedureService
+              .getClinicAreaProcedureCategoryDropdownEntries();
       final uniqueCategories =
           <String, ClinicAreaProcedureCategoryDropdownEntriesRow>{};
 
@@ -134,7 +136,7 @@ class _ProceduresEditScreenState extends State<ProceduresEditScreen> {
     });
 
     try {
-      final result = await procedureService.updateProcedure(
+      await procedureService.updateProcedure(
         id: widget.procedureId,
         titleEng: titleController.text,
         description: descriptionController.text,
@@ -144,21 +146,31 @@ class _ProceduresEditScreenState extends State<ProceduresEditScreen> {
         category: selectedCategory ?? procedure?.category,
       );
 
-      if (result != null) {
+      procedureService.clearCache();
+
+      final proUpdate = await procedureService.getProcedureById(
+        widget.procedureId,
+      );
+
+      if (proUpdate != null) {
         setState(() {
           isEditing = false;
-          procedure = result as ProcedureWithCategoryClinicAreaNamesRow?;
+          procedure = proUpdate;
           isLoading = false;
         });
+
+        if (!mounted) return;
 
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Procedure updated successfully')),
         );
+        Navigator.of(context).pop(true);
       } else {
         setState(() {
           isLoading = false;
         });
 
+        if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Failed to update procedure')),
         );
@@ -168,9 +180,9 @@ class _ProceduresEditScreenState extends State<ProceduresEditScreen> {
         isLoading = false;
       });
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error updating procedure: $e')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Error updating procedure: $e')));
     }
   }
 
@@ -180,6 +192,14 @@ class _ProceduresEditScreenState extends State<ProceduresEditScreen> {
       appBar: AppBar(
         title: const Text('Procedure Details'),
         actions: [
+          ProcedureDeleteButtonDialog(
+            procedureId: widget.procedureId,
+            procedureName: procedure?.titleEng ?? 'this procedure',
+            onDeleted: () {
+              Navigator.of(context).pop(true);
+            },
+            isLoading: isLoading,
+          ),
           if (!isEditing)
             IconButton(
               onPressed: () {
@@ -210,22 +230,41 @@ class _ProceduresEditScreenState extends State<ProceduresEditScreen> {
             ),
         ],
       ),
-      body: isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: SingleChildScrollView(
-                      child: buildFormContent(),
+      body:
+          isLoading
+              ? const Center(child: CircularProgressIndicator())
+              : Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: SingleChildScrollView(child: buildFormContent()),
                     ),
-                  ),
-                  if (isEditing) buildActionButton(),
-                ],
+                    if (isEditing)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 16),
+                        child: SizedBox(
+                          width: double.infinity,
+                          child: ElevatedButton(
+                            onPressed: isLoading ? null : updateProcedure,
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color(0xFFD4B978),
+                              padding: const EdgeInsets.symmetric(vertical: 16),
+                            ),
+                            child: Text(
+                              'Update Procedure',
+                              style: TextStyle(
+                                color: Colors.grey.shade800,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
               ),
-            ),
     );
   }
 
@@ -233,24 +272,24 @@ class _ProceduresEditScreenState extends State<ProceduresEditScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        buildFormField(
+        ProcedureFormField(
           label: 'Procedure Name',
-          value: procedure?.titleEng ?? '',
+          hintText: procedure?.titleEng ?? '',
           controller: titleController,
           enabled: isEditing,
         ),
         const SizedBox(height: 16),
-        buildFormField(
+        ProcedureFormField(
           label: 'Description',
-          value: procedure?.description ?? '',
+          hintText: procedure?.description ?? '',
           controller: descriptionController,
           maxLines: 3,
           enabled: isEditing,
         ),
         const SizedBox(height: 16),
-        buildFormField(
+        ProcedureFormField(
           label: 'Explanation',
-          value: procedure?.explanation ?? '',
+          hintText: procedure?.explanation ?? '',
           controller: explanationController,
           maxLines: 3,
           enabled: isEditing,
@@ -259,9 +298,9 @@ class _ProceduresEditScreenState extends State<ProceduresEditScreen> {
         Row(
           children: [
             Expanded(
-              child: buildFormField(
+              child: ProcedureFormField(
                 label: 'Total Price',
-                value: procedure?.totalPrice?.toString() ?? '0.00',
+                hintText: procedure?.totalPrice?.toString() ?? '0.00',
                 controller: totalPriceController,
                 keyboardType: TextInputType.number,
                 enabled: isEditing,
@@ -269,9 +308,9 @@ class _ProceduresEditScreenState extends State<ProceduresEditScreen> {
             ),
             const SizedBox(width: 16),
             Expanded(
-              child: buildFormField(
+              child: ProcedureFormField(
                 label: 'Commission',
-                value: procedure?.commission?.toString() ?? '0.00',
+                hintText: procedure?.commission?.toString() ?? '0.00',
                 controller: commissionController,
                 keyboardType: TextInputType.number,
                 enabled: isEditing,
@@ -280,165 +319,72 @@ class _ProceduresEditScreenState extends State<ProceduresEditScreen> {
           ],
         ),
         const SizedBox(height: 16),
-        buildInfoField(
+        ProcedureInfoField(
           label: 'Clinic',
           value: procedure?.clinicName ?? 'Unknown Clinic',
         ),
         const SizedBox(height: 16),
         if (isEditing && categories.isNotEmpty)
-          buildCategoryDropdown()
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'Category',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 8),
+              Container(
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.grey.shade300),
+                  borderRadius: BorderRadius.circular(4),
+                ),
+                child: ButtonTheme(
+                  alignedDropdown: true,
+                  child: DropdownButtonFormField<String>(
+                    value: selectedCategory,
+                    hint: const Text('Select Category'),
+                    decoration: const InputDecoration(
+                      border: InputBorder.none,
+                      contentPadding: EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 12,
+                      ),
+                    ),
+                    items:
+                        categories
+                            .map(
+                              (category) => DropdownMenuItem(
+                                value: category.procedureCategoryId,
+                                child: Text(
+                                  category.procedureCategoryName ??
+                                      'Unknown Category',
+                                ),
+                              ),
+                            )
+                            .toList(),
+                    onChanged: (value) {
+                      setState(() {
+                        selectedCategory = value;
+                      });
+                    },
+                    isExpanded: true,
+                  ),
+                ),
+              ),
+            ],
+          )
         else
-          buildInfoField(
+          ProcedureInfoField(
             label: 'Category',
             value: procedure?.categoryName ?? 'Unknown Category',
           ),
         const SizedBox(height: 16),
-        buildInfoField(
+        ProcedureInfoField(
           label: 'Area',
           value: procedure?.clinicAreaName ?? 'Unknown Area',
         ),
         const SizedBox(height: 16),
       ],
-    );
-  }
-
-  Widget buildFormField({
-    required String label,
-    required String value,
-    required TextEditingController controller,
-    TextInputType keyboardType = TextInputType.text,
-    int maxLines = 1,
-    bool enabled = true,
-  }) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: const TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        const SizedBox(height: 8),
-        TextField(
-          controller: controller,
-          enabled: enabled,
-          decoration: InputDecoration(
-            border: const OutlineInputBorder(),
-            contentPadding: const EdgeInsets.symmetric(
-              horizontal: 16,
-              vertical: 12,
-            ),
-            hintText: value,
-          ),
-          keyboardType: keyboardType,
-          maxLines: maxLines,
-        ),
-      ],
-    );
-  }
-
-  Widget buildInfoField({
-    required String label,
-    required String value,
-  }) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: const TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        const SizedBox(height: 8),
-        Container(
-          width: double.infinity,
-          padding: const EdgeInsets.symmetric(
-            horizontal: 16,
-            vertical: 12,
-          ),
-          decoration: BoxDecoration(
-            border: Border.all(color: Colors.grey.shade300),
-            borderRadius: BorderRadius.circular(4),
-          ),
-          child: Text(value),
-        ),
-      ],
-    );
-  }
-
-  Widget buildCategoryDropdown() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          'Category',
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        const SizedBox(height: 8),
-        Container(
-          decoration: BoxDecoration(
-            border: Border.all(color: Colors.grey.shade300),
-            borderRadius: BorderRadius.circular(4),
-          ),
-          child: ButtonTheme(
-            alignedDropdown: true,
-            child: DropdownButtonFormField<String>(
-              value: selectedCategory,
-              hint: const Text('Select Category'),
-              decoration: const InputDecoration(
-                border: InputBorder.none,
-                contentPadding: EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 12,
-                ),
-              ),
-              items: categories
-                  .map((category) => DropdownMenuItem(
-                        value: category.procedureCategoryId,
-                        child: Text(category.procedureCategoryName ??
-                            'Unknown Category'),
-                      ))
-                  .toList(),
-              onChanged: (value) {
-                setState(() {
-                  selectedCategory = value;
-                });
-              },
-              isExpanded: true,
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget buildActionButton() {
-    return Padding(
-      padding: const EdgeInsets.only(top: 16),
-      child: SizedBox(
-        width: double.infinity,
-        child: ElevatedButton(
-          onPressed: isLoading ? null : updateProcedure,
-          style: ElevatedButton.styleFrom(
-            backgroundColor: const Color(0xFFD4B978),
-            padding: const EdgeInsets.symmetric(vertical: 16),
-          ),
-          child: Text(
-            'Update Procedure',
-            style: TextStyle(
-              color: Colors.grey.shade800,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ),
-      ),
     );
   }
 }

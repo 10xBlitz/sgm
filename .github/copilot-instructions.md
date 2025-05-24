@@ -45,3 +45,8 @@ class _ExampleScreenState extends State<ExampleScreen> {
 
 ## Be a Never Nester
 - Limit nesting too much into 1 or 2 levels only.
+
+
+## Use Separate Widget over Helper Method 
+- Do not use Helper Method
+- Instead, create a separate widget for the specific functionality you need.

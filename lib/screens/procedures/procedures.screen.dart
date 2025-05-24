@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:sgm/row_row_row_generated/tables/procedure_with_category_clinic_area_names.row.dart';
-import 'package:sgm/screens/main.screen.dart';
+import 'package:sgm/screens/procedures/procedures.add.screen.dart';
+import 'package:sgm/screens/procedures/procedures.edit.screen.dart';
 import 'package:sgm/services/procedure.service.dart';
 
 import 'package:sgm/widgets/procedures/procedure_filter.dart';
@@ -95,21 +95,27 @@ class ProceduresScreenState extends State<ProceduresScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 ElevatedButton(
-                  onPressed: () {
-                    context.push(
-                      MainScreen.routeName,
-                      extra: {
-                        'currentTab': 'Procedures',
-                        'subTab': 'Add',
-                      },
+                  onPressed: () async {
+                    final result = await Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => const ProceduresAddScreen(),
+                      ),
                     );
+
+                    debugPrint(result);
+                    // If we got back with a result, reload procedures
+                    if (result == true) {
+                      loadProcedures();
+                    }
+
+                    setState(() {});
                   },
                   child: const Text('Add Procedure'),
                 ),
                 IconButton.filled(
                   onPressed: toggleShowFilter,
                   icon: Icon(
-                    showFilter ? Icons.arrow_drop_up : Icons.arrow_drop_down,
+                    showFilter ? Icons.arrow_drop_down : Icons.arrow_drop_up,
                   ),
                 ),
               ],
@@ -131,21 +137,40 @@ class ProceduresScreenState extends State<ProceduresScreen> {
                 },
               ),
             Expanded(
-              child: isLoading
-                  ? const Center(child: CircularProgressIndicator())
-                  : procedure.isEmpty
+              child:
+                  isLoading
+                      ? const Center(child: CircularProgressIndicator())
+                      : procedure.isEmpty
                       ? const Center(child: Text('No procedures found.'))
                       : ListView.builder(
-                          itemCount: procedure.length,
-                          itemBuilder: (context, index) {
-                            final pro = procedure[index];
-                            return ProcedureItem(
-                              item: pro,
-                              onTap: () {},
-                              theme: Theme.of(context),
-                            );
-                          },
-                        ),
+                        itemCount: procedure.length,
+                        itemBuilder: (context, index) {
+                          final pro = procedure[index];
+                          return ProcedureItem(
+                            item: pro,
+                            onTap: () async {
+                              final result = await Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder:
+                                      (context) => ProceduresEditScreen(
+                                        procedureId: pro.id!,
+                                      ),
+                                ),
+                              );
+                              debugPrint('resisasdadasd, $result');
+                              // If we got back with a result, reload procedures
+                              if (result == true) {
+                                // Reset to first page when editing to ensure consistent view
+                                setState(() {
+                                  currentPage = 1;
+                                });
+                                loadProcedures(); // This will reload with fresh data
+                              }
+                            },
+                            theme: Theme.of(context),
+                          );
+                        },
+                      ),
             ),
             Padding(
               padding: const EdgeInsets.only(top: 12),

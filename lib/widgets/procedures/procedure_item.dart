@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:sgm/row_row_row_generated/tables/procedure_with_category_clinic_area_names.row.dart';
-import 'package:sgm/row_row_row_generated/tables/project.row.dart';
 
 class ProcedureItem extends StatelessWidget {
   const ProcedureItem({
