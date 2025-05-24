@@ -10,7 +10,11 @@ class ChatTab extends StatelessWidget {
     return Row(
       children: [
         Expanded(
-          child: ChatRoomListView(),
+          child: ChatRoomListView(
+            onChatRoomTap: (chatRoom) {
+              print("Tapped on chat room: ${chatRoom.id}");
+            },
+          ),
         ),
       ],
     );
