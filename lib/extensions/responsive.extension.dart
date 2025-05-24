@@ -5,8 +5,13 @@ import 'package:flutter/material.dart';
 /// This extension adds helper methods to determine the device type
 /// (phone, tablet, desktop, wide) based on screen width breakpoints.
 extension ResponsiveExtension on MediaQueryData {
+  static const double smallPhoneBreakpoint = 360;
+
   /// Breakpoint for small devices (phones).
   static const double phoneBreakpoint = 600;
+
+  /// Breakpoint for large phones (phablets).
+  static const double largePhoneBreakpoint = 720;
 
   /// Breakpoint for medium devices (tablets).
   static const double tabletBreakpoint = 900;
@@ -14,10 +19,17 @@ extension ResponsiveExtension on MediaQueryData {
   /// Breakpoint for large devices (desktops).
   static const double desktopBreakpoint = 1200;
 
+  bool get isSmallPhone => size.width < smallPhoneBreakpoint;
+
   /// Returns true if the screen width is less than 600 logical pixels.
   ///
   /// This is typically used to identify mobile phones in portrait mode.
   bool get isPhone => size.width < phoneBreakpoint;
+
+  /// Returns true if the screen width is between 360 and 599 logical pixels.
+  ///
+  /// This is typically used to identify small phones in portrait mode.
+  bool get isLargePhone => size.width < largePhoneBreakpoint;
 
   /// Returns true if the screen width is between 600 and 899 logical pixels.
   ///

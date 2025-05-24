@@ -18,6 +18,7 @@ class _ChatRoomListViewState extends State<ChatRoomListView> {
   @override
   void initState() {
     super.initState();
+    print("Initializing Chat Room List");
     _fetchChatRooms();
   }
 
@@ -35,7 +36,7 @@ class _ChatRoomListViewState extends State<ChatRoomListView> {
       itemCount: _chatRooms.length,
       itemBuilder: (context, index) {
         final chatRoom = _chatRooms[index];
-        // TODO let's style this
+        // TODO let's style this later
         return ListTile(
           title: Text(chatRoom.name ?? ""),
           subtitle: Text(
