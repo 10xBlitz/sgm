@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sgm/screens/user/user.all_users.screen.dart';
 import 'package:sgm/screens/user/user.new_request.screen.dart';
 
 class UserManagementScreen extends StatefulWidget {
@@ -46,57 +47,13 @@ class _UserManagementScreenState extends State<UserManagementScreen>
               controller: _tabController,
               children: const [
                 UserNewRequestScreen(),
-                AllUsersTab(),
+                UserAllUserScreen(),
                 UserPermissionsTab(),
                 ClinicProjectAccessTab(),
                 TermsConditionsTab(),
               ],
             ),
           ),
-        ],
-      ),
-    );
-  }
-}
-
-class NewUserRequestsTab extends StatelessWidget {
-  const NewUserRequestsTab({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const Padding(
-      padding: EdgeInsets.all(16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            "New User Requests",
-            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-          ),
-          SizedBox(height: 16),
-          UserRequestList(),
-        ],
-      ),
-    );
-  }
-}
-
-class AllUsersTab extends StatelessWidget {
-  const AllUsersTab({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const Padding(
-      padding: EdgeInsets.all(16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            "All Users",
-            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-          ),
-          SizedBox(height: 16),
-          UsersList(),
         ],
       ),
     );

@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:sgm/row_row_row_generated/tables/user.row.dart';
 import 'package:sgm/row_row_row_generated/tables/user_role.row.dart';
+import 'package:sgm/row_row_row_generated/tables/user_with_projects.row.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 /// Service class for handling user-related operations with Supabase.
@@ -23,6 +24,7 @@ class UserService {
   final Map<String, UserRow> _cache = {};
 
   final Map<String, UserRoleRow> _roleCache = {};
+  final Map<String, UserWithProjectsRow> _userWithProjectListCache = {};
 
   /// Gets all users with optional filters.
   Future<List<UserRow>> getAllUsers({
@@ -75,6 +77,51 @@ class UserService {
       return users;
     } catch (error) {
       debugPrint('Error fetching users: $error');
+      return [];
+    }
+  }
+
+  Future<List<UserWithProjectsRow>> getAllUsersWithProjectsCache({
+    String? search,
+    String? role,
+  }) async {
+    try {
+      var query = _supabase.from(UserWithProjectsRow.table).select();
+
+      if (role != null && role.isNotEmpty) {
+        query = query.eq(UserWithProjectsRow.field.role, role);
+      }
+
+      if (search != null && search.isNotEmpty) {
+        query = query.or('name.ilike.%$search%,email.ilike.%$search%');
+      }
+
+      final response = await query.order(
+        UserWithProjectsRow.field.createdAt,
+        ascending: false,
+      );
+
+      final List<dynamic> rawList = response as List<dynamic>;
+
+      final users =
+          rawList.map<UserWithProjectsRow>((data) {
+            try {
+              final map = data as Map<String, dynamic>;
+              final user = UserWithProjectsRow.fromJson(map);
+              if (user.id != null) {
+                _userWithProjectListCache[user.id!] = user;
+              }
+              return user;
+            } catch (e) {
+              debugPrint('Error converting user data: $e');
+              debugPrint('Problematic data: ${data['id']}');
+              rethrow;
+            }
+          }).toList();
+
+      return users;
+    } catch (error) {
+      debugPrint('Error fetching all users with projects: $error');
       return [];
     }
   }
@@ -199,6 +246,7 @@ class UserService {
     }
   }
 
+  // function to update the user role.
   Future<bool> updateUserRole(String userId, String roleId) async {
     try {
       // Update user with new role and set approvedAt if not already approved
@@ -217,6 +265,7 @@ class UserService {
     }
   }
 
+  // function to approve the user
   Future<bool> approveUser(String userId) async {
     try {
       final now = DateTime.now().toIso8601String();
@@ -236,6 +285,7 @@ class UserService {
     }
   }
 
+  // function to reject the user.
   Future<bool> rejectUser(String userId) async {
     try {
       final now = DateTime.now().toIso8601String();
@@ -259,5 +309,6 @@ class UserService {
   void clearCache() {
     _cache.clear();
     _roleCache.clear();
+    _userWithProjectListCache.clear();
   }
 }

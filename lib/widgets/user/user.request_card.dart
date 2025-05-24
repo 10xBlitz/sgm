@@ -3,6 +3,8 @@ import 'package:sgm/row_row_row_generated/tables/user.row.dart';
 import 'package:sgm/row_row_row_generated/tables/user_role.row.dart';
 import 'package:sgm/services/user.service.dart';
 import 'package:sgm/widgets/user/user.info_section.dart';
+import 'package:sgm/widgets/user/user.request_action_buttons.dart';
+import 'package:sgm/widgets/user/user.role_dropdown.dart';
 
 class UserRequestCard extends StatefulWidget {
   final UserRow user;
@@ -48,6 +50,10 @@ class _UserRequestCardState extends State<UserRequestCard> {
 
   @override
   Widget build(BuildContext context) {
+    if (widget.user.isBanned == true) {
+      return SizedBox.shrink();
+    }
+
     return Card(
       margin: const EdgeInsets.only(bottom: 16.0),
       child: Padding(
@@ -58,7 +64,7 @@ class _UserRequestCardState extends State<UserRequestCard> {
             UserInfoSection(user: widget.user),
             const SizedBox(height: 16),
             if (isApproved)
-              RoleDropdown(
+              UserRoleDropDown(
                 selectedRole: _selectedRole,
                 availableRoles: availableRoles,
                 onChanged: (value) {
@@ -68,7 +74,7 @@ class _UserRequestCardState extends State<UserRequestCard> {
                 },
               ),
             const SizedBox(height: 14),
-            ActionButton(
+            UserRequestActionButton(
               hasRejected: hasRejected,
               isApproved: isApproved,
               onApproved: () {
@@ -86,116 +92,6 @@ class _UserRequestCardState extends State<UserRequestCard> {
           ],
         ),
       ),
-    );
-  }
-}
-
-class RoleDropdown extends StatelessWidget {
-  final String? selectedRole;
-  final List<UserRoleRow> availableRoles;
-  final Function(String?) onChanged;
-
-  const RoleDropdown({
-    super.key,
-    required this.selectedRole,
-    required this.availableRoles,
-    required this.onChanged,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Expanded(
-          child: DropdownButtonFormField<String>(
-            decoration: const InputDecoration(
-              labelText: 'Assign Role',
-              border: OutlineInputBorder(),
-            ),
-            value: selectedRole,
-            hint: const Text('Select a role'),
-            items:
-                availableRoles
-                    .map(
-                      (role) => DropdownMenuItem<String>(
-                        value: role.id,
-                        child: Text(role.name),
-                      ),
-                    )
-                    .toList(),
-            onChanged: onChanged,
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class ActionButton extends StatelessWidget {
-  final bool isApproved;
-  final bool hasRole;
-  final bool hasRejected;
-  final String? selectedRole;
-  final VoidCallback onPressed;
-  final VoidCallback onApproved;
-  final VoidCallback onReject;
-
-  const ActionButton({
-    super.key,
-    required this.isApproved,
-    required this.hasRole,
-    required this.selectedRole,
-    required this.onPressed,
-    required this.onApproved,
-    required this.onReject,
-    required this.hasRejected,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    String buttonText;
-    bool isEnabled;
-
-    if (!isApproved) {
-      buttonText = 'Approve';
-      isEnabled = true;
-    } else if (!hasRole) {
-      buttonText = 'Assign Role';
-      isEnabled = selectedRole != null;
-    } else {
-      buttonText = 'Update Role';
-      isEnabled = selectedRole != null;
-    }
-
-    return Row(
-      spacing: 8,
-      children: [
-        Expanded(
-          child: ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              minimumSize: const Size(double.infinity, 36),
-            ),
-            onPressed:
-                isEnabled
-                    ? !isApproved
-                        ? onApproved
-                        : onPressed
-                    : null,
-            child: Text(buttonText),
-          ),
-        ),
-        if (!isApproved && !hasRejected)
-          Expanded(
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                minimumSize: const Size(double.infinity, 36),
-                backgroundColor: Theme.of(context).colorScheme.error,
-              ),
-              onPressed: onReject,
-              child: const Text('Reject'),
-            ),
-          ),
-      ],
     );
   }
 }
