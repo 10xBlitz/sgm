@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sgm/mainTabs/chat/widgets/chat_room.list_view.dart';
 
 class ChatTab extends StatelessWidget {
   static const String tabTitle = 'Chat';
@@ -6,6 +7,12 @@ class ChatTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(child: Text(tabTitle, style: TextStyle(fontSize: 24)));
+    return Row(
+      children: [
+        Expanded(
+          child: ChatRoomListView(),
+        ),
+      ],
+    );
   }
 }

@@ -13,16 +13,16 @@ class CalendarTheme {
   static const weekdayHeaderColor = Color(0xFFD2B771);
   static const taskBackgroundColor = Color(0xFFBEDAB7);
   static const borderColor = Color(0xFFECECEC);
-  
+
   static const weekHeight = 86.0;
   static const daySpacing = 0.0;
   static const headerHeight = 0.0;
   static const eventHeight = 25.0;
   static const eventSpacing = 2.0;
   static const spaceBetweenHeaderAndEvents = 6.0;
-  
+
   static const weekdayLabels = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
-  
+
   static const maxVisibleTasks = 3;
 }
 
@@ -84,7 +84,10 @@ class _CalendarViewContent extends StatelessWidget {
           // Display current month and year
           Text(
             DateFormat('MMMM yyyy').format(controller.currentMonth),
-            style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold, color: Colors.black87),
+            style: theme.textTheme.titleMedium?.copyWith(
+              fontWeight: FontWeight.bold,
+              color: Colors.black87,
+            ),
           ),
           // Navigation buttons row
           _NavigationButtons(controller: controller),
@@ -95,7 +98,10 @@ class _CalendarViewContent extends StatelessWidget {
 
   Widget _buildCalendarBody(CalendarViewController controller) {
     return Expanded(
-      child: controller.isLoading ? const Center(child: CircularProgressIndicator()) : const _MonthCalendarView(),
+      child:
+          controller.isLoading
+              ? const Center(child: CircularProgressIndicator())
+              : const _MonthCalendarView(),
     );
   }
 }
@@ -223,7 +229,11 @@ class _WeekdayHeader extends StatelessWidget {
               alignment: Alignment.center,
               child: Text(
                 CalendarTheme.weekdayLabels[index],
-                style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 16),
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                  fontSize: 16,
+                ),
               ),
             ),
           ),
@@ -238,10 +248,8 @@ class _CalendarGrid extends StatelessWidget {
   final GlobalKey<State> gKey;
   final CalendarViewController controller;
 
-  const _CalendarGrid({
-    required this.gKey,
-    required this.controller,
-  }) : super(key: gKey);
+  const _CalendarGrid({required this.gKey, required this.controller})
+    : super(key: gKey);
 
   @override
   Widget build(BuildContext context) {
@@ -254,7 +262,11 @@ class _CalendarGrid extends StatelessWidget {
         weekHeight: CalendarTheme.weekHeight,
         daySpacing: CalendarTheme.daySpacing,
         headerHeight: CalendarTheme.headerHeight,
-        weekDecoration: BoxDecoration(border: Border(bottom: BorderSide(color: CalendarTheme.borderColor, width: 1.0))),
+        weekDecoration: BoxDecoration(
+          border: Border(
+            bottom: BorderSide(color: CalendarTheme.borderColor, width: 1.0),
+          ),
+        ),
       ),
       daysParam: DaysParam(
         headerHeight: 30,
@@ -262,12 +274,11 @@ class _CalendarGrid extends StatelessWidget {
         eventSpacing: CalendarTheme.eventSpacing,
         spaceBetweenHeaderAndEvents: CalendarTheme.spaceBetweenHeaderAndEvents,
         dayHeaderBuilder: (day) => CustomDayHeader(day: day),
-        dayEventBuilder: (event, width, height) => TaskEventWidget(
-          event: event,
-          height: height,
-          width: width,
-        ),
-        dayMoreEventsBuilder: (count) => MoreEventsIndicator(count: count),
+        dayEventBuilder:
+            (event, width, height) =>
+                TaskEventWidget(event: event, height: height, width: width),
+        // TODO put it back
+        // dayMoreEventsBuilder: (count) => MoreEventsIndicator(count: count),
         onDayTapUp: (day) => _showDayDetail(context, controller, day),
       ),
     );
@@ -283,15 +294,24 @@ class _CalendarGrid extends StatelessWidget {
     }
   }
 
-  void _showDayDetail(BuildContext context, CalendarViewController controller, DateTime day) {
-    MyLogger.d("Navigating to day view for ${DateFormat('yyyy-MM-dd').format(day)}");
+  void _showDayDetail(
+    BuildContext context,
+    CalendarViewController controller,
+    DateTime day,
+  ) {
+    MyLogger.d(
+      "Navigating to day view for ${DateFormat('yyyy-MM-dd').format(day)}",
+    );
 
     // Navigate to the day view page and pass the task data through the controller
     Navigator.of(context).push(
       MaterialPageRoute(
         builder:
-            (context) =>
-                DayCalendarView(initialDate: day, projectId: controller.projectId, tasksByDay: controller.tasksByDay),
+            (context) => DayCalendarView(
+              initialDate: day,
+              projectId: controller.projectId,
+              tasksByDay: controller.tasksByDay,
+            ),
       ),
     );
   }
@@ -337,7 +357,12 @@ class TaskEventWidget extends StatelessWidget {
   final double? width;
   final double? height;
 
-  const TaskEventWidget({super.key, required this.event, this.width, this.height});
+  const TaskEventWidget({
+    super.key,
+    required this.event,
+    this.width,
+    this.height,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -356,7 +381,11 @@ class TaskEventWidget extends StatelessWidget {
           Expanded(
             child: Text(
               event.title ?? 'Untitled Event',
-              style: const TextStyle(color: Colors.black87, fontSize: 10, fontWeight: FontWeight.w400),
+              style: const TextStyle(
+                color: Colors.black87,
+                fontSize: 10,
+                fontWeight: FontWeight.w400,
+              ),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),
@@ -379,7 +408,10 @@ class MoreEventsIndicator extends StatelessWidget {
       margin: const EdgeInsets.symmetric(horizontal: 3, vertical: 1),
       padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
       alignment: Alignment.centerLeft,
-      child: Text('$count others', style: const TextStyle(color: Colors.grey, fontSize: 10)),
+      child: Text(
+        '$count others',
+        style: const TextStyle(color: Colors.grey, fontSize: 10),
+      ),
     );
   }
 }
@@ -396,7 +428,8 @@ class _CalendarDayCell extends StatelessWidget {
     final controller = Provider.of<CalendarViewController>(context);
     final isToday = DateUtils.isSameDay(day, DateTime.now());
     final isCurrentMonth = day.month == DateTime.now().month;
-    final List<TaskRow> tasks = controller.tasksByDay[DateTime(day.year, day.month, day.day)] ?? [];
+    final List<TaskRow> tasks =
+        controller.tasksByDay[DateTime(day.year, day.month, day.day)] ?? [];
 
     return InkWell(
       onTap: () => _showDayDetail(context, controller, tasks),
@@ -410,7 +443,8 @@ class _CalendarDayCell extends StatelessWidget {
           children: [
             _buildDayNumber(isToday, isCurrentMonth),
             _buildTasksList(tasks),
-            if (tasks.length > CalendarTheme.maxVisibleTasks) _buildOverflowIndicator(tasks),
+            if (tasks.length > CalendarTheme.maxVisibleTasks)
+              _buildOverflowIndicator(tasks),
           ],
         ),
       ),
@@ -418,15 +452,24 @@ class _CalendarDayCell extends StatelessWidget {
   }
 
   /// Shows the day detail bottom sheet.
-  void _showDayDetail(BuildContext context, CalendarViewController controller, List<TaskRow> tasks) {
-    MyLogger.d("Navigating to day view for ${DateFormat('yyyy-MM-dd').format(day)}");
+  void _showDayDetail(
+    BuildContext context,
+    CalendarViewController controller,
+    List<TaskRow> tasks,
+  ) {
+    MyLogger.d(
+      "Navigating to day view for ${DateFormat('yyyy-MM-dd').format(day)}",
+    );
 
     // Navigate to the day view page and pass the task data
     Navigator.of(context).push(
       MaterialPageRoute(
         builder:
-            (context) =>
-                DayCalendarView(initialDate: day, projectId: controller.projectId, tasksByDay: controller.tasksByDay),
+            (context) => DayCalendarView(
+              initialDate: day,
+              projectId: controller.projectId,
+              tasksByDay: controller.tasksByDay,
+            ),
       ),
     );
   }
@@ -453,7 +496,10 @@ class _CalendarDayCell extends StatelessWidget {
               ? const SizedBox() // Empty placeholder when no tasks
               : ListView.builder(
                 padding: const EdgeInsets.symmetric(horizontal: 4),
-                itemCount: tasks.length > CalendarTheme.maxVisibleTasks ? CalendarTheme.maxVisibleTasks : tasks.length,
+                itemCount:
+                    tasks.length > CalendarTheme.maxVisibleTasks
+                        ? CalendarTheme.maxVisibleTasks
+                        : tasks.length,
                 itemBuilder: (context, taskIndex) {
                   return _TaskIndicator(task: tasks[taskIndex]);
                 },
@@ -465,7 +511,10 @@ class _CalendarDayCell extends StatelessWidget {
   Widget _buildOverflowIndicator(List<TaskRow> tasks) {
     return Padding(
       padding: const EdgeInsets.only(left: 4, bottom: 2),
-      child: Text('${tasks.length - CalendarTheme.maxVisibleTasks} others', style: TextStyle(fontSize: 10, color: Colors.grey.shade700)),
+      child: Text(
+        '${tasks.length - CalendarTheme.maxVisibleTasks} others',
+        style: TextStyle(fontSize: 10, color: Colors.grey.shade700),
+      ),
     );
   }
 
@@ -493,7 +542,10 @@ class _TaskIndicator extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.only(bottom: 2),
       padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
-      decoration: BoxDecoration(color: controller.getStatusColor(task.status), borderRadius: BorderRadius.circular(4)),
+      decoration: BoxDecoration(
+        color: controller.getStatusColor(task.status),
+        borderRadius: BorderRadius.circular(4),
+      ),
       child: Row(
         children: [
           const Icon(Icons.check_circle_outline, size: 12, color: Colors.white),
