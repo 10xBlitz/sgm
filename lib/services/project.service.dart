@@ -1,5 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:sgm/row_row_row_generated/tables/project.row.dart';
+import 'package:sgm/row_row_row_generated/tables/project_member.row.dart';
+import 'package:sgm/row_row_row_generated/tables/project_with_members.row.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 /// Service class for handling project-related operations with Supabase.
@@ -21,6 +23,7 @@ class ProjectService {
   /// Map&lt;String, dynamic&gt; is having error
   /// Need to make issue in Flutter
   final Map _cache = {};
+  final Map<String, ProjectWithMembersRow> _projectWithMembersCache = {};
 
   List<ProjectRow>? _clinicsCache;
 
@@ -209,8 +212,98 @@ class ProjectService {
     }
   }
 
+  /// Gets a project with its members by its ID, with caching.
+  Future<List<ProjectWithMembersRow>> getAllProjectsWithMembers({
+    bool cached = true,
+  }) async {
+    // Return cached data if available
+    if (cached && _projectWithMembersCache.isNotEmpty) {
+      return _projectWithMembersCache.values.toList();
+    }
+
+    try {
+      final response =
+          await _supabase.from(ProjectWithMembersRow.table).select();
+      final List<dynamic> rawList = response as List<dynamic>;
+      // If response is a list of maps, parse them
+      final projects =
+          rawList.map<ProjectWithMembersRow>((data) {
+            try {
+              final map = data as Map<String, dynamic>;
+              final project = ProjectWithMembersRow.fromJson(map);
+              if (project.id != null) {
+                _projectWithMembersCache[project.id!] = project;
+              }
+              return project;
+            } catch (e) {
+              debugPrint('Error converting project data: $e');
+              debugPrint('Problematic data: ${data['id']}');
+              rethrow;
+            }
+          }).toList();
+
+      // Cache each project by its ID
+      for (var project in projects) {
+        _projectWithMembersCache[project.id!] = project;
+      }
+
+      return projects;
+    } catch (error) {
+      debugPrint('Error fetching all projects with members: $error');
+      return [];
+    }
+  }
+
+  /// Gets a project with its members from the cache.
+  ProjectWithMembersRow? getProjectWithMembersFromCache(String id) {
+    return _projectWithMembersCache[id];
+  }
+
+  // allow to add project members and update the cache of project with members
+  Future<bool> addMemberToProject(
+    String projectId,
+    String userId,
+    String assignedBy,
+  ) async {
+    try {
+      await _supabase.from(ProjectMemberRow.table).insert({
+        ProjectMemberRow.field.project: projectId,
+        ProjectMemberRow.field.user: userId,
+        ProjectMemberRow.field.assignedBy: assignedBy,
+      });
+
+      // Invalidate the cached project to ensure fresh data on next load
+      _projectWithMembersCache.remove(projectId);
+
+      return true;
+    } catch (error) {
+      debugPrint('Error adding project member: $error');
+      return false;
+    }
+  }
+
+  // remove a member from a project.
+  Future<bool> removeMemberFromProject(String projectId, String userId) async {
+    try {
+      await _supabase
+          .from(ProjectMemberRow.table)
+          .delete()
+          .eq(ProjectMemberRow.field.project, projectId)
+          .eq(ProjectMemberRow.field.user, userId);
+
+      // Invalidate the cached project to ensure fresh data on next load
+      _projectWithMembersCache.remove(projectId);
+
+      return true;
+    } catch (error) {
+      debugPrint('Error removing project member: $error');
+      return false;
+    }
+  }
+
   /// Clears the cache
   void clearCache() {
     _cache.clear();
+    _projectWithMembersCache.clear();
   }
 }

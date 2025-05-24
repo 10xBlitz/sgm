@@ -35,7 +35,7 @@ class ProjectWithMembersRow {
   final String? area;
   final int? numberOfMembers;
   final List<String>? memberIds;
-  final Map<dynamic, dynamic>? members;
+  final List<Map<String, dynamic>>? members;
 
   const ProjectWithMembersRow({
     this.id,
@@ -84,9 +84,11 @@ class ProjectWithMembersRow {
       members:
           json[field.members] == null
               ? null
-              : (json[field.members] is String
-                  ? jsonDecode(json[field.members])
-                  : Map.from(json[field.members])),
+              : List<Map<String, dynamic>>.from(
+                (json[field.members] as List).map(
+                  (e) => Map<String, dynamic>.from(e),
+                ),
+              ),
     );
   }
   Map<String, dynamic> toJson() {
@@ -122,7 +124,7 @@ class ProjectWithMembersRow {
     String? area,
     int? numberOfMembers,
     List<String>? memberIds,
-    Map<dynamic, dynamic>? members,
+    List<Map<String, dynamic>>? members,
   }) {
     return ProjectWithMembersRow(
       id: id ?? this.id,

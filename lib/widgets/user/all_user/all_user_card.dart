@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:sgm/row_row_row_generated/tables/user_role.row.dart';
 import 'package:sgm/row_row_row_generated/tables/user_with_projects.row.dart';
-import 'package:sgm/screens/user/user.all_users.screen.dart';
 import 'package:sgm/widgets/user/all_user/all_user.Info.dart';
+import 'package:sgm/widgets/user/all_user/all_user_actions.dart';
 import 'package:sgm/widgets/user/user.user_avatar.dart';
 
 class AllUserCard extends StatelessWidget {
   final UserWithProjectsRow user;
   final List<UserRoleRow> availableRoles;
+  final Function(UserWithProjectsRow) onUpdateRole;
 
   const AllUserCard({
     super.key,
     required this.user,
     required this.availableRoles,
+    required this.onUpdateRole,
   });
 
   @override
@@ -23,12 +25,12 @@ class AllUserCard extends StatelessWidget {
         padding: const EdgeInsets.all(16.0),
         child: Row(
           children: [
-            UserUserAvatar(user: user),
+            UserUserAvatar(userWithProjectsRow: user),
             const SizedBox(width: 16),
             Expanded(
               child: AllUserInfo(user: user, availableRoles: availableRoles),
             ),
-            UserActions(user: user),
+            AllUserActions(user: user, onUpdateRole: (p0) => onUpdateRole(p0)),
           ],
         ),
       ),

@@ -1,20 +1,29 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:sgm/row_row_row_generated/tables/user.row.dart';
 import 'package:sgm/row_row_row_generated/tables/user_with_projects.row.dart';
 
 class UserUserAvatar extends StatelessWidget {
-  final UserWithProjectsRow user;
+  final UserWithProjectsRow? userWithProjectsRow;
+  final UserRow? userRow;
   final double size;
 
-  const UserUserAvatar({super.key, required this.user, this.size = 50});
+  const UserUserAvatar({
+    super.key,
+    this.userWithProjectsRow,
+    this.userRow,
+    this.size = 50,
+  }) : assert(userWithProjectsRow != null || userRow != null);
 
   @override
   Widget build(BuildContext context) {
+    final String? name = userWithProjectsRow?.name ?? userRow?.name;
+    final String? profileImage =
+        userWithProjectsRow?.profileImage ?? userRow?.profileImage;
+
     final fallbackText =
-        (user.name?.isNotEmpty ?? false)
-            ? user.name!.substring(0, 1).toUpperCase()
-            : '?';
-    final profileImage = user.profileImage;
+        (name?.isNotEmpty ?? false) ? name!.substring(0, 1).toUpperCase() : '?';
+
     final hasImage = profileImage != null && profileImage.isNotEmpty;
 
     return Container(

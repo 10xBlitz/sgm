@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/foundation.dart';
 import 'package:sgm/row_row_row_generated/tables/user.row.dart';
 import 'package:sgm/row_row_row_generated/tables/user_role.row.dart';
@@ -123,6 +121,23 @@ class UserService {
     } catch (error) {
       debugPrint('Error fetching all users with projects: $error');
       return [];
+    }
+  }
+
+  // getUserWithProjectsById
+  Future<UserWithProjectsRow?> getUserWithProjectsById(String userId) async {
+    try {
+      final response =
+          await _supabase
+              .from(UserWithProjectsRow.table)
+              .select()
+              .eq(UserWithProjectsRow.field.id, userId)
+              .single();
+
+      return UserWithProjectsRow.fromJson(response);
+    } catch (error) {
+      debugPrint('Error fetching user with projects by ID: $error');
+      return null;
     }
   }
 
@@ -301,6 +316,25 @@ class UserService {
       return true;
     } catch (error) {
       debugPrint('Error rejecting user: $error');
+      return false;
+    }
+  }
+
+  // functio to update the users deatais
+  Future<bool> updateUserDetails(String userId, String details) async {
+    try {
+      await _supabase
+          .from(UserRow.table)
+          .update({UserRow.field.details: details})
+          .eq(UserRow.field.id, userId);
+
+      // Remove from cache to ensure fresh data on next fetch
+      _cache.remove(userId);
+      _userWithProjectListCache.remove(userId);
+
+      return true;
+    } catch (error) {
+      debugPrint('Error updating user details: $error');
       return false;
     }
   }

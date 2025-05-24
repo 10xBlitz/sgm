@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:sgm/screens/user/user.all_users.screen.dart';
 import 'package:sgm/screens/user/user.new_request.screen.dart';
+import 'package:sgm/screens/user/user.project_clinic_access.screen.dart';
+import 'package:sgm/screens/user/user.term_and_service.dart';
 
 class UserManagementScreen extends StatefulWidget {
   static const routeName = "/user-management";
@@ -45,12 +47,12 @@ class _UserManagementScreenState extends State<UserManagementScreen>
           Expanded(
             child: TabBarView(
               controller: _tabController,
-              children: const [
+              children: [
                 UserNewRequestScreen(),
                 UserAllUserScreen(),
                 UserPermissionsTab(),
-                ClinicProjectAccessTab(),
-                TermsConditionsTab(),
+                UserProjectClinicAccess(),
+                TermsAndConditionsScreen(),
               ],
             ),
           ),
