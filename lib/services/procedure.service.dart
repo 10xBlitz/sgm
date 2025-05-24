@@ -240,10 +240,12 @@ class ProcedureService {
       if (commission != null) data[ProcedureRow.field.commission] = commission;
       if (totalPrice != null) data[ProcedureRow.field.totalPrice] = totalPrice;
       if (category != null) data[ProcedureRow.field.category] = category;
-      if (description != null)
+      if (description != null) {
         data[ProcedureRow.field.description] = description;
-      if (explanation != null)
+      }
+      if (explanation != null) {
         data[ProcedureRow.field.explanation] = explanation;
+      }
 
       // Skip update if no fields were provided
       if (data.isEmpty) {
@@ -649,18 +651,18 @@ class ProcedureService {
       }
 
       final queryResult = await limitQuery
-          .order(
-            ProcedureWithCategoryClinicAreaNamesRow.field.clinicName,
-            ascending: true,
-          )
-          .order(
-            ProcedureWithCategoryClinicAreaNamesRow.field.titleEng,
-            ascending: true,
-          )
-          .order(
-            ProcedureWithCategoryClinicAreaNamesRow.field.createdAt,
-            ascending: false,
-          );
+      // .order(
+      //   ProcedureWithCategoryClinicAreaNamesRow.field.clinicName,
+      //   ascending: true,
+      // )
+      // .order(
+      //   ProcedureWithCategoryClinicAreaNamesRow.field.titleEng,
+      //   ascending: true,
+      // )
+      .order(
+        ProcedureWithCategoryClinicAreaNamesRow.field.createdAt,
+        ascending: false,
+      );
 
       final List<ProcedureWithCategoryClinicAreaNamesRow> result =
           queryResult
